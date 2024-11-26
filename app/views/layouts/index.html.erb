@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html>
+<body>
+
+<h1>Welcome, ready for hell?</h1>
+<input type="text" id="username">
+<button onclick="submit()"> submit </button>
+
+</body>
+
+<script>
+  function submit() {
+      fetch('http://0.0.0.0:3000/submit', {
+          method: 'POST',
+          headers: {
+              'Content-Type': 'application/json'
+          },
+          body: JSON.stringify({
+              username: document.getElementById("username").value
+          })
+      })
+    .then(response => {
+        window.location.href = '/page';
+        console.log(response)
+    })
+  }
+</script>
+
+</html>
