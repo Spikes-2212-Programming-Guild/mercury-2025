@@ -5,7 +5,7 @@ class TextQuestion extends Question {
     }
 
     generateHTML() {
-        return '<p>' + this.title + '<p>' +
+        return '\n<p>' + this.title + '<p>' +
             '\n<input type="text" id=' + this.id + '/>'
     }
 }

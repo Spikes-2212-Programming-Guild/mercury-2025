@@ -7,11 +7,9 @@ function createPage(pathName, content) {
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Generated Page</title>
 </head>
-<body>
-
-</body>
-</html>`;
+<body>`;
     htmlContent += content;
+    htmlContent += '\n</body>\n</html>' // to make sure the content is in body
     const fs = require('fs');
     const path = require('path');
 
