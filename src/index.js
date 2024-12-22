@@ -5,12 +5,15 @@ const path = require('path')
 const db = require('./db')
 const cors = require('cors')
 
-const creator = require('./PageCreator')
-
+const pageCreator = require('./PageCreator')
 const TextQuestion = require("./questions/TextQuestion");
-const question = new TextQuestion('text', 'enter text', 'username')
 
-creator.createPage('pages/page1.html', question.generateHTML())
+let content = ''
+content += new TextQuestion('text', 'enter text', 'username').generateHTML();
+content += new TextQuestion('text', 'enter your favorite snack', 'snack-name').generateHTML();
+
+pageCreator.createPage('pages/page1.html', content)
+// TODO - a class that makes the relations between pages - back and next page
 
 // Middleware to parse JSON bodies
 app.use(express.json());

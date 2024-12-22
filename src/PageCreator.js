@@ -1,27 +1,25 @@
-function createPage(pathName, add) {
+function createPage(pathName, content) {
     let htmlContent =
 `<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Generated HTML File</title>
+    <title>Generated Page</title>
 </head>
 <body>
-    <div id="container">
-    
-    </div>
+
 </body>
 </html>`;
-    htmlContent += add;
+    htmlContent += content;
     const fs = require('fs');
     const path = require('path');
 
     const htmlFilePath = path.join(__dirname, pathName);
 
-    fs.writeFile(htmlFilePath, htmlContent, 'utf8', (err) => {
-        if (err) {
-            console.error('Error writing to file:', err);
+    fs.writeFile(htmlFilePath, htmlContent, 'utf8', (error) => {
+        if (error) {
+            console.error('Error writing to file:', error);
         } else {
             console.log('HTML file generated successfully at:', htmlFilePath);
         }
