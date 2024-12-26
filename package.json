@@ -1,0 +1,24 @@
+{
+  "name": "mercury-2025",
+  "version": "1.0.0",
+  "description": "This README would normally document whatever steps are necessary to get the application up and running.",
+  "homepage": "https://github.com/Spikes-2212-Programming-Guild/mercury-2025#readme",
+  "bugs": {
+    "url": "https://github.com/Spikes-2212-Programming-Guild/mercury-2025/issues"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Spikes-2212-Programming-Guild/mercury-2025.git"
+  },
+  "license": "GPL-3.0",
+  "author": "",
+  "type": "commonjs",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "dependencies": {
+    "express": "^4.21.2",
+    "pg": "^8.13.1"
+  }
+}
