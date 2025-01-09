@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Generated Page</title>
+</head>
+<body>
+    <p>Enter text</p>
+    <input type="text" id="username" />
+    
+	<p>Enter your favorite color</p>
+    <input type="text" id="color" />
+    
+</body>
+<script>
+    // Get all question elements
+    const questions = [document.getElementById('username'), document.getElementById('color')];
+
+    // Set initial values from sessionStorage and add input event listeners
+    questions.forEach(q => {
+        const storedValue = window.sessionStorage.getItem(q.id);
+        if (storedValue) {
+            q.value = storedValue;
+        }
+
+        q.addEventListener('input', (event) => {
+            window.sessionStorage.setItem(event.target.id, event.target.value);
+        });
+    });
+</script>
+</html>

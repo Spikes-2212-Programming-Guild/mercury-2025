@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Generated Page</title>
+</head>
+<body>
+    <p>what is your age?</p>
+    <input type="text" id="age" />
+    
+</body>
+<script>
+    // Get all question elements
+    const questions = [document.getElementById('age')];
+
+    // Set initial values from sessionStorage and add input event listeners
+    questions.forEach(q => {
+        const storedValue = window.sessionStorage.getItem(q.id);
+        if (storedValue) {
+            q.value = storedValue;
+        }
+
+        q.addEventListener('input', (event) => {
+            window.sessionStorage.setItem(event.target.id, event.target.value);
+        });
+    });
+</script>
+</html>
