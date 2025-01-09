@@ -1,51 +1,43 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>Mercury 2025</title>
-</head>
+    <head>
+        <meta charset="UTF-8" />
+        <title>Mercury 2025</title>
+    </head>
 
-<body>
+    <body>
+        <h1>Welcome, ready for hell?</h1>
+        <input type="text" id="username" />
+        <button onclick="insertUsername()">submit</button>
+    </body>
 
-<h1>Welcome, ready for hell?</h1>
-<input type="text" id="username">
-<button onclick="insertUsername()"> submit </button>
+    <script>
+        async function insertUsername() {
+            try {
+                const name = document.getElementById("username").value;
+                if (name === "") return alert("Enter a username");
+                const response = await fetch(
+                    "http://localhost:3000/insert-username",
+                    {
+                        method: "POST",
+                        headers: {
+                            "Content-Type": "application/json",
+                        },
+                        body: JSON.stringify({
+                            username: name,
+                        }),
+                    },
+                );
 
-<button onclick="toData()"> toData </button>
-
-</body>
-
-<script>
-    async function insertUsername() {
-        try {
-            const name = document.getElementById('username').value
-            if (name === '') return alert('Enter a username')
-            const response = await fetch('http://localhost:3000/insert-username', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json'
-                },
-                body: JSON.stringify({
-                    username: name
-                })
-            });
-
-            if (response.ok) {
-                alert('Username inserted successfully');
-                window.location.href = '/data';
-            } else {
-                alert('Error inserting username');
+                if (response.ok) {
+                    alert("Username inserted successfully");
+                } else {
+                    alert("Error inserting username");
+                }
+            } catch (error) {
+                console.error("Error:", error);
+                alert("Error inserting username");
             }
-        } catch (error) {
-            console.error('Error:', error);
-            alert('Error inserting username');
         }
-    }
-
-    function toData() {
-        window.location.href = '/data';
-    }
-</script>
-
+    </script>
 </html>
-

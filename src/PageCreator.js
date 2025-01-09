@@ -1,11 +1,16 @@
-const fs = require('fs');
-const path = require('path');
-
+const fs = require("fs");
+const path = require("path");
+//THis is not how html works
+//Html is static, what makes a web dynamic is the servers handling of client requests
+//The server is supposed to send data to the html page to store
+//Not recreate the web locally
+//Session storage is voliltile!!!!, dont use it!!!
 function generatePage(filePath, questions) {
-    let addedContent = questions.map(question => question.generateHTML()).join('\n');
-    // Construct the complete HTML content
-    const htmlContent =
-`<!DOCTYPE html>
+  let addedContent = questions
+    .map((question) => question.generateHTML())
+    .join("\n");
+  // Construct the complete HTML content
+  const htmlContent = `<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
@@ -17,7 +22,7 @@ function generatePage(filePath, questions) {
 </body>
 <script>
     // Get all question elements
-    const questions = [${questions.map(q => `document.getElementById('${q.id}')`).join(', ')}];
+    const questions = [${questions.map((q) => `document.getElementById('${q.id}')`).join(", ")}];
 
     // Set initial values from sessionStorage and add input event listeners
     questions.forEach(q => {
@@ -33,19 +38,19 @@ function generatePage(filePath, questions) {
 </script>
 </html>`;
 
-    // Define the full path for the HTML file
-    const htmlFilePath = path.join(__dirname, filePath);
+  // Define the full path for the HTML file
+  const htmlFilePath = path.join(__dirname, filePath);
 
-    // Write the HTML content to the file
-    fs.writeFile(htmlFilePath, htmlContent, (error) => {
-        if (error) {
-            console.error('Error writing to file:', error);
-        } else {
-            console.log('HTML file created successfully at:', htmlFilePath);
-        }
-    });
+  // Write the HTML content to the file
+  fs.writeFile(htmlFilePath, htmlContent, (error) => {
+    if (error) {
+      console.error("Error writing to file:", error);
+    } else {
+      console.log("HTML file created successfully at:", htmlFilePath);
+    }
+  });
 }
 
 module.exports = {
-    generatePage
+  generatePage,
 };
