@@ -1,14 +1,13 @@
 const Question = require('./Question');
 
 class TextQuestion extends Question {
-    constructor(type, title, id) {
-        super(type, title, id);
+    constructor(id, title) {
+        super(id, title);
     }
 
     generateHTML() {
-        return`<p>${this.title}</p>
-    <input type="text" id="${this.id}" />
-    `;
+        return '<p>' + this.title + '<p>,' +
+            '\n<input type="text" id="' + this.id + '"/>'
     }
 }
 

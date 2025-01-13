@@ -1,8 +1,7 @@
 class Question {
-    constructor(type, title, id) {
-        this.title = title;
-        this.type = type;
+    constructor(id, title) {
         this.id = id;
+        this.title = title;
     }
 
     generateHTML() {}
