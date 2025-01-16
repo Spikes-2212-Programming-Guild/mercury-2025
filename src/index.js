@@ -64,21 +64,26 @@ app.post('/submit', async (req, res) => {
             }
         }
     }
+    try {
+        let idArray = [];
+        let answerArray = [];
 
-    console.log(answers);
-    res.send('Thank you for submitting your answers!');
+        for (let [id, answer] of Object.entries(req.body)) {
+            idArray.push(id);
+            answerArray.push(`'${answer}'`);
+        }
 
-    let idArray = [];
-    let answerArray = [];
+        const columns = idArray.join(", ");
+        const values = answerArray.join(", ");
 
-    // Insert data
-    for ([id, answer] of Object.entries(req.body)) {
-        idArray.push(id);
-        answerArray.push(answers);
+        const insertQuery = `INSERT INTO ${tableName} (${columns}) VALUES (${values})`;
+        await db.query(insertQuery);
+
+        console.log(answers);
+        res.send('Thank you for submitting your answers!');
+    } catch (err) {
+        console.error('Error inserting data into database:', err);
     }
-
-    const insertQuery = `INSERT INTO ${tableName} (${idArray}) VALUES (${answerArray})`;
-    await db.query(insertQuery);
 });
 
 // debug
