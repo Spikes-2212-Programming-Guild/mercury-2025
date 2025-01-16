@@ -91,7 +91,6 @@ function generatePage(filePath, fileName, questions, prevFileName, nextFileName)
             });
         });
     }
-    
     ${submitScript}
 </script>
 </html>`;

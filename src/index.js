@@ -34,33 +34,30 @@ app.use(express.json());
 // Enable CORS
 app.use(cors());
 
+// create the get requests for all pages
 pages.forEach((page) => {
     app.get('/' + page.name, (req, res) => {
         res.sendFile(path.join(__dirname, dirname + page.name + '.html'));
     });
 });
 
+// check if column exist in the table
 const columnQuery = `SELECT column_name FROM information_schema.columns
                      WHERE table_name = $1 AND column_name = $2`;
 
+// main answer submit to the server
 app.post('/submit', async (req, res) => {
     const answers = [];
-
     for (const [id, answer] of Object.entries(req.body)) {
         if (answer) {
             answers.push({ [id]: answer });
             try {
                 // Dynamically check if the column exists
                 const columnResult = await db.query(columnQuery, [tableName, id]);
-
                 // Column doesn't exist, so add it
                 if (columnResult.rows.length === 0) {
                     await db.query(`ALTER TABLE ${tableName} ADD COLUMN ${id} TEXT`);
                 }
-
-                // Insert data
-                const insertQuery = `INSERT INTO ${tableName} (${id}) VALUES ($1)`;
-                await db.query(insertQuery, [answer]);
             } catch (err) {
                 console.error('Error inserting data into database:', err);
                 return res.status(500).send('Error saving data');
@@ -70,8 +67,21 @@ app.post('/submit', async (req, res) => {
 
     console.log(answers);
     res.send('Thank you for submitting your answers!');
+
+    let idArray = [];
+    let answerArray = [];
+
+    // Insert data
+    for ([id, answer] of Object.entries(req.body)) {
+        idArray.push(id);
+        answerArray.push(answers);
+    }
+
+    const insertQuery = `INSERT INTO ${tableName} (${idArray}) VALUES (${answerArray})`;
+    await db.query(insertQuery);
 });
 
+// debug
 app.get("/data", async (req, res) => {
     try {
         const result = await db.query(`SELECT * FROM ${tableName}`);
