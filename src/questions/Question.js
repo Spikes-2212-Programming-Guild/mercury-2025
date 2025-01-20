@@ -5,6 +5,8 @@ class Question {
     }
 
     generateHTML() {}
+
+    isValid() {}
 }
 
 module.exports = Question;

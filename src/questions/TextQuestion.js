@@ -7,7 +7,11 @@ class TextQuestion extends Question {
 
     generateHTML() {
         return '<p>' + this.title + '<p>' +
-            '\n<input type="text" id="' + this.id + '"/>'
+            '\n<input type="text" class="question" id="' + this.id + '"/>'
+    }
+
+    isValid(text) {
+        return text.length > 0;
     }
 }
 

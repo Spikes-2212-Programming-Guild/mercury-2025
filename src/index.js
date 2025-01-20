@@ -12,16 +12,29 @@ const TextQuestion = require("./questions/TextQuestion");
 
 const pages = [
     {
-        name: "test1",
+        name: "prePlay",
         questions: [
-            new TextQuestion("username", "Enter text"),
-            new TextQuestion("color", "Enter your favorite color"),
+            new TextQuestion("name", "Enter your name"),
+            new TextQuestion("teamcolor", "Enter your team's alliance color"),
+            new TextQuestion("teamnumber", "Enter your team's number"),
         ]
     },
     {
-        name: "test2",
+        name: "autonomous",
         questions: [
-            new TextQuestion("age", "Enter age"),
+            new TextQuestion("wentout", "Enter age"),
+        ]
+    },
+    {
+        name: "teleoperated",
+        questions: [
+            new TextQuestion("hello", "Enter age"),
+        ]
+    },
+    {
+        name: "endGame",
+        questions: [
+            new TextQuestion("goodbye", "Enter age"),
         ]
     }
 ];
@@ -43,9 +56,8 @@ pages.forEach((page) => {
 
 // check if column exist in the table
 const columnQuery = `SELECT column_name FROM information_schema.columns
-                     WHERE table_name = $1 AND column_name = $2`;
+                    WHERE table_name = $1 AND column_name = $2`;
 
-// main answer submit to the server
 app.post('/submit', async (req, res) => {
     const answers = [];
     for (const [id, answer] of Object.entries(req.body)) {
@@ -54,16 +66,18 @@ app.post('/submit', async (req, res) => {
             try {
                 // Dynamically check if the column exists
                 const columnResult = await db.query(columnQuery, [tableName, id]);
+
                 // Column doesn't exist, so add it
                 if (columnResult.rows.length === 0) {
                     await db.query(`ALTER TABLE ${tableName} ADD COLUMN ${id} TEXT`);
                 }
             } catch (err) {
-                console.error('Error inserting data into database:', err);
+                console.error('Error creating new columns to database:', err);
                 return res.status(500).send('Error saving data');
             }
         }
     }
+
     try {
         let idArray = [];
         let answerArray = [];
@@ -82,7 +96,8 @@ app.post('/submit', async (req, res) => {
         console.log(answers);
         res.send('Thank you for submitting your answers!');
     } catch (err) {
-        console.error('Error inserting data into database:', err);
+        console.error('Error saving data', err);
+        return res.status(500).send('Error saving data');
     }
 });
 

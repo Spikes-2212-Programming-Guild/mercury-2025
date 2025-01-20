@@ -5,12 +5,11 @@ function generateAllPages(filePath, pages) {
     for (let i = 0; i < pages.length; i++) {
         let nextFileName = (i < pages.length - 1) ? pages[i + 1].name : null;
         let prevFileName = (i > 0) ? pages[i - 1].name : null;
-
-        generatePage(filePath, pages[i].name, pages[i].questions, prevFileName, nextFileName);
+        generatePage(filePath, pages[i].name, pages[i].questions, prevFileName, nextFileName, pages);
     }
 }
 
-function generatePage(filePath, fileName, questions, prevFileName, nextFileName) {
+function generatePage(filePath, fileName, questions, prevFileName, nextFileName, pages) {
     let questionButtons = questions.map(question => question.generateHTML()).join('\n');
     let submitButton = '';
     let submitScript = '';
@@ -27,6 +26,10 @@ function generatePage(filePath, fileName, questions, prevFileName, nextFileName)
         console.log(formData);
 
         try {
+            Object.keys(localStorage).forEach(key => {
+                localStorage.removeItem(key);
+            });
+
             const response = await fetch("http://localhost:3000/submit", {
                 method: "POST",
                 headers: {
@@ -34,9 +37,10 @@ function generatePage(filePath, fileName, questions, prevFileName, nextFileName)
                 },
                 body: JSON.stringify(formData),
             });
-
+            
             if (response.ok) {
                 alert("Form data inserted successfully");
+                window.location.href='${pages[0].name}'
             } else {
                 alert("Error inserting form data");
             }
@@ -57,6 +61,15 @@ function generatePage(filePath, fileName, questions, prevFileName, nextFileName)
         navButtons += `<button onClick="window.location.href='${nextFileName}'">Next</button>`;
     }
 
+    // Create the navigation links with bold for the current page
+    let navLinks = pages.map((page, index) => {
+        if (page.name === fileName) {
+            return `<strong>${page.name}</strong>`; // Bold the current page
+        } else {
+            return `<a href="${page.name}">${page.name}</a>`;
+        }
+    }).join('  ');
+
     const htmlContent =
         `<!DOCTYPE html>
 <html lang="en">
@@ -72,12 +85,18 @@ function generatePage(filePath, fileName, questions, prevFileName, nextFileName)
     
     ${submitButton}
     
-    ${navButtons}
+    <div>
+    ${navButtons}    
+    </div>
+
+    <footer>
+        ${navLinks}
+    </footer>
 </body>
 <script>
     window.onload = () => { // make sure the file loads before the code runs
         // Get all question elements
-        const questions = [${questions.map(q => `document.getElementById('${q.id}')`).join(', ')}];
+        const questions = Array.from(document.getElementsByClassName('question'));
     
         // Set initial values from localStorage and add input event listeners
         questions.forEach(q => {
