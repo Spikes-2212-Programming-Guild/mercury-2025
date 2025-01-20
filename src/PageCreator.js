@@ -80,15 +80,12 @@ function generatePage(filePath, fileName, questions, prevFileName, nextFileName,
 </head>
 <body>
     <h1>${fileName}</h1>
-    
-    ${questionButtons}
-    
-    ${submitButton}
-    
+        ${questionButtons}
+        ${submitButton}    
     <div>
-    ${navButtons}    
+        ${navButtons}    
     </div>
-
+    
     <footer>
         ${navLinks}
     </footer>

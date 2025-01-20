@@ -15,20 +15,8 @@ const pages = [
         name: "prePlay",
         questions: [
             new TextQuestion("name", "Enter your name"),
-            new TextQuestion("teamcolor", "Enter your team's alliance color"),
-            new TextQuestion("teamnumber", "Enter your team's number"),
-        ]
-    },
-    {
-        name: "autonomous",
-        questions: [
-            new TextQuestion("wentout", "Enter age"),
-        ]
-    },
-    {
-        name: "teleoperated",
-        questions: [
-            new TextQuestion("hello", "Enter age"),
+            new TextQuestion("teamColor", "Enter your team's alliance color"),
+            new TextQuestion("teamNumber", "Enter your team's number"),
         ]
     },
     {
@@ -53,6 +41,10 @@ pages.forEach((page) => {
         res.sendFile(path.join(__dirname, dirname + page.name + '.html'));
     });
 });
+
+app.get('/', (req, res) => {
+    res.sendFile(path.join(__dirname, dirname + pages[0].name + '.html'));
+})
 
 // check if column exist in the table
 const columnQuery = `SELECT column_name FROM information_schema.columns
