@@ -13,7 +13,6 @@ function generatePage(filePath, fileName, questions, prevFileName, nextFileName,
     let questionButtons = questions.map(question => question.generateHTML()).join('\n');
     let submitButton = '';
     let submitScript = '';
-    let validationScript = '';
 
     // Add submit button and script on the last page
     if (!nextFileName) {
@@ -104,6 +103,9 @@ function generatePage(filePath, fileName, questions, prevFileName, nextFileName,
             }
     
             q.addEventListener('input', (event) => {
+                if (!event.target.value) event.target.style.outlineColor = 'red';
+                else event.target.style.outlineColor = 'green'; // Reset outline if the field is filled
+                
                 localStorage.setItem(event.target.id, event.target.value);
             });
         });

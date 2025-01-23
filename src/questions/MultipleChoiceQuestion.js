@@ -8,12 +8,12 @@ class MultipleChoiceQuestion extends Question {
 
     generateHTML() {
         let html = "\n\t<label for="+this.id+"> "+this.title+"</label>\n";
-        html += "<select id="+this.id+" class='question' >";
-        html += "<option value=''>Choose an Option</option>\n";
+        html += "\t<select id="+this.id+" class='question' style='outline: 2px solid black'>";
+        html += "\t<option value=''>Choose</option>\n";
         for (let choice of this.choices) {
-            html += "<option value='" + choice + "'>" + choice + "</option>\n";
+            html += "\t<option value='" + choice + "'>" + choice + "</option>\n";
         }
-        html += "</select>";
+        html += "\t</select>";
         return html;
     }
 }

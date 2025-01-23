@@ -7,7 +7,7 @@ class TextQuestion extends Question {
 
     generateHTML() {
         return '\n\t<label>' + this.title + '</label>' +
-            '\n\t<input type="text" class="question" id="' + this.id + '"/>'
+            '\n\t<input type="text" class="question" id="' + this.id + '" style="outline: 2px solid black"/>'
     }
 }
 module.exports = TextQuestion;

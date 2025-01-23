@@ -16,15 +16,10 @@ const pages = [
         name: "prePlay",
         questions: [
             new TextQuestion("name", "Enter your name"),
-            new TextQuestion("teamColor", "Enter your team's alliance color"),
-        ]
-    },
-    {
-        name: "endGame",
-        questions: [
+            new MultipleChoiceQuestion("teamColor", "Enter your team's alliance color", ["red", "blue"]),
             new MultipleChoiceQuestion("TeamNumber", "Enter your team's number", [2212, 1657, 1690, 3739]),
         ]
-    }
+    },
 ];
 
 pageCreator.generateAllPages(dirname, pages);
