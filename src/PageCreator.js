@@ -13,6 +13,7 @@ function generatePage(filePath, fileName, questions, prevFileName, nextFileName,
     let questionButtons = questions.map(question => question.generateHTML()).join('\n');
     let submitButton = '';
     let submitScript = '';
+    let validationScript = '';
 
     // Add submit button and script on the last page
     if (!nextFileName) {

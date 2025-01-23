@@ -9,6 +9,7 @@ const dirname = 'pages/';
 
 const pageCreator = require("./PageCreator");
 const TextQuestion = require("./questions/TextQuestion");
+const MultipleChoiceQuestion = require("./questions/MultipleChoiceQuestion");
 
 const pages = [
     {
@@ -16,13 +17,12 @@ const pages = [
         questions: [
             new TextQuestion("name", "Enter your name"),
             new TextQuestion("teamColor", "Enter your team's alliance color"),
-            new TextQuestion("teamNumber", "Enter your team's number"),
         ]
     },
     {
         name: "endGame",
         questions: [
-            new TextQuestion("goodbye", "Enter age"),
+            new MultipleChoiceQuestion("TeamNumber", "Enter your team's number", [2212, 1657, 1690, 3739]),
         ]
     }
 ];
