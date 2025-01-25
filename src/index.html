@@ -10,7 +10,10 @@
 
 <div id="questions"></div>
 
-<div id="relative_navigation"></div>
+<div id="relative_navigation">
+    <button id="prev_button">Previous</button>
+    <button id="next_button">Next</button>
+</div>
 
 <div id="bottom_absolute_navigation"></div>
 
@@ -101,6 +104,7 @@
             input.setAttribute('id', this.id);
             input.style.outline = '2px solid black';
             docTitle.appendChild(input);
+            return docTitle;
         }
     }
 
@@ -118,7 +122,13 @@
                 "questions": [
                     {"id": "team_number", "title": "Enter team number", choices: [2212, 1690, 5554], "type": MultipleChoiceQuestion.type},
                 ]
-            }
+            },
+            {
+                "name": "End-Game",
+                "questions": [
+                    {"id": "score", "title": "Enter score", "type": NumberQuestion.type},
+                ]
+            },
         ]
     }
 
@@ -154,62 +164,86 @@
         }
     }
 
-    function displayPage(pageName) {
-        for (const p of document.getElementsByClassName('page')) {
-            p.style.visibility = p.id === pageName ? 'hidden' : 'visible';
-        }
-    }
-
-    function renderAbsoluteNavigationButtons(div) {
-        for (let page of pages) {
+    function renderAbsoluteNavigationButtons(container) {
+        pages.forEach(page => {
             const button = document.createElement('button');
-            button.innerHTML = `${page.name}`;
-            button.setAttribute('id', page.name + '_navigation_button');
-            button.addEventListener('click', () => {
-                displayPage(page.name)
+            button.innerHTML = page.name;
+            button.addEventListener('click', () => displayPage(page.name));
+            container.appendChild(button);
+        });
+    }
+
+    function displayPage(pageName) {
+        for (const page of document.getElementsByClassName('page')) {
+            page.style.display = page.id === pageName ? 'block' : 'none';
+        }
+
+        currentPage = pages.find(page => page.name === pageName);
+        updateRelativeNavigationButtons();
+    }
+
+    function updateRelativeNavigationButtons() {
+        const pageIndex = pages.indexOf(currentPage);
+
+        prevButton.style.visibility = pageIndex > 0 ? 'visible' : 'hidden';
+        prevButton.onclick = pageIndex > 0 ? () => displayPage(pages[pageIndex - 1].name) : null;
+
+        nextButton.style.visibility = pageIndex + 1 < pages.length ? 'visible' : 'hidden';
+        nextButton.onclick = pageIndex + 1 < pages.length ? () => displayPage(pages[pageIndex + 1].name) : null;
+    }
+
+    function createAllQuestions() {
+        pages.forEach(page => {
+            questions[page.name] = {};
+            const pageDiv = document.createElement('fieldset');
+            pageDiv.classList.add('page');
+            pageDiv.id = page.name;
+
+            page.questions.forEach(question => {
+                const questionInstance = createQuestion(question);
+                questions[page.name][question.id] = questionInstance;
+                pageDiv.appendChild(questionInstance.getElement());
             });
-            div.appendChild(button);
-        }
-    }
 
-    function renderRelativeNavigationButtons(div) {
-
-    }
-
-    const pages = json.Pages;
-    const questions = {}
-    const questionDiv = document.getElementById('questions');
-
-    const bottomDiv = document.getElementById('top_absolute_navigation')
-    const topDiv = document.getElementById('bottom_absolute_navigation')
-
-    renderAbsoluteNavigationButtons(bottomDiv)
-    renderAbsoluteNavigationButtons(topDiv)
-
-    for (let page of pages) {
-        questions[page.name] = {};
-        const pageDiv = document.createElement('fieldset');
-        pageDiv.setAttribute('class', 'page');
-        pageDiv.setAttribute('id', page.name);
-        questionDiv.appendChild(pageDiv);
-
-        for (let question of page.questions) {
-            questions[page.name][question.id] = createQuestion(question);
-            pageDiv.appendChild(questions[page.name][question.id].getElement());
-        }
-        questionDiv.appendChild(pageDiv);
+            config.questionContainer.appendChild(pageDiv);
+        });
     }
 
     function createQuestion(question) {
         switch (question.type) {
             case TextQuestion.type:
-                return new TextQuestion(question.id, question.title)
+                return new TextQuestion(question.id, question.title);
             case NumberQuestion.type:
-                return new NumberQuestion(question.id, question.title)
+                return new NumberQuestion(question.id, question.title);
             case MultipleChoiceQuestion.type:
-                return new MultipleChoiceQuestion(question.id, question.title, question.choices)
+                return new MultipleChoiceQuestion(question.id, question.title, question.choices);
         }
     }
+
+    function initializeApp(config) {
+        createAllQuestions();
+        renderAbsoluteNavigationButtons(config.absoluteNavContainers.top);
+        renderAbsoluteNavigationButtons(config.absoluteNavContainers.bottom);
+        updateRelativeNavigationButtons();
+        displayPage(currentPage.name);
+    }
+
+    const config = {
+        questionContainer: document.getElementById('questions'),
+        absoluteNavContainers: {
+            top: document.getElementById('top_absolute_navigation'),
+            bottom: document.getElementById('bottom_absolute_navigation')
+        }
+    };
+
+    const pages = json.Pages;
+    const questions = {};
+    let currentPage = pages[0];
+
+    const prevButton = document.getElementById('prev_button');
+    const nextButton = document.getElementById('next_button');
+
+    initializeApp(config);
 
 </script>
 </html>
