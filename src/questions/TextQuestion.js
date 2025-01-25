@@ -1,16 +1,22 @@
-const Question = require('./Question');
+import { Question } from './Question';
 
-class TextQuestion extends Question {
+export class TextQuestion extends Question {
+
+    static type = 'text'
+
     constructor(id, title) {
-        super(id, title, "text");
+        super(id, title);
     }
 
-    render() {
+    getElement() {
+        const docTitle = document.createElement('label');
+        docTitle.innerHTML = this.title;
         const input = document.createElement('input');
-        input.setAttribute('type', this.type);
+        input.setAttribute('type', 'text');
         input.setAttribute('class', 'question');
         input.setAttribute('id', this.id);
         input.style.outline = '2px solid black';
+        docTitle.appendChild(input);
+        return docTitle;
     }
 }
-module.exports = TextQuestion;

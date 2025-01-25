@@ -3,6 +3,8 @@ const app = express();
 const cors = require("cors");
 const path = require("path");
 const port = 3000
+const db = require("./db.js")
+const tableName = 'games'
 
 // Middleware to parse JSON bodies
 app.use(express.json());

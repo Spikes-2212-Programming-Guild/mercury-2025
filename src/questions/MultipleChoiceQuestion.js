@@ -1,13 +1,17 @@
-const Question = require('./Question');
+import { Question } from './Question';
 
-class MultipleChoiceQuestion extends Question {
+export class MultipleChoiceQuestion extends Question {
+
+    static type = 'choices'
+
     constructor(id, title, choices) {
         super(id, title);
         this.choices = choices;
     }
 
-    render() {
-        super.render();
+    getElement() {
+        const docTitle = document.createElement('label');
+        docTitle.innerHTML = this.title;
         // Create the select element
         const select = document.createElement('select');
         select.setAttribute('id', this.id);
@@ -27,7 +31,7 @@ class MultipleChoiceQuestion extends Question {
             option.textContent = choice;
             select.appendChild(option);
         }
+        docTitle.appendChild(select);
+        return docTitle;
     }
 }
-
-module.exports = MultipleChoiceQuestion;
