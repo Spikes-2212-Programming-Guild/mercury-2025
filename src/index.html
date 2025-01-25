@@ -184,6 +184,8 @@
 
     function updateRelativeNavigationButtons() {
         const pageIndex = pages.indexOf(currentPage);
+        let nextButton = config.relativeNavigationButtons.next;
+        let prevButton = config.relativeNavigationButtons.prev;
 
         prevButton.style.visibility = pageIndex > 0 ? 'visible' : 'hidden';
         prevButton.onclick = pageIndex > 0 ? () => displayPage(pages[pageIndex - 1].name) : null;
@@ -228,20 +230,22 @@
         displayPage(currentPage.name);
     }
 
+    // global variables
     const config = {
         questionContainer: document.getElementById('questions'),
         absoluteNavContainers: {
             top: document.getElementById('top_absolute_navigation'),
             bottom: document.getElementById('bottom_absolute_navigation')
+        },
+        relativeNavigationButtons: {
+            prev: document.getElementById('prev_button'),
+            next: document.getElementById('next_button'),
         }
     };
 
     const pages = json.Pages;
     const questions = {};
     let currentPage = pages[0];
-
-    const prevButton = document.getElementById('prev_button');
-    const nextButton = document.getElementById('next_button');
 
     initializeApp(config);
 
