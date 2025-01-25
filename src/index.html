@@ -1,0 +1,215 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Mercury 2025</title>
+</head>
+<body>
+
+<div id="top_absolute_navigation"></div>
+
+<div id="questions"></div>
+
+<div id="relative_navigation"></div>
+
+<div id="bottom_absolute_navigation"></div>
+
+</body>
+
+<script>
+    class Question {
+
+        constructor(id, title) {
+            this.id = id;
+            this.title = title;
+        }
+
+        getElement() {}
+    }
+
+    class TextQuestion extends Question {
+
+        static type = 'text'
+
+        constructor(id, title) {
+            super(id, title);
+        }
+
+        getElement() {
+            const docTitle = document.createElement('label');
+            docTitle.innerHTML = this.title;
+            const input = document.createElement('input');
+            input.setAttribute('type', 'text');
+            input.setAttribute('class', 'question');
+            input.setAttribute('id', this.id);
+            input.style.outline = '2px solid black';
+            docTitle.appendChild(input);
+            return docTitle;
+        }
+    }
+
+    class MultipleChoiceQuestion extends Question {
+
+        static type = 'choices'
+
+        constructor(id, title, choices) {
+            super(id, title);
+            this.choices = choices;
+        }
+
+        getElement() {
+            const docTitle = document.createElement('label');
+            docTitle.innerHTML = this.title;
+            // Create the select element
+            const select = document.createElement('select');
+            select.setAttribute('id', this.id);
+            select.setAttribute('class', 'question');
+            select.style.outline = '2px solid black';
+
+            // Add the default "Choose" option
+            const defaultOption = document.createElement('option');
+            defaultOption.value = '';
+            defaultOption.textContent = 'Choose';
+            select.appendChild(defaultOption);
+
+            // Add options from this.choices
+            for (let choice of this.choices) {
+                const option = document.createElement('option');
+                option.value = choice;
+                option.textContent = choice;
+                select.appendChild(option);
+            }
+            docTitle.appendChild(select);
+            return docTitle;
+        }
+    }
+
+    class NumberQuestion extends Question {
+
+        static type = 'number'
+
+        constructor(id, title) {
+            super(id, title);
+        }
+
+        getElement() {
+            const docTitle = document.createElement('label');
+            docTitle.innerHTML = this.title;
+            const input = document.createElement('input');
+            input.setAttribute('type', 'number');
+            input.setAttribute('class', 'question');
+            input.setAttribute('id', this.id);
+            input.style.outline = '2px solid black';
+            docTitle.appendChild(input);
+        }
+    }
+
+    const json = {
+        "Pages": [
+            {
+                "name": "Pre-Game",
+                "questions": [
+                    {"id": "scouter_name", "title": "Enter scouter name", "type": TextQuestion.type},
+                    {"id": "alliance", "title": "Enter the alliance", "choices": ["blue", "red"], "type": MultipleChoiceQuestion.type}
+                ]
+            },
+            {
+                "name": "Autonomous",
+                "questions": [
+                    {"id": "team_number", "title": "Enter team number", choices: [2212, 1690, 5554], "type": MultipleChoiceQuestion.type},
+                ]
+            }
+        ]
+    }
+
+    async function submit() {
+        const formData = {};
+        Object.keys(localStorage).forEach(key => {
+            formData[key] = localStorage.getItem(key);
+        });
+        console.log(formData);
+
+        try {
+            Object.keys(localStorage).forEach(key => {
+                localStorage.removeItem(key);
+            });
+
+            const response = await fetch("http://localhost:3000/submit", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                },
+                body: JSON.stringify(formData),
+            });
+
+            if (response.ok) {
+                alert("Form data inserted successfully");
+                window.location.href='${pages[0].name}'
+            } else {
+                alert("Error inserting form data");
+            }
+        } catch (error) {
+            console.error("Error:", error);
+            alert("Error inserting form data");
+        }
+    }
+
+    function displayPage(pageName) {
+        for (const p of document.getElementsByClassName('page')) {
+            p.style.visibility = p.id === pageName ? 'hidden' : 'visible';
+        }
+    }
+
+    function renderAbsoluteNavigationButtons(div) {
+        for (let page of pages) {
+            const button = document.createElement('button');
+            button.innerHTML = `${page.name}`;
+            button.setAttribute('id', page.name + '_navigation_button');
+            button.addEventListener('click', () => {
+                displayPage(page.name)
+            });
+            div.appendChild(button);
+        }
+    }
+
+    function renderRelativeNavigationButtons(div) {
+
+    }
+
+    const pages = json.Pages;
+    const questions = {}
+    const questionDiv = document.getElementById('questions');
+
+    const bottomDiv = document.getElementById('top_absolute_navigation')
+    const topDiv = document.getElementById('bottom_absolute_navigation')
+
+    renderAbsoluteNavigationButtons(bottomDiv)
+    renderAbsoluteNavigationButtons(topDiv)
+
+    for (let page of pages) {
+        questions[page.name] = {};
+        const pageDiv = document.createElement('fieldset');
+        pageDiv.setAttribute('class', 'page');
+        pageDiv.setAttribute('id', page.name);
+        questionDiv.appendChild(pageDiv);
+
+        for (let question of page.questions) {
+            questions[page.name][question.id] = createQuestion(question);
+            pageDiv.appendChild(questions[page.name][question.id].getElement());
+        }
+        questionDiv.appendChild(pageDiv);
+    }
+
+    function createQuestion(question) {
+        switch (question.type) {
+            case TextQuestion.type:
+                return new TextQuestion(question.id, question.title)
+            case NumberQuestion.type:
+                return new NumberQuestion(question.id, question.title)
+            case MultipleChoiceQuestion.type:
+                return new MultipleChoiceQuestion(question.id, question.title, question.choices)
+        }
+    }
+
+</script>
+</html>

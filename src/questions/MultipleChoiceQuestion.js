@@ -6,15 +6,27 @@ class MultipleChoiceQuestion extends Question {
         this.choices = choices;
     }
 
-    generateHTML() {
-        let html = "\n\t<label for="+this.id+"> "+this.title+"</label>\n";
-        html += "\t<select id="+this.id+" class='question' style='outline: 2px solid black'>";
-        html += "\t<option value=''>Choose</option>\n";
+    render() {
+        super.render();
+        // Create the select element
+        const select = document.createElement('select');
+        select.setAttribute('id', this.id);
+        select.setAttribute('class', 'question');
+        select.style.outline = '2px solid black';
+
+        // Add the default "Choose" option
+        const defaultOption = document.createElement('option');
+        defaultOption.value = '';
+        defaultOption.textContent = 'Choose';
+        select.appendChild(defaultOption);
+
+        // Add options from this.choices
         for (let choice of this.choices) {
-            html += "\t<option value='" + choice + "'>" + choice + "</option>\n";
+            const option = document.createElement('option');
+            option.value = choice;
+            option.textContent = choice;
+            select.appendChild(option);
         }
-        html += "\t</select>";
-        return html;
     }
 }
 

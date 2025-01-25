@@ -1,10 +1,14 @@
 class Question {
+
     constructor(id, title) {
         this.id = id;
         this.title = title;
     }
 
-    generateHTML() {}
+    render() {
+        const docTitle = document.createElement('h1');
+        docTitle.innerHTML = this.title;
+    }
 }
 
 module.exports = Question;

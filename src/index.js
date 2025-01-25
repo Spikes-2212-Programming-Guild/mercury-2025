@@ -1,28 +1,8 @@
 const express = require("express");
 const app = express();
-const port = 3000;
-const path = require("path");
-const db = require("./db");
 const cors = require("cors");
-const tableName = 'robot';
-const dirname = 'pages/';
-
-const pageCreator = require("./PageCreator");
-const TextQuestion = require("./questions/TextQuestion");
-const MultipleChoiceQuestion = require("./questions/MultipleChoiceQuestion");
-
-const pages = [
-    {
-        name: "prePlay",
-        questions: [
-            new TextQuestion("name", "Enter your name"),
-            new MultipleChoiceQuestion("teamColor", "Enter your team's alliance color", ["red", "blue"]),
-            new MultipleChoiceQuestion("TeamNumber", "Enter your team's number", [2212, 1657, 1690, 3739]),
-        ]
-    },
-];
-
-pageCreator.generateAllPages(dirname, pages);
+const path = require("path");
+const port = 3000
 
 // Middleware to parse JSON bodies
 app.use(express.json());
@@ -30,15 +10,8 @@ app.use(express.json());
 // Enable CORS
 app.use(cors());
 
-// create the get requests for all pages
-pages.forEach((page) => {
-    app.get('/' + page.name, (req, res) => {
-        res.sendFile(path.join(__dirname, dirname + page.name + '.html'));
-    });
-});
-
 app.get('/', (req, res) => {
-    res.sendFile(path.join(__dirname, dirname + pages[0].name + '.html'));
+    res.sendFile(path.join(__dirname, 'index.html'));
 })
 
 // check if column exist in the table

@@ -1,11 +1,12 @@
 const Question = require('./Question');
 
-class TextQuestion extends Question {
+class NumberQuestion extends Question {
     constructor(id, title) {
-        super(id, title, "text");
+        super(id, title, "number");
     }
 
     render() {
+        super.render();
         const input = document.createElement('input');
         input.setAttribute('type', this.type);
         input.setAttribute('class', 'question');
@@ -13,4 +14,4 @@ class TextQuestion extends Question {
         input.style.outline = '2px solid black';
     }
 }
-module.exports = TextQuestion;
+module.exports = NumberQuestion;
