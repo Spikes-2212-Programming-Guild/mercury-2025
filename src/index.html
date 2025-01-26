@@ -146,11 +146,14 @@
 
     async function submit() {
         const formData = {};
-        Object.keys(localStorage).forEach(key => {
-            formData[key] = localStorage.getItem(key);
-        });
-        console.log(formData);
-
+        for (const question of config.questionContainer.children) {
+            let value = question.value;
+            if (!value) {
+                alert('Invalid value at ' + question.id);
+                return;
+            }
+            formData[question.id] = value
+        }
         try {
             Object.keys(localStorage).forEach(key => {
                 localStorage.removeItem(key);
@@ -174,6 +177,10 @@
             console.error("Error:", error);
             alert("Error inserting form data");
         }
+    }
+
+    function clearAllAnswers() {
+
     }
 
     function renderAbsoluteNavigationButtons(container) {
@@ -211,15 +218,12 @@
 
     function createAllQuestions() {
         pages.forEach(page => {
-            questions[page.name] = {};
             const pageDiv = document.createElement('fieldset');
             pageDiv.classList.add('page');
             pageDiv.id = page.name;
 
             page.questions.forEach(question => {
-                const questionInstance = createQuestion(question);
-                questions[page.name][question.id] = questionInstance;
-                pageDiv.appendChild(questionInstance.getElement());
+                pageDiv.appendChild(createQuestion(question).getElement());
             });
 
             config.questionContainer.appendChild(pageDiv);
@@ -259,7 +263,6 @@
     };
 
     const pages = json.Pages;
-    const questions = {};
     let currentPage = pages[0];
 
     initializeApp(config);
