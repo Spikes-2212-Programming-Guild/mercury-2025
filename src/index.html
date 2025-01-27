@@ -22,91 +22,101 @@
 
 <script>
     class Question {
-
-        constructor(id, title) {
-            this.id = id;
-            this.title = title;
+        constructor(id, title, page) {
+            this.id = id
+            this.title = title
+            this.page = page
+            this.element = null
         }
 
-        getElement() {
-            const docTitle = document.createElement('label');
-            docTitle.innerHTML = this.title;
-            return docTitle;
+        setValue(newValue) {
+            this.element.value = newValue;
+        }
+
+        get getValue() {
+            return this.element.value;
+        }
+
+        get getElement() {
+            return this.element;
+        }
+
+        get getPage() {
+            return this.page;
+        }
+
+        isValid() {
+            return !!this.getValue;
+        }
+
+        buildAndGetContainer() {
+            const container = document.createElement('div');
+            const label = document.createElement('label');
+            label.innerHTML = this.title;
+            container.appendChild(label);
+            return container;
         }
     }
 
     class TextQuestion extends Question {
+        static type = 'text';
 
-        static type = 'text'
-
-        constructor(id, title) {
-            super(id, title);
-        }
-
-        getElement() {
-            const docTitle = super.getElement();
+        buildAndGetContainer() {
+            const container = super.buildAndGetContainer();
             const input = document.createElement('input');
+            input.type = 'text';
             input.style.outline = '2px solid black';
-            input.setAttribute('type', 'text');
-            input.setAttribute('class', 'question');
-            input.setAttribute('id', this.id);
-            docTitle.appendChild(input);
-            return docTitle;
+            input.addEventListener('input', () => this.value = input.value);
+            container.appendChild(input);
+            this.element = input;
+            return container;
         }
     }
 
     class MultipleChoiceQuestion extends Question {
+        static type = 'choices';
 
-        static type = 'choices'
-
-        constructor(id, title, choices) {
-            super(id, title);
+        constructor(id, title, page, choices) {
+            super(id, title, page);
             this.choices = choices;
         }
 
-        getElement() {
-            const docTitle = super.getElement();
-            // Create the select element
+        buildAndGetContainer() {
+            const container = super.buildAndGetContainer();
             const select = document.createElement('select');
-            select.setAttribute('id', this.id);
-            select.setAttribute('class', 'question');
             select.style.outline = '2px solid black';
+            select.addEventListener('change', () => this.value = select.value);
 
-            // Add the default "Choose" option
             const defaultOption = document.createElement('option');
             defaultOption.value = '';
             defaultOption.textContent = 'Choose';
             select.appendChild(defaultOption);
 
-            // Add options from this.choices
-            for (let choice of this.choices) {
+            this.choices.forEach(choice => {
                 const option = document.createElement('option');
                 option.value = choice;
                 option.textContent = choice;
                 select.appendChild(option);
-            }
-            docTitle.appendChild(select);
-            return docTitle;
+            });
+
+            container.appendChild(select);
+            this.element = select
+            return container;
         }
     }
 
     class NumberQuestion extends Question {
+        static type = 'number';
 
-        static type = 'number'
-
-        constructor(id, title) {
-            super(id, title);
-        }
-
-        getElement() {
-            const docTitle = super.getElement();
+        buildAndGetContainer() {
+            const container = super.buildAndGetContainer();
             const input = document.createElement('input');
-            input.setAttribute('type', 'number');
-            input.setAttribute('class', 'question');
-            input.setAttribute('id', this.id);
+            input.type = 'number';
             input.style.outline = '2px solid black';
-            docTitle.appendChild(input);
-            return docTitle;
+            input.addEventListener('input', () => this.value = input.value);
+            container.appendChild(input);
+            this.element = input;
+            return container;
         }
     }
 
@@ -130,35 +140,31 @@
                     {
                         "id": "team_number",
                         "title": "Enter team number",
-                        choices: [2212, 1690, 5554],
+                        "choices": [2212, 1690, 5554],
                         "type": MultipleChoiceQuestion.type
-                    },
+                    }
                 ]
             },
             {
                 "name": "End-Game",
                 "questions": [
-                    {"id": "score", "title": "Enter score", "type": NumberQuestion.type},
+                    {"id": "score", "title": "Enter score", "type": NumberQuestion.type}
                 ]
-            },
+            }
         ]
-    }
+    };
 
     async function submit() {
         const formData = {};
-        for (const question of config.questionContainer.children) {
-            let value = question.value;
-            if (!value) {
-                alert('Invalid value at ' + question.id);
+        for (const question of questionObjects) {
+            if (!question.isValid()) {
+                alert('Invalid value at ' + question.id.replace('_', ' '));
+                displayPage(question.getPage.name)
                 return;
             }
-            formData[question.id] = value
+            formData[question.id] = question.getValue;
         }
         try {
-            Object.keys(localStorage).forEach(key => {
-                localStorage.removeItem(key);
-            });
-
             const response = await fetch("http://localhost:3000/submit", {
                 method: "POST",
                 headers: {
@@ -166,10 +172,17 @@
                 },
                 body: JSON.stringify(formData),
             });
-
             if (response.ok) {
                 alert("Form data inserted successfully");
-                displayPage(pages[0])
+
+                Object.keys(localStorage).forEach(key => {
+                    localStorage.removeItem(key);
+                });
+
+                clearAllAnswers();
+
+                displayPage(pagesConfig[0].name);
+
             } else {
                 alert("Error inserting form data");
             }
@@ -180,11 +193,13 @@
     }
 
     function clearAllAnswers() {
-
+        for (const question of questionObjects) {
+            question.setValue(null);
+        }
     }
 
     function renderAbsoluteNavigationButtons(container) {
-        pages.forEach(page => {
+        pagesConfig.forEach(page => {
             const button = document.createElement('button');
             button.innerHTML = page.name;
             button.addEventListener('click', () => displayPage(page.name));
@@ -196,48 +211,57 @@
         for (const page of document.getElementsByClassName('page')) {
             page.style.display = page.id === pageName ? 'block' : 'none';
         }
-
-        currentPage = pages.find(page => page.name === pageName);
+        currentPageConfig = pagesConfig.find(page => page.name === pageName);
         updateButtons();
     }
 
     function updateButtons() {
-        const pageIndex = pages.indexOf(currentPage);
+        const pageIndex = pagesConfig.indexOf(currentPageConfig);
         const nextButton = config.relativeNavigationButtons.next;
         const prevButton = config.relativeNavigationButtons.prev;
         const submitButton = config.submitButton;
 
-        submitButton.style.display = pageIndex === pages.length - 1 ? 'block' : 'none';
+        submitButton.style.display = pageIndex === pagesConfig.length - 1 ? 'block' : 'none';
 
         prevButton.style.visibility = pageIndex > 0 ? 'visible' : 'hidden';
-        prevButton.onclick = pageIndex > 0 ? () => displayPage(pages[pageIndex - 1].name) : null;
+        prevButton.onclick = pageIndex > 0 ? () => displayPage(pagesConfig[pageIndex - 1].name) : null;
 
-        nextButton.style.visibility = pageIndex + 1 < pages.length ? 'visible' : 'hidden';
-        nextButton.onclick = pageIndex + 1 < pages.length ? () => displayPage(pages[pageIndex + 1].name) : null;
+        nextButton.style.visibility = pageIndex + 1 < pagesConfig.length ? 'visible' : 'hidden';
+        nextButton.onclick = pageIndex + 1 < pagesConfig.length ? () => displayPage(pagesConfig[pageIndex + 1].name) : null;
     }
 
     function createAllQuestions() {
-        pages.forEach(page => {
-            const pageDiv = document.createElement('fieldset');
-            pageDiv.classList.add('page');
-            pageDiv.id = page.name;
+        pagesConfig.forEach(page => {
+            const pageContainer = document.createElement('fieldset');
+            pageContainer.classList.add('page');
+            pageContainer.id = page.name;
 
             page.questions.forEach(question => {
-                pageDiv.appendChild(createQuestion(question).getElement());
+                const questionObject = createQuestion(question, page);
+                pageContainer.appendChild(questionObject.buildAndGetContainer());
+                questionObjects.push(questionObject); // Add to the page's question list
             });
-
-            config.questionContainer.appendChild(pageDiv);
+            config.questionContainer.appendChild(pageContainer);
         });
     }
 
-    function createQuestion(question) {
+    function createQuestion(question, page) {
         switch (question.type) {
             case TextQuestion.type:
-                return new TextQuestion(question.id, question.title);
+                return new TextQuestion(question.id, question.title, page);
             case NumberQuestion.type:
-                return new NumberQuestion(question.id, question.title);
+                return new NumberQuestion(question.id, question.title, page);
             case MultipleChoiceQuestion.type:
-                return new MultipleChoiceQuestion(question.id, question.title, question.choices);
+                return new MultipleChoiceQuestion(question.id, question.title, page, question.choices);
+        }
+    }
+
+    function setupSaving() {
+        for (const question of questionObjects) {
+            question.getElement.addEventListener('change', () => {
+                localStorage.setItem(question.id, question.getValue);
+                question.getElement.style.outlineColor = question.isValid() ? 'green' : 'red';
+            });
         }
     }
 
@@ -245,7 +269,8 @@
         createAllQuestions();
         renderAbsoluteNavigationButtons(config.absoluteNavContainers.top);
         renderAbsoluteNavigationButtons(config.absoluteNavContainers.bottom);
-        displayPage(pages[0].name);
+        displayPage(pagesConfig[0].name);
+        setupSaving();
     }
 
     // global variables
@@ -262,24 +287,11 @@
         }
     };
 
-    const pages = json.Pages;
-    let currentPage = pages[0];
+    const pagesConfig = json.Pages;
+    const questionObjects = [];
+    let currentPageConfig = pagesConfig[0];
 
     initializeApp(config);
-
-    // setup local storage saving
-    for (const question of document.getElementsByClassName('question')) {
-        const storedValue = localStorage.getItem(question.id);
-        if (storedValue) {
-            question.value = storedValue;
-        }
-
-        question.addEventListener('change', () => {
-            const value = question.value;
-            localStorage.setItem(question.id, value);
-            question.style.outlineColor = value ? 'green' : 'red';
-        });
-    }
 
 </script>
 </html>
