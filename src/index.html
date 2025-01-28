@@ -173,8 +173,7 @@
                 body: JSON.stringify(formData),
             });
             if (response.ok) {
-                alert("Form data inserted successfully");
-
+                saveAnswers(true)
                 Object.keys(localStorage).forEach(key => {
                     localStorage.removeItem(key);
                 });
@@ -184,7 +183,7 @@
                 displayPage(pagesConfig[0].name);
 
             } else {
-                alert("Error inserting form data");
+                saveAnswers(false)
             }
         } catch (error) {
             console.error("Error:", error);
@@ -192,9 +191,35 @@
         }
     }
 
+    function printAllSavedAnswers() {
+        const allSubmissions = JSON.parse(localStorage.getItem('formAnswers')) || [];
+        for (const submission of allSubmissions) {
+            console.log(submission)
+        }
+    }
+
+    function saveAnswers(isSaved) {
+        const formAnswers = {};
+        formAnswers.isSaved = isSaved;
+        for (const question of questionObjects) {
+            formAnswers[question.id] = question.getValue;
+        }
+
+        // Retrieve the existing submissions from localStorage (or initialize an empty array)
+        const allSubmissions = JSON.parse(localStorage.getItem('formAnswers')) || [];
+        allSubmissions.push(formAnswers);
+
+        localStorage.setItem('formAnswers', JSON.stringify(allSubmissions));
+        if (isSaved) alert('Saved successfully');
+        else alert('Saved failed');
+
+        printAllSavedAnswers();
+    }
+
     function clearAllAnswers() {
         for (const question of questionObjects) {
             question.setValue(null);
+            question.getElement.style.outlineColor = 'black';
         }
     }
 
