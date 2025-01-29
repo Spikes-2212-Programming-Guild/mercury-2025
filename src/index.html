@@ -318,7 +318,14 @@
 
     initializeApp(config);
 
-    // setInterval(sendAllUnSavedAnswers, 5*1000)
+    // try to save all unsaved answers every 4 minutes
+    setInterval(() => {
+        try {
+            sendAllUnSavedAnswers();
+        } catch (error) {
+            console.error("Error in sendAllUnSavedAnswers:", error);
+        }
+    }, 4*60*1000);
 
 </script>
 </html>
