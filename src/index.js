@@ -24,6 +24,7 @@ app.post('/submit', async (req, res) => {
     const answers = [];
     for (const [id, answer] of Object.entries(req.body)) {
         if (answer) {
+            if (id === 'isSaved') continue;
             answers.push({ [id]: answer });
             try {
                 // Dynamically check if the column exists
@@ -45,6 +46,7 @@ app.post('/submit', async (req, res) => {
         let answerArray = [];
 
         for (let [id, answer] of Object.entries(req.body)) {
+            if (id === 'isSaved') continue;
             idArray.push(id);
             answerArray.push(`'${answer}'`);
         }

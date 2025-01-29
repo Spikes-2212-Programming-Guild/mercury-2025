@@ -134,30 +134,13 @@
                     }
                 ]
             },
-            {
-                "name": "Autonomous",
-                "questions": [
-                    {
-                        "id": "team_number",
-                        "title": "Enter team number",
-                        "choices": [2212, 1690, 5554],
-                        "type": MultipleChoiceQuestion.type
-                    }
-                ]
-            },
-            {
-                "name": "End-Game",
-                "questions": [
-                    {"id": "score", "title": "Enter score", "type": NumberQuestion.type}
-                ]
-            }
         ]
     };
 
     async function submit() {
         const formData = {};
         for (const question of questionObjects) {
-            if (!question.isValid()) {
+            if (!question.isValid) {
                 alert('Invalid value at ' + question.id.replace('_', ' '));
                 displayPage(question.getPage.name)
                 return;
@@ -174,49 +157,66 @@
             });
             if (response.ok) {
                 saveAnswers(true)
-                Object.keys(localStorage).forEach(key => {
-                    localStorage.removeItem(key);
-                });
-
-                clearAllAnswers();
-
                 displayPage(pagesConfig[0].name);
-
-            } else {
-                saveAnswers(false)
             }
         } catch (error) {
-            console.error("Error:", error);
-            alert("Error inserting form data");
+            saveAnswers(false)
         }
+        clearAllAnswers()
     }
 
-    function printAllSavedAnswers() {
-        const allSubmissions = JSON.parse(localStorage.getItem('formAnswers')) || [];
-        for (const submission of allSubmissions) {
-            console.log(submission)
-        }
-    }
-
-    function saveAnswers(isSaved) {
+    function saveAnswers(saved) {
         const formAnswers = {};
-        formAnswers.isSaved = isSaved;
         for (const question of questionObjects) {
-            formAnswers[question.id] = question.getValue;
+            formAnswers[question.id] = question.getValue; // ✅ This part is fine
         }
 
-        // Retrieve the existing submissions from localStorage (or initialize an empty array)
-        const allSubmissions = JSON.parse(localStorage.getItem('formAnswers')) || [];
+        console.log("Form Answers to Save:", formAnswers);
+
+        const allSubmissions = JSON.parse(localStorage.getItem('allSubmissions')) || [];
         allSubmissions.push(formAnswers);
+        localStorage.setItem('allSubmissions', JSON.stringify(allSubmissions));
 
-        localStorage.setItem('formAnswers', JSON.stringify(allSubmissions));
-        if (isSaved) alert('Saved successfully');
-        else alert('Saved failed');
+        if (!saved) {
+            let unsentSubmissions = JSON.parse(localStorage.getItem('unsentSubmissions')) || [];
 
-        printAllSavedAnswers();
+            console.log("Before Saving - Unsent:", unsentSubmissions);
+
+            unsentSubmissions.push(formAnswers);
+            localStorage.setItem('unsentSubmissions', JSON.stringify(unsentSubmissions));
+
+            console.log("After Saving - Unsent:", JSON.parse(localStorage.getItem('unsentSubmissions')));
+        }
+
+        alert(saved ? 'Saved successfully' : 'Saved Failed');
+
+        sendAllUnSavedAnswers()
+    }
+
+    async function sendAllUnSavedAnswers() {
+        let unsentSubmissions = JSON.parse(localStorage.getItem('unsentSubmissions')) || []
+        let newUnsentSubmissions = []; // Store only failed ones
+        for (const submission of unsentSubmissions) {
+            try {
+                const response = await fetch("http://localhost:3000/submit", {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify(submission),
+                });
+                if (response.ok) console.log('Successfully submitted ' + submission);
+            } catch (error) {
+                console.error("Submission failed:", error);
+                newUnsentSubmissions.push(submission); // Keep failed submissions
+            }
+        }
+        // ✅ Only keep failed submissions
+        localStorage.setItem('unsentSubmissions', JSON.stringify(newUnsentSubmissions));
     }
 
     function clearAllAnswers() {
+        Object.keys(localStorage).forEach(key => {
+            localStorage.removeItem(key);
+        });
         for (const question of questionObjects) {
             question.setValue(null);
             question.getElement.style.outlineColor = 'black';
@@ -317,6 +317,8 @@
     let currentPageConfig = pagesConfig[0];
 
     initializeApp(config);
+
+    // setInterval(sendAllUnSavedAnswers, 5*1000)
 
 </script>
 </html>
