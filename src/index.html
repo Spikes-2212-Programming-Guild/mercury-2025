@@ -37,8 +37,8 @@
             return this.element.value;
         }
 
-        get getElement() {
-            return this.element;
+        setOutlineColor (color) {
+            this.element.style.outlineColor = color;
         }
 
         get getPage() {
@@ -46,29 +46,43 @@
         }
 
         isValid() {
-            return !!this.getValue;
+            return this.getValue !== null && this.getValue !== '' && this.getValue !== undefined;
         }
 
-        buildAndGetContainer() {
+        clear () {
+            this.setValue('');
+            this.setOutlineColor('black');
+        }
+
+        getElement() {
             const container = document.createElement('div');
             const label = document.createElement('label');
-            label.innerHTML = this.title;
+            label.innerHTML = this.title + ' ';
             container.appendChild(label);
             return container;
+        }
+
+        addListeners () {
+            this.element.addEventListener('input', () => {
+                this.element.value = this.getValue;
+                localStorage.setItem(this.id, this.getValue);
+                this.setOutlineColor(this.isValid() ? 'green' : 'red');
+            })
         }
     }
 
     class TextQuestion extends Question {
         static type = 'text';
 
-        buildAndGetContainer() {
-            const container = super.buildAndGetContainer();
+        getElement() {
+            const container = super.getElement();
             const input = document.createElement('input');
             input.type = 'text';
             input.style.outline = '2px solid black';
-            input.addEventListener('input', () => this.value = input.value);
             container.appendChild(input);
             this.element = input;
+            this.addListeners()
+
             return container;
         }
     }
@@ -81,11 +95,10 @@
             this.choices = choices;
         }
 
-        buildAndGetContainer() {
-            const container = super.buildAndGetContainer();
+        getElement() {
+            const container = super.getElement();
             const select = document.createElement('select');
             select.style.outline = '2px solid black';
-            select.addEventListener('change', () => this.value = select.value);
 
             const defaultOption = document.createElement('option');
             defaultOption.value = '';
@@ -101,6 +114,7 @@
 
             container.appendChild(select);
             this.element = select
+            this.addListeners()
             return container;
         }
     }
@@ -108,14 +122,14 @@
     class NumberQuestion extends Question {
         static type = 'number';
 
-        buildAndGetContainer() {
-            const container = super.buildAndGetContainer();
+        getElement() {
+            const container = super.getElement();
             const input = document.createElement('input');
             input.type = 'number';
             input.style.outline = '2px solid black';
-            input.addEventListener('input', () => this.value = input.value);
             container.appendChild(input);
             this.element = input;
+            this.addListeners()
             return container;
         }
     }
@@ -134,13 +148,24 @@
                     }
                 ]
             },
+            {
+                "name": "Autonomous",
+                "questions": [
+                    {
+                        "id": "robot_state",
+                        "title": "Choose the robot's state",
+                        "choices": ["Alright", "Stunned", "Kaboom!"],
+                        "type": MultipleChoiceQuestion.type
+                    }
+                ]
+            },
         ]
     };
 
     async function submit() {
         const formData = {};
         for (const question of questionObjects) {
-            if (!question.isValid) {
+            if (!question.isValid()) {
                 alert('Invalid value at ' + question.id.replace('_', ' '));
                 displayPage(question.getPage.name)
                 return;
@@ -170,26 +195,20 @@
         for (const question of questionObjects) {
             formAnswers[question.id] = question.getValue; // ✅ This part is fine
         }
-
-        console.log("Form Answers to Save:", formAnswers);
-
+        console.log("Answers to Save:", formAnswers);
         const allSubmissions = JSON.parse(localStorage.getItem('allSubmissions')) || [];
         allSubmissions.push(formAnswers);
         localStorage.setItem('allSubmissions', JSON.stringify(allSubmissions));
 
         if (!saved) {
             let unsentSubmissions = JSON.parse(localStorage.getItem('unsentSubmissions')) || [];
-
             console.log("Before Saving - Unsent:", unsentSubmissions);
 
             unsentSubmissions.push(formAnswers);
             localStorage.setItem('unsentSubmissions', JSON.stringify(unsentSubmissions));
-
             console.log("After Saving - Unsent:", JSON.parse(localStorage.getItem('unsentSubmissions')));
         }
-
         alert(saved ? 'Saved successfully' : 'Saved Failed');
-
         sendAllUnSavedAnswers()
     }
 
@@ -218,8 +237,7 @@
             localStorage.removeItem(key);
         });
         for (const question of questionObjects) {
-            question.setValue(null);
-            question.getElement.style.outlineColor = 'black';
+            question.clear();
         }
     }
 
@@ -263,7 +281,7 @@
 
             page.questions.forEach(question => {
                 const questionObject = createQuestion(question, page);
-                pageContainer.appendChild(questionObject.buildAndGetContainer());
+                pageContainer.appendChild(questionObject.getElement());
                 questionObjects.push(questionObject); // Add to the page's question list
             });
             config.questionContainer.appendChild(pageContainer);
@@ -281,21 +299,11 @@
         }
     }
 
-    function setupSaving() {
-        for (const question of questionObjects) {
-            question.getElement.addEventListener('change', () => {
-                localStorage.setItem(question.id, question.getValue);
-                question.getElement.style.outlineColor = question.isValid() ? 'green' : 'red';
-            });
-        }
-    }
-
     function initializeApp(config) {
         createAllQuestions();
         renderAbsoluteNavigationButtons(config.absoluteNavContainers.top);
         renderAbsoluteNavigationButtons(config.absoluteNavContainers.bottom);
         displayPage(pagesConfig[0].name);
-        setupSaving();
     }
 
     // global variables
