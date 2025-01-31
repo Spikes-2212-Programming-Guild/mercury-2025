@@ -6,19 +6,123 @@
 </head>
 <body>
 
-<div id="top_absolute_navigation"></div>
+<div id="absolute_navigation_container"></div>
 
-<div id="questions"></div>
+<h1 id="title">Mercury 2025</h1>
 
-<button id="submit_button" style="display: none" onclick="submit()">Submit</button>
+<div id="pages_container"></div>
 
-<div id="relative_navigation">
-    <button id="prev_button">Previous</button>
-    <button id="next_button">Next</button>
+<div id="relative_navigation_container">
+    <button id="prev_button" class="relative_navigation">< Previous</button>
+    <button id="submit_button" onclick="submit()">Submit</button>
+    <button id="next_button" class="relative_navigation">Next></button>
 </div>
 
-<div id="bottom_absolute_navigation"></div>
 </body>
+
+<style>
+
+    * {
+        background-color: #282c34;
+        color: white;
+        font-size: medium;
+        border: blueviolet;
+        text-align: center;
+        font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
+        'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
+        sans-serif;
+    }
+
+    .question {
+        margin: 1%;
+    }
+
+    .question input, .question select {
+        outline: white 1px solid;
+        border-radius: 5px;
+    }
+
+    .question label {
+        margin-right: 2%;
+        font-weight: bold;
+        font-size: large;
+    }
+
+    .absolute_navigation {
+        padding: 1%;
+        width: 33.33vw;
+        background-color: #0056b3;
+    }
+
+    #absolute_navigation_container {
+        position: fixed;
+        top: 0;
+        left: 50%;
+        transform: translateX(-50%);
+        display: flex;
+    }
+
+    .relative_navigation {
+        padding: 1%;
+        width: 33.33vw;
+    }
+
+    #submit_button {
+        background-color: #0056b3;
+        border-radius: 20px;
+        padding: 12px;
+        margin: 10px;
+    }
+
+    #title {
+        font-size: xx-large;
+        margin-top: 4%;
+        margin-bottom: 0;
+    }
+
+    #relative_navigation_container {
+        position: fixed;
+        bottom: 0;
+        left: 50%;
+        transform: translateX(-50%);
+        display: flex;
+    }
+
+    .absolute_navigation:hover {
+        background-color: #034790;
+    }
+
+    #submit_button:hover {
+        background-color: #034790;
+    }
+
+    .relative_navigation:hover {
+        background-color: #5a6268;
+    }
+
+    .relative_navigation:disabled {
+        background-color: #5a6268;
+        cursor: not-allowed;
+    }
+
+    @media (max-width: 800px) {
+        .absolute_navigation, .relative_navigation {
+            width: 100% !important;
+            padding: 100% !important;
+        }
+
+        #submit_button {
+            width: 90% !important;
+            background-color: black !important;
+        }
+
+        #title {
+            font-size: larger !important;
+        }
+    }
+
+
+</style>
 
 <script>
     class Question {
@@ -51,20 +155,20 @@
 
         clear () {
             this.setValue('');
-            this.setOutlineColor('black');
+            this.setOutlineColor('white');
         }
 
         getElement() {
-            const container = document.createElement('div');
+            const container = document.createElement('fieldset');
+            container.classList.add("question");
             const label = document.createElement('label');
-            label.innerHTML = this.title + ' ';
+            label.innerHTML = this.title;
             container.appendChild(label);
             return container;
         }
 
         addListeners () {
             this.element.addEventListener('input', () => {
-                this.element.value = this.getValue;
                 localStorage.setItem(this.id, this.getValue);
                 this.setOutlineColor(this.isValid() ? 'green' : 'red');
             })
@@ -78,11 +182,9 @@
             const container = super.getElement();
             const input = document.createElement('input');
             input.type = 'text';
-            input.style.outline = '2px solid black';
             container.appendChild(input);
             this.element = input;
             this.addListeners()
-
             return container;
         }
     }
@@ -98,7 +200,6 @@
         getElement() {
             const container = super.getElement();
             const select = document.createElement('select');
-            select.style.outline = '2px solid black';
 
             const defaultOption = document.createElement('option');
             defaultOption.value = '';
@@ -126,41 +227,12 @@
             const container = super.getElement();
             const input = document.createElement('input');
             input.type = 'number';
-            input.style.outline = '2px solid black';
             container.appendChild(input);
             this.element = input;
             this.addListeners()
             return container;
         }
     }
-
-    const json = {
-        "Pages": [
-            {
-                "name": "Pre-Game",
-                "questions": [
-                    {"id": "scouter_name", "title": "Enter scouter name", "type": TextQuestion.type},
-                    {
-                        "id": "alliance",
-                        "title": "Enter the alliance",
-                        "choices": ["blue", "red"],
-                        "type": MultipleChoiceQuestion.type
-                    }
-                ]
-            },
-            {
-                "name": "Autonomous",
-                "questions": [
-                    {
-                        "id": "robot_state",
-                        "title": "Choose the robot's state",
-                        "choices": ["Alright", "Stunned", "Kaboom!"],
-                        "type": MultipleChoiceQuestion.type
-                    }
-                ]
-            },
-        ]
-    };
 
     async function submit() {
         const formData = {};
@@ -181,21 +253,18 @@
                 body: JSON.stringify(formData),
             });
             if (response.ok) {
-                saveAnswers(true)
+                saveAnswers(true, formData)
                 displayPage(pagesConfig[0].name);
             }
         } catch (error) {
-            saveAnswers(false)
+            saveAnswers(false, formData)
         }
         clearAllAnswers()
     }
 
-    function saveAnswers(saved) {
-        const formAnswers = {};
-        for (const question of questionObjects) {
-            formAnswers[question.id] = question.getValue; // ✅ This part is fine
-        }
+    function saveAnswers(saved, formAnswers) {
         console.log("Answers to Save:", formAnswers);
+
         const allSubmissions = JSON.parse(localStorage.getItem('allSubmissions')) || [];
         allSubmissions.push(formAnswers);
         localStorage.setItem('allSubmissions', JSON.stringify(allSubmissions));
@@ -225,7 +294,7 @@
                 if (response.ok) console.log('Successfully submitted ' + submission);
             } catch (error) {
                 console.error("Submission failed:", error);
-                newUnsentSubmissions.push(submission); // Keep failed submissions
+                newUnsentSubmissions.push(submission);
             }
         }
         // ✅ Only keep failed submissions
@@ -245,6 +314,7 @@
         pagesConfig.forEach(page => {
             const button = document.createElement('button');
             button.innerHTML = page.name;
+            button.classList.add('absolute_navigation');
             button.addEventListener('click', () => displayPage(page.name));
             container.appendChild(button);
         });
@@ -254,22 +324,22 @@
         for (const page of document.getElementsByClassName('page')) {
             page.style.display = page.id === pageName ? 'block' : 'none';
         }
-        currentPageConfig = pagesConfig.find(page => page.name === pageName);
-        updateButtons();
+        updateButtons(pageName);
+        config.titleLabel.innerHTML = pageName;
     }
 
-    function updateButtons() {
+    function updateButtons(pageName) {
+        let currentPageConfig = pagesConfig.find(page => page.name === pageName);
         const pageIndex = pagesConfig.indexOf(currentPageConfig);
         const nextButton = config.relativeNavigationButtons.next;
         const prevButton = config.relativeNavigationButtons.prev;
-        const submitButton = config.submitButton;
 
-        submitButton.style.display = pageIndex === pagesConfig.length - 1 ? 'block' : 'none';
-
-        prevButton.style.visibility = pageIndex > 0 ? 'visible' : 'hidden';
+        prevButton.style.disabeled = pageIndex > 0 ? 'true' : 'false';
+        prevButton.style.color = pageIndex > 0 ? 'white' : 'gray';
         prevButton.onclick = pageIndex > 0 ? () => displayPage(pagesConfig[pageIndex - 1].name) : null;
 
-        nextButton.style.visibility = pageIndex + 1 < pagesConfig.length ? 'visible' : 'hidden';
+        nextButton.style.color = pageIndex + 1 < pagesConfig.length ? 'white' : 'gray';
+        nextButton.style.disabeled = pageIndex + 1 < pagesConfig.length ? 'true' : 'false';
         nextButton.onclick = pageIndex + 1 < pagesConfig.length ? () => displayPage(pagesConfig[pageIndex + 1].name) : null;
     }
 
@@ -284,7 +354,7 @@
                 pageContainer.appendChild(questionObject.getElement());
                 questionObjects.push(questionObject); // Add to the page's question list
             });
-            config.questionContainer.appendChild(pageContainer);
+            config.pagesContainer.appendChild(pageContainer);
         });
     }
 
@@ -301,19 +371,48 @@
 
     function initializeApp(config) {
         createAllQuestions();
-        renderAbsoluteNavigationButtons(config.absoluteNavContainers.top);
-        renderAbsoluteNavigationButtons(config.absoluteNavContainers.bottom);
+        renderAbsoluteNavigationButtons(config.absoluteNavContainer);
         displayPage(pagesConfig[0].name);
     }
 
+    const json = {
+        "Pages": [
+            {
+                "name": "Pre-Game",
+                "questions": [
+                    {"id": "scouter_name", "title": "Enter scouter name", "type": TextQuestion.type},
+                    {"id": "robot_name", "title": "Enter robot name", "type": TextQuestion.type},
+                    {"id": "robot_name1", "title": "Enter robot name", "type": TextQuestion.type},
+                    {"id": "robot_name2", "title": "Enter robot name", "type": TextQuestion.type},
+                    {"id": "robot_name3", "title": "Enter robot name", "type": TextQuestion.type},
+                    {"id": "robot_name4", "title": "Enter robot name", "type": TextQuestion.type},
+                    {"id": "robot_name5", "title": "Enter robot name", "type": TextQuestion.type},
+                ]
+            },
+            {
+                "name": "Autonomous",
+                "questions": [
+                    {"id": "robot_state", "title": "Choose the robot's state", "choices": ["Alright", "Stunned", "Kaboom!"],
+                        "type": MultipleChoiceQuestion.type
+                    }
+                ]
+            },
+            {
+                "name": "End-Game",
+                "questions": [
+                    {"id": "alliance", "title": "Enter the alliance", "choices": ["blue", "red"],
+                        "type": MultipleChoiceQuestion.type
+                    }
+                ]
+            },
+        ]
+    };
+
     // global variables
     const config = {
-        questionContainer: document.getElementById('questions'),
-        submitButton: document.getElementById('submit_button'),
-        absoluteNavContainers: {
-            top: document.getElementById('top_absolute_navigation'),
-            bottom: document.getElementById('bottom_absolute_navigation')
-        },
+        pagesContainer: document.getElementById('pages_container'),
+        titleLabel: document.getElementById('title'),
+        absoluteNavContainer: document.getElementById('absolute_navigation_container'),
         relativeNavigationButtons: {
             prev: document.getElementById('prev_button'),
             next: document.getElementById('next_button'),
@@ -322,14 +421,12 @@
 
     const pagesConfig = json.Pages;
     const questionObjects = [];
-    let currentPageConfig = pagesConfig[0];
 
     initializeApp(config);
 
     // try to save all unsaved answers every 4 minutes
     setInterval(() => {
-        try {
-            sendAllUnSavedAnswers();
+        try { sendAllUnSavedAnswers();
         } catch (error) {
             console.error("Error in sendAllUnSavedAnswers:", error);
         }

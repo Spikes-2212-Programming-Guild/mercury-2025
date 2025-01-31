@@ -24,7 +24,6 @@ app.post('/submit', async (req, res) => {
     const answers = [];
     for (const [id, answer] of Object.entries(req.body)) {
         if (answer) {
-            if (id === 'isSaved') continue;
             answers.push({ [id]: answer });
             try {
                 // Dynamically check if the column exists
@@ -46,16 +45,15 @@ app.post('/submit', async (req, res) => {
         let answerArray = [];
 
         for (let [id, answer] of Object.entries(req.body)) {
-            if (id === 'isSaved') continue;
             idArray.push(id);
             answerArray.push(`'${answer}'`);
         }
 
         const columns = idArray.join(", ");
-        const values = answerArray.join(", ");
+        const values_placeholder = answerArray.map(item => `%s`).join(',');
 
-        const insertQuery = `INSERT INTO ${tableName} (${columns}) VALUES (${values})`;
-        await db.query(insertQuery);
+        const insertQuery = `INSERT INTO ${tableName} (${columns}) VALUES (${values_placeholder})`;
+        await db.query(insertQuery, answerArray);
 
         console.log(answers);
         res.send('Thank you for submitting your answers!');
