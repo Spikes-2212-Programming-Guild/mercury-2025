@@ -342,7 +342,6 @@
         nextButton.style.disabeled = pageIndex + 1 < pagesConfig.length ? 'true' : 'false';
         nextButton.onclick = pageIndex + 1 < pagesConfig.length ? () => displayPage(pagesConfig[pageIndex + 1].name) : null;
 
-        console.log("e")
         for (const pageButton of absoluteNavigationElements) {
             pageButton.style.fontWeight = pageButton.innerHTML === pageName ? 'bold' : 'normal'
         }
@@ -357,6 +356,11 @@
             page.questions.forEach(question => {
                 const questionObject = createQuestion(question, page);
                 pageContainer.appendChild(questionObject.getElement());
+
+                // sets the saved data
+                const savedValue = localStorage.getItem(question.id);
+                if (savedValue) questionObject.setValue(savedValue);
+
                 questionObjects.push(questionObject); // Add to the page's question list
             });
             config.pagesContainer.appendChild(pageContainer);
