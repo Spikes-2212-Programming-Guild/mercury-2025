@@ -21,63 +21,68 @@
 </body>
 
 <style>
-
+    /* Global styles */
     * {
         background-color: #282c34;
         color: white;
-        font-size: medium;
-        border: blueviolet;
+        font-size: 1.25em;
+        border: none;
         text-align: center;
         font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
         'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
         sans-serif;
     }
 
+    /* Centering the main content */
+    .page {
+        display: flex;
+        justify-content: center;
+        align-content: center;
+        flex-direction: column;
+        gap: 1em;
+        height: 65vh;
+        margin-bottom: 10vh;
+    }
+
+    /* Form styling */
     .question {
         margin: 1%;
     }
 
     .question input, .question select {
-        outline: white 1px solid;
+        outline: white 3px solid;
         border-radius: 5px;
     }
 
     .question label {
         margin-right: 2%;
         font-weight: bold;
-        font-size: large;
+        /*font-size: large;*/
     }
 
+    /* Navigation bars */
     .absolute_navigation {
         padding: 1%;
         width: 33.33vw;
         background-color: #0056b3;
+        height: 8.5vh;
     }
 
     #absolute_navigation_container {
         position: fixed;
         top: 0;
         left: 50%;
+        flex-direction: row;
         transform: translateX(-50%);
         display: flex;
+        justify-content: center;
+        align-items: flex-start;
     }
 
     .relative_navigation {
         padding: 1%;
         width: 33.33vw;
-    }
-
-    #submit_button {
-        background-color: #0056b3;
-        border-radius: 20px;
-        padding: 12px;
-        margin: 10px;
-    }
-
-    #title {
-        font-size: xx-large;
-        margin-top: 4%;
-        margin-bottom: 0;
+        height: 8.5vh;
     }
 
     #relative_navigation_container {
@@ -88,10 +93,24 @@
         display: flex;
     }
 
-    .absolute_navigation:hover {
-        background-color: #034790;
+    /* Buttons */
+    #submit_button {
+        background-color: #0056b3;
+        border-radius: 30px;
+        padding: 12px;
+        margin: 10px;
+        width: 25vw;
     }
 
+    /* Title */
+    #title {
+        margin-top: 20vw;
+        margin-bottom: 0;
+        font-size: 2.5em;
+    }
+
+    /* Hover Effects */
+    .absolute_navigation:hover,
     #submit_button:hover {
         background-color: #034790;
     }
@@ -104,23 +123,6 @@
         background-color: #5a6268;
         cursor: not-allowed;
     }
-
-    @media (max-width: 800px) {
-        .absolute_navigation, .relative_navigation {
-            width: 100% !important;
-            padding: 100% !important;
-        }
-
-        #submit_button {
-            width: 90% !important;
-            background-color: black !important;
-        }
-
-        #title {
-            font-size: larger !important;
-        }
-    }
-
 
 </style>
 
