@@ -51,7 +51,7 @@
 
     .question input, .question select {
         outline: white 3px solid;
-        border-radius: 5px;
+        border-radius: 10px;
     }
 
     .question label {
@@ -80,9 +80,10 @@
     }
 
     .relative_navigation {
-        padding: 1%;
-        width: 33.33vw;
-        height: 8.5vh;
+        width: 30vw;
+        height: 6.5vh;
+        margin: 2.5%;
+        border-radius: 20px;
     }
 
     #relative_navigation_container {
@@ -96,9 +97,9 @@
     /* Buttons */
     #submit_button {
         background-color: #0056b3;
-        border-radius: 30px;
-        padding: 12px;
-        margin: 10px;
+        border-radius: 75px;
+        padding: 2vw;
+        margin: 3vw;
         width: 25vw;
     }
 
@@ -319,6 +320,7 @@
             button.classList.add('absolute_navigation');
             button.addEventListener('click', () => displayPage(page.name));
             container.appendChild(button);
+            absoluteNavigationElements.push(button)
         });
     }
 
@@ -343,6 +345,11 @@
         nextButton.style.color = pageIndex + 1 < pagesConfig.length ? 'white' : 'gray';
         nextButton.style.disabeled = pageIndex + 1 < pagesConfig.length ? 'true' : 'false';
         nextButton.onclick = pageIndex + 1 < pagesConfig.length ? () => displayPage(pagesConfig[pageIndex + 1].name) : null;
+
+        console.log("e")
+        for (const pageButton of absoluteNavigationElements) {
+            pageButton.style.fontWeight = pageButton.innerHTML === pageName ? 'bold' : 'normal'
+        }
     }
 
     function createAllQuestions() {
@@ -423,6 +430,7 @@
 
     const pagesConfig = json.Pages;
     const questionObjects = [];
+    const absoluteNavigationElements = []
 
     initializeApp(config);
 
