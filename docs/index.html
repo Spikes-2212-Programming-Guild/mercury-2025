@@ -43,7 +43,7 @@
     }
 
     #pages_container {
-        margin-bottom: 30vh;
+        margin-bottom: 40vh;
     }
 
     .question {
@@ -276,7 +276,7 @@
             localStorage.setItem('unsentSubmissions', JSON.stringify(unsentSubmissions));
             console.log("After Saving - Unsent:", JSON.parse(localStorage.getItem('unsentSubmissions')));
         }
-        alert(saved ? 'Saved successfully' : 'Saved Failed');
+        alert('Saved successfully')
         sendAllUnSavedAnswers()
     }
 
