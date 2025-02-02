@@ -399,10 +399,11 @@
 
     function handleSwipe() {
         let diffX = endX - startX;
+        alert(diffX);
         if (diffX > 50) {
-            config.relativeNavigationButtons.prev.click()
+            config.relativeNavigationButtons.prev.click();
         } else if (diffX < -50) {
-            config.relativeNavigationButtons.next.click()
+            config.relativeNavigationButtons.next.click();
         }
     }
 
