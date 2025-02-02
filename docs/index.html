@@ -402,11 +402,11 @@
     function handleSwipe() {
         let diffX = endX - startX;
         let distanceY = Math.abs(endY - startY);
-        if (distanceY > 200) return;
+        if (distanceY > 300) return;
 
-        if (diffX > 150) {
+        if (diffX > 175) {
             config.relativeNavigationButtons.prev.click();
-        } else if (diffX < -150) {
+        } else if (diffX < -225) {
             config.relativeNavigationButtons.next.click();
         }
     }
