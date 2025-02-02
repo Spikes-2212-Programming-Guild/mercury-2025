@@ -246,7 +246,6 @@
                 displayPage(question.getPage.name)
                 return;
             }
-            formData[question.id] = question.getValue;
         }
         try {
             const response = await fetch("http://localhost:3000/submit", {
@@ -365,7 +364,6 @@
                 const savedValue = localStorage.getItem(question.id);
                 if (savedValue) questionObject.setValue(savedValue);
                 questionObject.updateColor();
-
                 questionObjects.push(questionObject); // Add to the page's question list
             });
             config.pagesContainer.appendChild(pageContainer);
