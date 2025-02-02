@@ -57,7 +57,6 @@
 
     .question label {
         margin-right: 2%;
-        /*font-weight: bold;*/
     }
 
     .absolute_navigation {
@@ -166,10 +165,14 @@
             return container;
         }
 
+        updateColor() {
+            this.setOutlineColor(this.isValid() ? 'green' : 'red');
+        }
+
         addListeners () {
             this.element.addEventListener('input', () => {
                 localStorage.setItem(this.id, this.getValue);
-                this.setOutlineColor(this.isValid() ? 'green' : 'red');
+                this.updateColor()
             })
         }
     }
@@ -236,8 +239,10 @@
     async function submit() {
         const formData = {};
         for (const question of questionObjects) {
+            question.updateColor();
             if (!question.isValid()) {
                 alert('Invalid value at ' + question.id.replace('_', ' '));
+                question.setOutlineColor('yellow');
                 displayPage(question.getPage.name)
                 return;
             }
@@ -357,9 +362,9 @@
                 const questionObject = createQuestion(question, page);
                 pageContainer.appendChild(questionObject.getElement());
 
-                // sets the saved data
                 const savedValue = localStorage.getItem(question.id);
                 if (savedValue) questionObject.setValue(savedValue);
+                questionObject.updateColor();
 
                 questionObjects.push(questionObject); // Add to the page's question list
             });
@@ -390,12 +395,7 @@
                 "name": "Pre-Game",
                 "questions": [
                     {"id": "scouter_name", "title": "Enter scouter name", "type": TextQuestion.type},
-                    {"id": "robot_name", "title": "Enter robot name", "type": TextQuestion.type},
-                    {"id": "robot_name1", "title": "Enter robot name", "type": TextQuestion.type},
                     {"id": "robot_number", "title": "Enter robot number", "type": NumberQuestion.type},
-                    {"id": "robot_name3", "title": "Enter robot name", "type": TextQuestion.type},
-                    {"id": "robot_name4", "title": "Enter robot name", "type": TextQuestion.type},
-                    {"id": "robot_name5", "title": "Enter robot name", "type": TextQuestion.type},
                 ]
             },
             {
