@@ -390,18 +390,23 @@
     function setUpSwipeListeners() {
         document.addEventListener("touchstart", function (event) {
             startX = event.touches[0].clientX;
+            startY = event.touches[0].clientY;
         });
         document.addEventListener("touchend", function (event) {
             endX = event.changedTouches[0].clientX;
+            endY = event.changedTouches[0].clientY;
             handleSwipe();
         });
     }
 
     function handleSwipe() {
         let diffX = endX - startX;
-        if (diffX > 50) {
+        let distanceY = Math.abs(endY - startY);
+        if (distanceY > 75) return;
+
+        if (diffX > 150) {
             config.relativeNavigationButtons.prev.click();
-        } else if (diffX < -50) {
+        } else if (diffX < -150) {
             config.relativeNavigationButtons.next.click();
         }
     }
@@ -449,7 +454,7 @@
         }
     };
 
-    let startX, endX;
+    let startX, startY, endX, endY;
     const pagesConfig = json.Pages;
     const questionObjects = [];
     const absoluteNavigationElements = []
