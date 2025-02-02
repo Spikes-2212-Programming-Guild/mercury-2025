@@ -387,24 +387,22 @@
         displayPage(pagesConfig[0].name);
     }
 
-    let startX, endX;
-
-    document.addEventListener("touchstart", function (event) {
-        startX = event.touches[0].clientX;
-    });
-
-    document.addEventListener("touchend", function (event) {
-        endX = event.changedTouches[0].clientX;
-        handleSwipe();
-    });
+    function setUpSwipeListeners() {
+        document.addEventListener("touchstart", function (event) {
+            startX = event.touches[0].clientX;
+        });
+        document.addEventListener("touchend", function (event) {
+            endX = event.changedTouches[0].clientX;
+            handleSwipe();
+        });
+    }
 
     function handleSwipe() {
         let diffX = endX - startX;
-
         if (diffX > 50) {
-            alert("Swiped Right");
+            config.relativeNavigationButtons.next.click()
         } else if (diffX < -50) {
-            alert("Swiped Left");
+            config.relativeNavigationButtons.prev.click()
         }
     }
 
@@ -451,11 +449,13 @@
         }
     };
 
+    let startX, endX;
     const pagesConfig = json.Pages;
     const questionObjects = [];
     const absoluteNavigationElements = []
 
     initializeApp(config);
+    setUpSwipeListeners();
 
     // try to save all unsaved answers every 4 minutes
     setInterval(() => {
