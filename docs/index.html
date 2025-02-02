@@ -400,9 +400,9 @@
     function handleSwipe() {
         let diffX = endX - startX;
         if (diffX > 50) {
-            config.relativeNavigationButtons.next.click()
-        } else if (diffX < -50) {
             config.relativeNavigationButtons.prev.click()
+        } else if (diffX < -50) {
+            config.relativeNavigationButtons.next.click()
         }
     }
 
