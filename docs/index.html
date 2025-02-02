@@ -139,7 +139,7 @@
             return this.element.value;
         }
 
-        setOutlineColor (color) {
+        setOutlineColor(color) {
             this.element.style.outlineColor = color;
         }
 
@@ -151,7 +151,7 @@
             return this.getValue !== null && this.getValue !== '' && this.getValue !== undefined;
         }
 
-        clear () {
+        clear() {
             this.setValue('');
             this.setOutlineColor('white');
         }
@@ -169,7 +169,7 @@
             this.setOutlineColor(this.isValid() ? 'green' : 'red');
         }
 
-        addListeners () {
+        addListeners() {
             this.element.addEventListener('input', () => {
                 localStorage.setItem(this.id, this.getValue);
                 this.updateColor()
@@ -291,7 +291,7 @@
             try {
                 const response = await fetch("http://localhost:3000/submit", {
                     method: "POST",
-                    headers: { "Content-Type": "application/json" },
+                    headers: {"Content-Type": "application/json"},
                     body: JSON.stringify(submission),
                 });
                 if (response.ok) console.log('Successfully submitted ' + submission);
@@ -387,36 +387,24 @@
         displayPage(pagesConfig[0].name);
     }
 
-    let startX, startY, endX, endY;
+    let startX, endX;
 
-    document.addEventListener("touchstart", function(event) {
+    document.addEventListener("touchstart", function (event) {
         startX = event.touches[0].clientX;
-        startY = event.touches[0].clientY;
     });
 
-    document.addEventListener("touchend", function(event) {
+    document.addEventListener("touchend", function (event) {
         endX = event.changedTouches[0].clientX;
-        endY = event.changedTouches[0].clientY;
-
         handleSwipe();
     });
 
     function handleSwipe() {
         let diffX = endX - startX;
-        let diffY = endY - startY;
 
-        if (Math.abs(diffX) > Math.abs(diffY)) {
-            if (diffX > 50) {
-                console.log("Swiped Right");
-            } else if (diffX < -50) {
-                console.log("Swiped Left");
-            }
-        } else {
-            if (diffY > 50) {
-                console.log("Swiped Down");
-            } else if (diffY < -50) {
-                console.log("Swiped Up");
-            }
+        if (diffX > 50) {
+            alert("Swiped Right");
+        } else if (diffX < -50) {
+            alert("Swiped Left");
         }
     }
 
@@ -432,7 +420,10 @@
             {
                 "name": "Autonomous",
                 "questions": [
-                    {"id": "robot_state", "title": "Choose the robot's state", "choices": ["Alright", "Stunned", "Kaboom!"],
+                    {
+                        "id": "robot_state",
+                        "title": "Choose the robot's state",
+                        "choices": ["Alright", "Stunned", "Kaboom!"],
                         "type": MultipleChoiceQuestion.type
                     }
                 ]
@@ -440,7 +431,8 @@
             {
                 "name": "End-Game",
                 "questions": [
-                    {"id": "alliance", "title": "Enter the alliance", "choices": ["blue", "red"],
+                    {
+                        "id": "alliance", "title": "Enter the alliance", "choices": ["blue", "red"],
                         "type": MultipleChoiceQuestion.type
                     }
                 ]
@@ -467,11 +459,12 @@
 
     // try to save all unsaved answers every 4 minutes
     setInterval(() => {
-        try { sendAllUnSavedAnswers();
+        try {
+            sendAllUnSavedAnswers();
         } catch (error) {
             console.error("Error in sendAllUnSavedAnswers:", error);
         }
-    }, 4*60*1000);
+    }, 4 * 60 * 1000);
 
 </script>
 </html>
