@@ -3,8 +3,12 @@ const app = express();
 const cors = require("cors");
 const path = require("path");
 const port = 3000
-const db = require("./db.js")
 const tableName = 'games'
+const { createClient } = require("@supabase/supabase-js");
+
+const supabaseUrl = 'https://kkbudtrzmdwfydjhttgt.supabase.co'
+const supabaseKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImtrYnVkdHJ6bWR3Znlkamh0dGd0Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3Mzg3NjUwOTAsImV4cCI6MjA1NDM0MTA5MH0._OW4uS7Fnt_RbcXcMpwp4htcliee6WsKxRTFKNgnm5w'
+const supabase = createClient(supabaseUrl, supabaseKey)
 
 // Middleware to parse JSON bodies
 app.use(express.json());
@@ -16,61 +20,30 @@ app.get('/', (req, res) => {
     res.sendFile(path.join(__dirname, 'index.html'));
 })
 
-// check if column exist in the table
-const columnQuery = `SELECT column_name FROM information_schema.columns
-                    WHERE table_name = $1 AND column_name = $2`;
-
 app.post('/submit', async (req, res) => {
-    const answers = [];
+    const answers = {};
     for (const [id, answer] of Object.entries(req.body)) {
-        if (answer) {
-            answers.push({ [id]: answer });
-            try {
-                // Dynamically check if the column exists
-                const columnResult = await db.query(columnQuery, [tableName, id]);
-
-                // Column doesn't exist, so add it
-                if (columnResult.rows.length === 0) {
-                    await db.query(`ALTER TABLE ${tableName} ADD COLUMN ${id} TEXT`);
-                }
-            } catch (err) {
-                console.error('Error creating new columns to database:', err);
-                return res.status(500).send('Error saving data');
-            }
-        }
+        if (answer) answers[id] = answer;  // Store as key-value pairs in a single object
     }
 
-    try {
-        let idArray = [];
-        let answerArray = [];
+    const { error } = await supabase.from(tableName).insert([answers]);
 
-        for (let [id, answer] of Object.entries(req.body)) {
-            idArray.push(id);
-            answerArray.push(`'${answer}'`);
-        }
-
-        const columns = idArray.join(", ");
-        const values_placeholder = answerArray.map(item => `%s`).join(',');
-
-        const insertQuery = `INSERT INTO ${tableName} (${columns}) VALUES (${values_placeholder})`;
-        await db.query(insertQuery, answerArray);
-
-        console.log(answers);
-        res.send('Thank you for submitting your answers!');
-    } catch (err) {
-        console.error('Error saving data', err);
+    if (error) {
+        console.error('Error saving data:', error);
         return res.status(500).send('Error saving data');
+    } else {
+        res.send('Thank you for submitting your answers!');
+        console.log(answers);
     }
 });
 
 // debug
 app.get("/data", async (req, res) => {
-    try {
-        const result = await db.query(`SELECT * FROM ${tableName}`);
-        res.json(result.rows);
-    } catch (error) {
-        console.error(error);
-        res.status(500).send("Internal Server Error");
+    const { data, error } = await supabase.from(tableName).select("*");
+    if (error) {
+        console.error("Error fetching data:", error);
+    } else {
+        res.json(data);
     }
 });
 

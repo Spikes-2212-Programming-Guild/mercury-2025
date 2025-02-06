@@ -246,6 +246,7 @@
                 displayPage(question.getPage.name)
                 return;
             }
+            formData[question.id] = question.getValue;
         }
         try {
             const response = await fetch("http://localhost:3000/submit", {
@@ -276,7 +277,7 @@
             let unsentSubmissions = JSON.parse(localStorage.getItem('unsentSubmissions')) || [];
             console.log("Before Saving - Unsent:", unsentSubmissions);
 
-            unsentSubmissions.push(formAnswers);
+            if (formAnswers === {}) unsentSubmissions.push(formAnswers);
             localStorage.setItem('unsentSubmissions', JSON.stringify(unsentSubmissions));
             console.log("After Saving - Unsent:", JSON.parse(localStorage.getItem('unsentSubmissions')));
         }
@@ -416,28 +417,8 @@
             {
                 "name": "Pre-Game",
                 "questions": [
-                    {"id": "scouter_name", "title": "Enter scouter name", "type": TextQuestion.type},
-                    {"id": "robot_number", "title": "Enter robot number", "type": NumberQuestion.type},
-                ]
-            },
-            {
-                "name": "Autonomous",
-                "questions": [
-                    {
-                        "id": "robot_state",
-                        "title": "Choose the robot's state",
-                        "choices": ["Alright", "Stunned", "Kaboom!"],
-                        "type": MultipleChoiceQuestion.type
-                    }
-                ]
-            },
-            {
-                "name": "End-Game",
-                "questions": [
-                    {
-                        "id": "alliance", "title": "Enter the alliance", "choices": ["blue", "red"],
-                        "type": MultipleChoiceQuestion.type
-                    }
+                    {"id": "game_type", "title": "Enter game type", "type": TextQuestion.type},
+                    {"id": "game_number", "title": "Enter game number", "type": NumberQuestion.type},
                 ]
             },
         ]
@@ -469,7 +450,7 @@
         } catch (error) {
             console.error("Error in sendAllUnSavedAnswers:", error);
         }
-    }, 4 * 60 * 1000);
+    }, 5 * 1000);
 
 </script>
 </html>
