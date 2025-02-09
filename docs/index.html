@@ -271,10 +271,12 @@
                 saveAnswers(true, formData)
                 displayPage(pagesConfig[0].name);
             } else {
+                console.error("Submission failed");
                 saveAnswers(false, formData)
             }
         } catch (error) {
-            console.error(error);
+            console.error("Submission failed" + error);
+            saveAnswers(false, formData)
         }
         clearAllAnswers()
     }
@@ -314,7 +316,8 @@
                     newUnsentSubmissions.push(submission);
                 }
             } catch (error) {
-                console.error(error);
+                console.error("Submission failed" + error);
+                newUnsentSubmissions.push(submission);
             }
         }
         // ✅ Only keep failed submissions
