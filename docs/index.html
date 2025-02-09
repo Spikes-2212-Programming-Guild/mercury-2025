@@ -139,6 +139,10 @@
             return this.element.value;
         }
 
+        get getBoundingRect() {
+            return this.element.getBoundingClientRect();
+        }
+
         setOutlineColor(color) {
             this.element.style.outlineColor = color;
         }
@@ -241,9 +245,16 @@
         for (const question of questionObjects) {
             question.updateColor();
             if (!question.isValid()) {
-                alert('Invalid value at ' + question.id.replace('_', ' '));
+                // mark the invalid question
                 question.setOutlineColor('yellow');
+
+                // move it to its page
                 displayPage(question.getPage.name)
+
+                // move the user to its position
+                const rect = question.getBoundingRect
+                const absoluteY = window.scrollY + rect.top - window.innerHeight / 2 + rect.height / 2;
+                window.scrollTo({ top: absoluteY, behavior: "smooth" });
                 return;
             }
             formData[question.id] = question.getValue;
