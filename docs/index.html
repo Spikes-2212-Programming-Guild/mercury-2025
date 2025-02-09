@@ -259,19 +259,17 @@
             }
             formData[question.id] = question.getValue;
         }
-        try {
-            const response = await fetch("https://mercury-2025-server.onrender.com/submit", {
-                method: "POST",
-                headers: {
-                    "Content-Type": "application/json",
-                },
-                body: JSON.stringify(formData),
-            });
-            if (response.ok) {
-                saveAnswers(true, formData)
-                displayPage(pagesConfig[0].name);
-            }
-        } catch (error) {
+        const response = await fetch("https://mercury-2025-server.onrender.com/submit", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+            },
+            body: JSON.stringify(formData),
+        });
+        if (response.ok) {
+            saveAnswers(true, formData)
+            displayPage(pagesConfig[0].name);
+        } else {
             saveAnswers(false, formData)
         }
         clearAllAnswers()
@@ -300,15 +298,14 @@
         let unsentSubmissions = JSON.parse(localStorage.getItem('unsentSubmissions')) || []
         let newUnsentSubmissions = []; // Store only failed ones
         for (const submission of unsentSubmissions) {
-            try {
-                const response = await fetch("https://mercury-2025-server.onrender.com/submit", {
-                    method: "POST",
-                    headers: {"Content-Type": "application/json"},
-                    body: JSON.stringify(submission),
-                });
-                if (response.ok) console.log('Successfully submitted ' + submission);
-            } catch (error) {
-                console.error("Submission failed:", error);
+            const response = await fetch("https://mercury-2025-server.onrender.com/submit", {
+                method: "POST",
+                headers: {"Content-Type": "application/json"},
+                body: JSON.stringify(submission),
+            });
+            if (response.ok) console.log('Successfully submitted ' + submission);
+            else {
+                console.error("Submission failed");
                 newUnsentSubmissions.push(submission);
             }
         }
