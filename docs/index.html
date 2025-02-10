@@ -278,10 +278,11 @@
             if (response.ok) {
                 saveAnswers(true, formData)
                 displayPage(pagesConfig[0].name);
-            } else {
-                console.error("Submission failed");
-                saveAnswers(false, formData)
             }
+            // } else {
+            //     console.error("Submission failed");
+            //     saveAnswers(false, formData)
+            // }
         } catch (error) {
             if (error instanceof TypeError) {
                 console.error("Submission failed due to wifi " + error);
@@ -323,10 +324,10 @@
                     body: JSON.stringify(submission),
                 });
                 if (response.ok) console.log('Successfully submitted ' + submission);
-                else {
-                    console.error("Submission failed");
-                    newUnsentSubmissions.push(submission);
-                }
+                // else {
+                //     console.error("Submission failed");
+                //     newUnsentSubmissions.push(submission);
+                // }
             } catch (error) {
                 if (error instanceof TypeError) {
                     console.error("Submission failed" + error);
