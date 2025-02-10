@@ -1,7 +1,8 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
+    <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self'; style-src
+    'self' 'unsafe-inline'; img-src 'self'; connect-src 'self';">
     <title>Mercury 2025</title>
 </head>
 <body>
@@ -329,7 +330,7 @@
                 }
             }
         }
-        // ✅ Only keep failed submissions
+        // Only keep failed submissions
         localStorage.setItem('unsentSubmissions', JSON.stringify(newUnsentSubmissions));
     }
 
