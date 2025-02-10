@@ -287,7 +287,7 @@
                 console.error("Submission failed due to wifi " + error);
                 saveAnswers(false, formData)
             } else {
-                console.error("Submission failed? how?!");
+                console.error("bugged submission, not saving");
             }
         }
         clearAllAnswers()
@@ -328,8 +328,12 @@
                     newUnsentSubmissions.push(submission);
                 }
             } catch (error) {
-                console.error("Submission failed" + error);
-                newUnsentSubmissions.push(submission);
+                if (error instanceof TypeError) {
+                    console.error("Submission failed" + error);
+                    newUnsentSubmissions.push(submission);
+                } else {
+                    console.error("removing bugged submission");
+                }
             }
         }
         // ✅ Only keep failed submissions
