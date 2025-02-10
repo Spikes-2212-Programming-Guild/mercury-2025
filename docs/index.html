@@ -184,6 +184,10 @@
     class TextQuestion extends Question {
         static type = 'text';
 
+        isValid() {
+            return super.isValid() && this.getValue.length > 0 && this.getValue.length < 200;
+        }
+
         getElement() {
             const container = super.getElement();
             const input = document.createElement('input');
@@ -228,6 +232,10 @@
 
     class NumberQuestion extends Question {
         static type = 'number';
+
+        isValid() {
+            return super.isValid() && this.getValue <= 32767 && this.getValue >= -32768;
+        }
 
         getElement() {
             const container = super.getElement();
@@ -275,8 +283,12 @@
                 saveAnswers(false, formData)
             }
         } catch (error) {
-            console.error("Submission failed" + error);
-            saveAnswers(false, formData)
+            if (error instanceof TypeError) {
+                console.error("Submission failed due to wifi " + error);
+                saveAnswers(false, formData)
+            } else {
+                console.error("Submission failed? how?!");
+            }
         }
         clearAllAnswers()
     }
