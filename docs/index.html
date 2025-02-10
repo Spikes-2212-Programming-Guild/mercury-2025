@@ -284,7 +284,7 @@
     function saveAnswers(saved, formAnswers) {
         console.log("Answers to Save:", formAnswers);
 
-        const allSubmissions = JSON.parse(localStorage.getItem('allSubmissions')) || [];
+        let allSubmissions = JSON.parse(localStorage.getItem('allSubmissions')) || [];
         allSubmissions.push(formAnswers);
         localStorage.setItem('allSubmissions', JSON.stringify(allSubmissions));
 
@@ -292,7 +292,7 @@
             let unsentSubmissions = JSON.parse(localStorage.getItem('unsentSubmissions')) || [];
             console.log("Before Saving - Unsent:", unsentSubmissions);
 
-            if (formAnswers === {}) unsentSubmissions.push(formAnswers);
+            if (formAnswers !== {}) unsentSubmissions.push(formAnswers);
             localStorage.setItem('unsentSubmissions', JSON.stringify(unsentSubmissions));
             console.log("After Saving - Unsent:", JSON.parse(localStorage.getItem('unsentSubmissions')));
         }
@@ -303,7 +303,6 @@
     async function sendAllUnSavedAnswers() {
         let unsentSubmissions = JSON.parse(localStorage.getItem('unsentSubmissions')) || []
         let newUnsentSubmissions = []; // Store only failed ones
-        console.log(unsentSubmissions.toString())
         for (const submission of unsentSubmissions) {
             try {
                 const response = await fetch("https://mercury-2025-server.onrender.com/submit", {
@@ -441,6 +440,18 @@
                     {"id": "game_number", "title": "Enter game number", "type": NumberQuestion.type},
                 ]
             },
+            {
+                "name": "Autonomous",
+                "questions": [
+                    {"id": "alliance_color", "title": "Enter the alliance color", "choices": ['red','blue'], "type": MultipleChoiceQuestion.type},
+                ]
+            },
+            {
+                "name": "End-Game",
+                "questions": [
+                    {"id": "scouter_name", "title": "Enter your name", "type": TextQuestion.type},
+                ]
+            },
         ]
     };
 
@@ -456,6 +467,7 @@
     };
 
     let startX, startY, endX, endY;
+    let isSubmitting = false;
     const pagesConfig = json.Pages;
     const questionObjects = [];
     const absoluteNavigationElements = []
