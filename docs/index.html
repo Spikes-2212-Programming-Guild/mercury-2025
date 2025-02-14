@@ -39,7 +39,7 @@
         align-content: center;
         flex-direction: column;
         gap: 1em;
-        height: 65vh;
+        height: 225vh;
     }
 
     #pages_container {
@@ -61,7 +61,8 @@
 
     .absolute_navigation {
         padding: 1%;
-        width: 33.33vw;
+        width: 20vw;
+        font-size: 1em;
         background-color: #0056b3;
         height: 8.5vh;
     }
@@ -234,7 +235,7 @@
         static type = 'number';
 
         isValid() {
-            return super.isValid() && this.getValue <= 32767 && this.getValue >= -32768;
+            return super.isValid() && this.getValue <= 32767 && this.getValue >= 0;
         }
 
         getElement() {
@@ -262,7 +263,7 @@
                 // move the user to its position
                 const rect = question.getBoundingRect
                 const absoluteY = window.scrollY + rect.top - window.innerHeight / 2 + rect.height / 2;
-                window.scrollTo({ top: absoluteY, behavior: "smooth" });
+                window.scrollTo({top: absoluteY, behavior: "smooth"});
                 return;
             }
             formData[question.id] = question.getValue;
@@ -371,9 +372,9 @@
         prevButton.style.color = pageIndex > 0 ? 'white' : 'gray';
         prevButton.onclick = pageIndex > 0 ? () => displayPage(pagesConfig[pageIndex - 1].name) : null;
 
-        nextButton.style.color = pageIndex + 1 < pagesConfig.length ? 'white' : 'gray';
-        nextButton.style.disabeled = pageIndex + 1 < pagesConfig.length ? 'true' : 'false';
-        nextButton.onclick = pageIndex + 1 < pagesConfig.length ? () => displayPage(pagesConfig[pageIndex + 1].name) : null;
+        nextButton.style.color = pageIndex + 1 < pageAmount ? 'white' : 'gray';
+        nextButton.style.disabeled = pageIndex + 1 < pageAmount ? 'true' : 'false';
+        nextButton.onclick = pageIndex + 1 < pageAmount ? () => displayPage(pagesConfig[pageIndex + 1].name) : null;
 
         for (const pageButton of absoluteNavigationElements) {
             pageButton.style.fontWeight = pageButton.innerHTML === pageName ? 'bold' : 'normal'
@@ -385,15 +386,21 @@
             const pageContainer = document.createElement('fieldset');
             pageContainer.classList.add('page');
             pageContainer.id = page.name;
-
             page.questions.forEach(question => {
-                const questionObject = createQuestion(question, page);
-                pageContainer.appendChild(questionObject.getElement());
+                if (typeof question === 'string') {
+                    const label = document.createElement('label');
+                    label.innerHTML = question;
+                    label.style.borderBottom = '0.1em solid gray';
+                    pageContainer.appendChild(label);
+                } else {
+                    const questionObject = createQuestion(question, page);
+                    pageContainer.appendChild(questionObject.getElement());
 
-                const savedValue = localStorage.getItem(question.id);
-                if (savedValue) questionObject.setValue(savedValue);
-                questionObject.updateColor();
-                questionObjects.push(questionObject); // Add to the page's question list
+                    const savedValue = localStorage.getItem(question.id);
+                    if (savedValue) questionObject.setValue(savedValue);
+                    questionObject.updateColor();
+                    questionObjects.push(questionObject); // Add to the page's question list
+                }
             });
             config.pagesContainer.appendChild(pageContainer);
         });
@@ -440,25 +447,77 @@
         }
     }
 
+    const ALL_TEAMS = [1690, 3339, 5951, 2231, 1574, 1577, 5614, 3075, 5990, 5715, 6740, 1937, 5987, 1657, 4590,
+        5654, 7039, 2630, 9739, 2096, 3065, 1942, 6104, 7845, 3316, 5554, 6738, 4320, 9738, 7067, 5928, 3835, 4338,
+        3211, 5635, 1576, 9740, 6168, 4416, 3083, 2679, 7112, 8223, 5135, 7177, 4744, 5291, 4586, 2230, 6230, 2212,
+        3388, 9304, 8175, 1580, 9303, 1943, 6741, 4319, 1954, 4661]
+
     const json = {
         "Pages": [
             {
                 "name": "Pre-Game",
                 "questions": [
-                    {"id": "game_type", "title": "Enter game type", "type": TextQuestion.type},
-                    {"id": "game_number", "title": "Enter game number", "type": NumberQuestion.type},
+                    "General Info",
+                    {"id": "scouter_name", "title": "Scouter name", "type": TextQuestion.type},
+                    {"id": "game_type", "title": "Game Type", "choices": ["Training", "Qualifications", "Playoffs"], "type": MultipleChoiceQuestion.type},
+                    {"id": "game_number", "title": "Game Number", "type": NumberQuestion.type}, "Team Info",
+                    {"id": "team_number", "title": "Team Number", "choices": ALL_TEAMS, "type": MultipleChoiceQuestion.type},
+                    {"id": "alliance", "title": "Alliance", "choices": ["Red", "Blue"], "type": MultipleChoiceQuestion.type}
                 ]
             },
             {
                 "name": "Autonomous",
                 "questions": [
-                    {"id": "alliance_color", "title": "Enter the alliance color", "choices": ['red','blue'], "type": MultipleChoiceQuestion.type},
+                    {"id": "left_starting_line", "title": "Left starting line", "choices": ["Yes", "No"], "type": MultipleChoiceQuestion.type},
+                    "Enter the Amount of Corals Scored:",
+                    {"id": "auto_coral_l4", "title": "L4", "type": NumberQuestion.type},
+                    {"id": "auto_coral_l3", "title": "L3", "type": NumberQuestion.type},
+                    {"id": "auto_coral_l2", "title": "L2", "type": NumberQuestion.type},
+                    {"id": "auto_coral_l1", "title": "L1", "type": NumberQuestion.type},
+                    "Enter the Amount of Algae removed:",
+                    {"id": "auto_low_algae", "title": "Low", "type": NumberQuestion.type},
+                    {"id": "auto_high_algae", "title": "High", "type": NumberQuestion.type},
+                    "Algae:",
+                    {"id": "auto_robot_algae_successful_throws", "title": "Robot Successful Net Throws", "type": NumberQuestion.type},
+                    {"id": "auto_algae_successful_inserts", "title": "Algae Successful Inserts to Processor", "type": NumberQuestion.type},
+                    "Human Player:",
+                    {"id": "auto_human_player_algae_successful_throws", "title": "Human Player Successful Net Throws", "type": NumberQuestion.type},
+                    {"id": "auto_human_player_algae_failed_throws", "title": "Human Player Failed Net Throws", "type": NumberQuestion.type},
+                ]
+            },
+            {
+                "name": "Teleoperated",
+                "questions": [
+                    "Enter the Amount of Corals Scored:",
+                    {"id": "teleop_coral_l4", "title": "L4", "type": NumberQuestion.type},
+                    {"id": "teleop_coral_l3", "title": "L3", "type": NumberQuestion.type},
+                    {"id": "teleop_coral_l2", "title": "L2", "type": NumberQuestion.type},
+                    {"id": "teleop_coral_l1", "title": "L1", "type": NumberQuestion.type},
+                    "Enter the Amount of Algae removed:",
+                    {"id": "teleop_low_algae", "title": "Low", "type": NumberQuestion.type},
+                    {"id": "teleop_high_algae", "title": "High", "type": NumberQuestion.type},
+                    "Algae:",
+                    {"id": "teleop_robot_algae_successful_throws", "title": "Robot Successful Net Throws", "type": NumberQuestion.type},
+                    {"id": "teleop_algae_successful_inserts", "title": "Algae Successful Inserts to Processor", "type": NumberQuestion.type},
+                    "Human Player:",
+                    {"id": "teleop_human_player_algae_successful_throws", "title": "Human Player Successful Net Throws", "type": NumberQuestion.type},
+                    {"id": "teleop_human_player_algae_failed_throws", "title": "Human Player Failed Net Throws", "type": NumberQuestion.type},
                 ]
             },
             {
                 "name": "End-Game",
                 "questions": [
-                    {"id": "scouter_name", "title": "Enter your name", "type": TextQuestion.type},
+                    {"id": "attempted_climbing", "title": "Attempted Climbing", "choices": ["Yes", "No"], "type": MultipleChoiceQuestion.type},
+                    {"id": "climb_time", "title": "Time Took to climb", "choices": ["0-5", "5-15", "15-20"], "type": MultipleChoiceQuestion.type},
+                    {"id": "successfully_climbed", "title": "Successfully Climbed", "choices": ["Yes", "No"], "type": MultipleChoiceQuestion.type},
+                    "High - Shallow ; Low - Deep",
+                    {"id": "cage_type", "title": "Cage Type", "choices": ["High", "Low"], "type": MultipleChoiceQuestion.type},
+                ]
+            },
+            {
+                "name": "Post-Game",
+                "questions": [
+
                 ]
             },
         ]
@@ -476,8 +535,8 @@
     };
 
     let startX, startY, endX, endY;
-    let isSubmitting = false;
     const pagesConfig = json.Pages;
+    const pageAmount = pagesConfig.length;
     const questionObjects = [];
     const absoluteNavigationElements = []
 
