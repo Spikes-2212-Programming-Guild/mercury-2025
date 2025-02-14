@@ -63,7 +63,7 @@
         padding: 1%;
         width: 20vw;
         background-color: #0056b3;
-        height: 8.5vh;
+        height: 10vh;
     }
 
     #absolute_navigation_container {
@@ -454,7 +454,7 @@
     const json = {
         "Pages": [
             {
-                "name": "Pre-Game",
+                "name": "Pre",
                 "questions": [
                     "General Info",
                     {"id": "scouter_name", "title": "Scouter name", "type": TextQuestion.type},
@@ -465,7 +465,7 @@
                 ]
             },
             {
-                "name": "Autonomous",
+                "name": "Auto",
                 "questions": [
                     {"id": "left_starting_line", "title": "Left starting line", "choices": ["Yes", "No"], "type": MultipleChoiceQuestion.type},
                     "Enter the Amount of Corals Scored:",
@@ -485,7 +485,7 @@
                 ]
             },
             {
-                "name": "Teleoperated",
+                "name": "Teleop",
                 "questions": [
                     "Enter the Amount of Corals Scored:",
                     {"id": "teleop_coral_l4", "title": "L4", "type": NumberQuestion.type},
@@ -504,7 +504,7 @@
                 ]
             },
             {
-                "name": "End-Game",
+                "name": "End",
                 "questions": [
                     {"id": "attempted_climbing", "title": "Attempted Climbing", "choices": ["Yes", "No"], "type": MultipleChoiceQuestion.type},
                     {"id": "climb_time", "title": "Time Took to climb", "choices": ["0-5", "5-15", "15-20"], "type": MultipleChoiceQuestion.type},
@@ -514,7 +514,7 @@
                 ]
             },
             {
-                "name": "Post-Game",
+                "name": "Post",
                 "questions": [
 
                 ]
