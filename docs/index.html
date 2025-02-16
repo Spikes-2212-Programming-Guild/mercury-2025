@@ -46,6 +46,21 @@
         margin-bottom: 40vh;
     }
 
+    #game_number label {
+        margin-right: 22.75%;
+        margin-left: 20%;
+    }
+
+    #auto_robot_algae_throws label, #teleop_robot_algae_throws label  {
+        margin-left: 6%;
+        margin-right: 10%;
+    }
+
+    #teleop_human_player_algae_failed_throws label, #auto_human_player_algae_failed_throws label  {
+        margin-left: 14%;
+        margin-right: 20%;
+    }
+
     .question {
         margin: 1em;
         align-content: center;
@@ -165,6 +180,7 @@
 
         getElement() {
             const container = document.createElement('fieldset');
+            container.id = this.id;
             container.classList.add("question");
             const label = document.createElement('label');
             label.innerHTML = this.title;
@@ -292,6 +308,7 @@
                     this.element.dispatchEvent(new Event('input')); // Trigger change event
                 }
             };
+
 
             const input = document.createElement('input');
             input.type = 'number';
@@ -531,7 +548,7 @@
                     "General Info",
                     {"id": "scouter_name", "title": "Scouter name", "type": TextQuestion.type},
                     {"id": "game_type", "title": "Game Type", "choices": ["Training", "Qualifications", "Playoffs"], "type": MultipleChoiceQuestion.type},
-                    {"id": "game_number", "title": "Game Number\n", "type": NumberQuestion.type}, "Team Info",
+                    {"id": "game_number", "title": "Game Number", "type": NumberQuestion.type}, "Team Info",
                     {"id": "team_number", "title": "Team Number", "choices": ALL_TEAMS, "type": NumberFromChoicesQuestion.type},
                     {"id": "alliance", "title": "Alliance", "choices": ["Red", "Blue"], "type": MultipleChoiceQuestion.type}
                 ]
@@ -549,11 +566,11 @@
                     {"id": "auto_low_algae", "title": "Low", "type": NumberQuestion.type},
                     {"id": "auto_high_algae", "title": "High", "type": NumberQuestion.type},
                     "Algae:",
-                    {"id": "auto_robot_algae_throws", "title": "Robot Successful Throws to Net", "type": NumberQuestion.type},
+                    {"id": "auto_robot_algae_throws", "title": "Robot Throws to Net", "type": NumberQuestion.type},
                     {"id": "auto_algae_inserts", "title": "Algae Processor Inserts", "type": NumberQuestion.type},
                     "Human Player:",
-                    {"id": "auto_human_player_algae_successful_throws", "title": "Human Player Successful Net Throws", "type": NumberQuestion.type},
-                    {"id": "auto_human_player_algae_failed_throws", "title": "Human Player Failed Net Throws", "type": NumberQuestion.type},
+                    {"id": "auto_human_player_algae_successful_throws", "title": "Successful Net Throws", "type": NumberQuestion.type},
+                    {"id": "auto_human_player_algae_failed_throws", "title": "Failed Net Throws", "type": NumberQuestion.type},
                 ]
             },
             {
@@ -570,9 +587,9 @@
                     "Algae:",
                     {"id": "teleop_robot_algae_throws", "title": "Robot Throws to Net", "type": NumberQuestion.type},
                     {"id": "teleop_algae_inserts", "title": "Algae Processor Inserts", "type": NumberQuestion.type},
-                    "Human Player:",
-                    {"id": "teleop_human_player_algae_successful_throws", "title": "Human Player Successful Net Throws", "type": NumberQuestion.type},
-                    {"id": "teleop_human_player_algae_failed_throws", "title": "Human Player Failed Net Throws", "type": NumberQuestion.type},
+                    "Human Player Net Throws:",
+                    {"id": "teleop_human_player_algae_successful_throws", "title": "Successful Net Throws", "type": NumberQuestion.type},
+                    {"id": "teleop_human_player_algae_failed_throws", "title": "Failed Net Throws", "type": NumberQuestion.type},
                 ]
             },
             {
