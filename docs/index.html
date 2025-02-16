@@ -278,11 +278,31 @@
 
         getElement() {
             const container = super.getElement();
+
+            const decrementButton = document.createElement('button');
+            decrementButton.textContent = '-';
+            decrementButton.onclick = () => {
+                this.element.stepDown(); // Decrease the number
+                this.element.dispatchEvent(new Event('input')); // Trigger change event
+            };
+
             const input = document.createElement('input');
             input.type = 'number';
-            container.appendChild(input);
+            input.style.width = "2em";
             this.element = input;
-            this.addListeners()
+
+            const incrementButton = document.createElement('button');
+            incrementButton.textContent = "+";
+            incrementButton.onclick = () => {
+                this.element.stepUp(); // Increase the number
+                this.element.dispatchEvent(new Event('input')); // Trigger change event
+            };
+
+            container.appendChild(decrementButton);
+            container.appendChild(input);
+            container.appendChild(incrementButton);
+
+            this.addListeners(); // Add event listeners if needed
             return container;
         }
     }
