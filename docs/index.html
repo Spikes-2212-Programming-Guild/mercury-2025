@@ -306,7 +306,7 @@
             decrementButton.onclick = () => {
                 if (this.element.value > 0) {
                     this.element.stepDown(); // dec the number
-                    this.element.dispatchEvent(new Event('input')); // Trigger change event
+                    this.element.dispatchEvent(new Event('input'));
                 }
             };
 
