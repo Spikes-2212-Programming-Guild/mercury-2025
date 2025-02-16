@@ -2,6 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
     <title>Mercury 2025</title>
 </head>
 <body>
@@ -281,7 +282,7 @@
 
             const decrementButton = document.createElement('button');
             decrementButton.textContent = '-';
-            decrementButton.style.marginRight = "20px"; // Add some space to the right
+            decrementButton.style.marginRight = "40px"; // Add some space to the right
             decrementButton.style.fontSize = "2em";
             decrementButton.onclick = () => {
                 if (this.element.value > 0) {
@@ -299,7 +300,7 @@
             const incrementButton = document.createElement('button');
             incrementButton.textContent = "+";
             incrementButton.style.fontSize = "2em";
-            incrementButton.style.marginLeft = "20px"; // Add some space to the left
+            incrementButton.style.marginLeft = "40px"; // Add some space to the left
             incrementButton.onclick = () => {
                 this.element.stepUp(); // Increase the number
                 this.element.dispatchEvent(new Event('input')); // Trigger change event
