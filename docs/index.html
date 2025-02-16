@@ -33,7 +33,6 @@
         sans-serif;
     }
 
-    /* Centering the main content */
     .page {
         display: flex;
         align-content: start;
@@ -46,21 +45,6 @@
         margin-bottom: 40vh;
     }
 
-    /*#game_number label {*/
-    /*    margin-right: 22.75%;*/
-    /*    margin-left: 20%;*/
-    /*}*/
-
-    /*#auto_robot_algae_throws label, #teleop_robot_algae_throws label  {*/
-    /*    margin-left: 6%;*/
-    /*    margin-right: 10%;*/
-    /*}*/
-
-    /*#teleop_human_player_algae_failed_throws label, #auto_human_player_algae_failed_throws label  {*/
-    /*    margin-left: 14%;*/
-    /*    margin-right: 20%;*/
-    /*}*/
-
     .question {
         margin: 1em;
         align-content: center;
@@ -71,10 +55,6 @@
         margin: 0.3em;
         width: 7em;
         border-radius: 10px;
-    }
-
-    .question label {
-        margin-right: 5%;
     }
 
     .absolute_navigation {
@@ -95,6 +75,10 @@
         align-items: flex-start;
     }
 
+    div {
+        font-size: 1em;
+    }
+
     .relative_navigation {
         width: 30vw;
         height: 6.5vh;
@@ -110,7 +94,6 @@
         display: flex;
     }
 
-    /* Buttons */
     #submit_button {
         background-color: #0056b3;
         border-radius: 75px;
@@ -124,8 +107,7 @@
         font-size: 2.55em;
     }
 
-    .absolute_navigation:hover,
-    #submit_button:hover {
+    .absolute_navigation:hover, #submit_button:hover {
         background-color: #034790;
     }
 
@@ -142,11 +124,12 @@
 
 <script>
     class Question {
-        constructor(id, title, page) {
-            this.id = id
-            this.title = title
-            this.page = page
-            this.element = null
+        constructor(id, title, separateLine, page) {
+            this.id = id;
+            this.title = title;
+            this.page = page;
+            this.element = null;
+            this.separateLine = separateLine;
         }
 
         setValue(newValue) {
@@ -184,7 +167,16 @@
             container.classList.add("question");
             const label = document.createElement('label');
             label.innerHTML = this.title;
-            container.appendChild(label);
+
+            if (this.separateLine) {
+                const labelContainer = document.createElement('div');
+                labelContainer.appendChild(label);
+                container.appendChild(labelContainer);
+            } else {
+                label.style.marginRight = '2%';
+                container.appendChild(label);
+            }
+
             return container;
         }
 
@@ -221,8 +213,8 @@
     class MultipleChoiceQuestion extends Question {
         static type = 'choices';
 
-        constructor(id, title, page, choices) {
-            super(id, title, page);
+        constructor(id, title, separateLine, page, choices) {
+            super(id, title, separateLine, page);
             this.choices = choices;
         }
 
@@ -252,8 +244,8 @@
     class NumberFromChoicesQuestion extends Question {
         static type = 'numberFromChoices';
 
-        constructor(id, title, page, choices) {
-            super(id, title, page);
+        constructor(id, title, separateLine, page, choices) {
+            super(id, title, separateLine, page);
             this.choices = choices;
         }
 
@@ -297,7 +289,6 @@
 
         getElement() {
             const container = super.getElement();
-            const buttonContainer = document.createElement('div');
 
             const decrementButton = document.createElement('button');
             decrementButton.textContent = '-';
@@ -325,10 +316,9 @@
                 this.element.dispatchEvent(new Event('input')); // Trigger change event
             };
 
-            buttonContainer.appendChild(decrementButton);
-            buttonContainer.appendChild(input);
-            buttonContainer.appendChild(incrementButton);
-            container.appendChild(buttonContainer);
+            container.appendChild(decrementButton);
+            container.appendChild(input);
+            container.appendChild(incrementButton);
 
             this.addListeners();
             return container;
@@ -494,15 +484,17 @@
     }
 
     function createQuestion(question, page) {
+        const separateLine = question.separateLine || false;
+
         switch (question.type) {
             case TextQuestion.type:
-                return new TextQuestion(question.id, question.title, page);
+                return new TextQuestion(question.id, question.title, separateLine, page);
             case NumberQuestion.type:
-                return new NumberQuestion(question.id, question.title, page);
+                return new NumberQuestion(question.id, question.title, separateLine, page);
             case MultipleChoiceQuestion.type:
-                return new MultipleChoiceQuestion(question.id, question.title, page, question.choices);
+                return new MultipleChoiceQuestion(question.id, question.title, separateLine, page, question.choices);
             case NumberFromChoicesQuestion.type:
-                return new NumberFromChoicesQuestion(question.id, question.title, page, question.choices);
+                return new NumberFromChoicesQuestion(question.id, question.title, separateLine, page, question.choices);
         }
     }
 
@@ -549,7 +541,7 @@
                     "General Info",
                     {"id": "scouter_name", "title": "Scouter name", "type": TextQuestion.type},
                     {"id": "game_type", "title": "Game Type", "choices": ["Training", "Qualifications", "Playoffs"], "type": MultipleChoiceQuestion.type},
-                    {"id": "game_number", "title": "Game Number", "type": NumberQuestion.type}, "Team Info",
+                    {"id": "game_number", "title": "Game Number", "separateLine": true, "type": NumberQuestion.type}, "Team Info",
                     {"id": "team_number", "title": "Team Number", "choices": ALL_TEAMS, "type": NumberFromChoicesQuestion.type},
                     {"id": "alliance", "title": "Alliance", "choices": ["Red", "Blue"], "type": MultipleChoiceQuestion.type}
                 ]
@@ -567,11 +559,11 @@
                     {"id": "auto_low_algae", "title": "Low", "type": NumberQuestion.type},
                     {"id": "auto_high_algae", "title": "High", "type": NumberQuestion.type},
                     "Algae:",
-                    {"id": "auto_robot_algae_throws", "title": "Robot Throws to Net", "type": NumberQuestion.type},
-                    {"id": "auto_algae_inserts", "title": "Algae Processor Inserts", "type": NumberQuestion.type},
+                    {"id": "auto_robot_algae_throws", "title": "Robot Throws to Net", "separateLine": true, "type": NumberQuestion.type},
+                    {"id": "auto_algae_inserts", "title": "Algae Processor Inserts", "separateLine": true, "type": NumberQuestion.type},
                     "Human Player:",
-                    {"id": "auto_human_player_algae_successful_throws", "title": "Successful Net Throws", "type": NumberQuestion.type},
-                    {"id": "auto_human_player_algae_failed_throws", "title": "Failed Net Throws", "type": NumberQuestion.type},
+                    {"id": "auto_human_player_algae_successful_throws", "title": "Successful Net Throws", "separateLine": true, "type": NumberQuestion.type},
+                    {"id": "auto_human_player_algae_failed_throws", "title": "Failed Net Throws", "separateLine": true, "type": NumberQuestion.type},
                 ]
             },
             {
@@ -586,11 +578,11 @@
                     {"id": "teleop_low_algae", "title": "Low", "type": NumberQuestion.type},
                     {"id": "teleop_high_algae", "title": "High", "type": NumberQuestion.type},
                     "Algae:",
-                    {"id": "teleop_robot_algae_throws", "title": "Robot Throws to Net", "type": NumberQuestion.type},
-                    {"id": "teleop_algae_inserts", "title": "Algae Processor Inserts", "type": NumberQuestion.type},
+                    {"id": "teleop_robot_algae_throws", "title": "Robot Throws to Net", "separateLine": true, "type": NumberQuestion.type},
+                    {"id": "teleop_algae_inserts", "title": "Algae Processor Inserts", "separateLine": true, "type": NumberQuestion.type},
                     "Human Player:",
-                    {"id": "teleop_human_player_algae_successful_throws", "title": "Successful Net Throws", "type": NumberQuestion.type},
-                    {"id": "teleop_human_player_algae_failed_throws", "title": "Failed Net Throws", "type": NumberQuestion.type},
+                    {"id": "teleop_human_player_algae_successful_throws", "title": "Successful Net Throws", "separateLine": true, "type": NumberQuestion.type},
+                    {"id": "teleop_human_player_algae_failed_throws", "title": "Failed Net Throws", "separateLine": true, "type": NumberQuestion.type},
                 ]
             },
             {
