@@ -229,6 +229,45 @@
         }
     }
 
+    class NumberFromChoicesQuestion extends Question {
+        static type = 'numberFromChoices';
+
+        constructor(id, title, page, choices) {
+            super(id, title, page);
+            this.choices = choices;
+        }
+
+        isValid() {
+            return super.isValid() && this.choices.includes(parseInt(this.getValue));
+        }
+
+        getElement() {
+            const container = super.getElement();
+
+            // Create input field
+            const input = document.createElement('input');
+            input.type = 'number';
+            input.setAttribute('list', this.id + '_input');
+
+            // Create datalist
+            const datalist = document.createElement('datalist');
+            datalist.id = this.id + '_input';
+
+            this.choices.forEach(choice => {
+                const option = document.createElement('option');
+                option.value = choice;
+                option.textContent = choice;
+                datalist.appendChild(option);
+            });
+
+            container.appendChild(input);
+            container.appendChild(datalist);
+            this.element = input;
+            this.addListeners()
+            return container;
+        }
+    }
+
     class NumberQuestion extends Question {
         static type = 'number';
 
@@ -412,6 +451,8 @@
                 return new NumberQuestion(question.id, question.title, page);
             case MultipleChoiceQuestion.type:
                 return new MultipleChoiceQuestion(question.id, question.title, page, question.choices);
+            case NumberFromChoicesQuestion.type:
+                return new NumberFromChoicesQuestion(question.id, question.title, page, question.choices);
         }
     }
 
@@ -459,7 +500,7 @@
                     {"id": "scouter_name", "title": "Scouter name", "type": TextQuestion.type},
                     {"id": "game_type", "title": "Game Type", "choices": ["Training", "Qualifications", "Playoffs"], "type": MultipleChoiceQuestion.type},
                     {"id": "game_number", "title": "Game Number", "type": NumberQuestion.type}, "Team Info",
-                    {"id": "team_number", "title": "Team Number", "choices": ALL_TEAMS, "type": MultipleChoiceQuestion.type},
+                    {"id": "team_number", "title": "Team Number", "choices": ALL_TEAMS, "type": NumberFromChoicesQuestion.type},
                     {"id": "alliance", "title": "Alliance", "choices": ["Red", "Blue"], "type": MultipleChoiceQuestion.type}
                 ]
             },
@@ -509,7 +550,7 @@
                     {"id": "climb_time", "title": "Time Took to climb", "choices": ["0-5", "5-15", "15-20"], "type": MultipleChoiceQuestion.type},
                     {"id": "successfully_climbed", "title": "Successfully Climbed", "choices": ["Yes", "No"], "type": MultipleChoiceQuestion.type},
                     "High - Shallow ; Low - Deep",
-                    {"id": "cage_type", "title": "Cage Type", "choices": ["High", "Low"], "type": MultipleChoiceQuestion.type},
+                    {"id": "cage_type", "title": "Cage Type", "choices": ["High", "Low", "None"], "type": MultipleChoiceQuestion.type},
                 ]
             },
             {
