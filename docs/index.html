@@ -426,6 +426,7 @@
         }
         updateButtons(pageName);
         config.titleLabel.innerHTML = pageName;
+        localStorage.setItem('currentPage', pageName);
     }
 
     function updateButtons(pageName) {
@@ -488,7 +489,7 @@
     function initializeApp(config) {
         createAllQuestions();
         renderAbsoluteNavigationButtons(config.absoluteNavContainer);
-        displayPage(pagesConfig[0].name);
+        displayPage(localStorage.getItem('currentPage') || pagesConfig[0].name);
     }
 
     function setUpSwipeListeners() {
