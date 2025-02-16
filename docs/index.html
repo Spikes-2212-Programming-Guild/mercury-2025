@@ -57,7 +57,7 @@
     }
 
     .question label {
-        margin-right: 8%;
+        margin-right: 5%;
     }
 
     .absolute_navigation {
@@ -284,6 +284,7 @@
             decrementButton.textContent = '-';
             decrementButton.style.marginRight = "40px"; // Add some space to the right
             decrementButton.style.fontSize = "2em";
+            decrementButton.style.marginLeft = "5%";
             decrementButton.onclick = () => {
                 if (this.element.value > 0) {
                     this.element.stepDown(); // Decrease the number
