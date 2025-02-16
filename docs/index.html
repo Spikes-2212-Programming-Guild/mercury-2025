@@ -46,20 +46,20 @@
         margin-bottom: 40vh;
     }
 
-    #game_number label {
-        margin-right: 22.75%;
-        margin-left: 20%;
-    }
+    /*#game_number label {*/
+    /*    margin-right: 22.75%;*/
+    /*    margin-left: 20%;*/
+    /*}*/
 
-    #auto_robot_algae_throws label, #teleop_robot_algae_throws label  {
-        margin-left: 6%;
-        margin-right: 10%;
-    }
+    /*#auto_robot_algae_throws label, #teleop_robot_algae_throws label  {*/
+    /*    margin-left: 6%;*/
+    /*    margin-right: 10%;*/
+    /*}*/
 
-    #teleop_human_player_algae_failed_throws label, #auto_human_player_algae_failed_throws label  {
-        margin-left: 14%;
-        margin-right: 20%;
-    }
+    /*#teleop_human_player_algae_failed_throws label, #auto_human_player_algae_failed_throws label  {*/
+    /*    margin-left: 14%;*/
+    /*    margin-right: 20%;*/
+    /*}*/
 
     .question {
         margin: 1em;
@@ -297,6 +297,7 @@
 
         getElement() {
             const container = super.getElement();
+            const buttonContainer = document.createElement('div');
 
             const decrementButton = document.createElement('button');
             decrementButton.textContent = '-';
@@ -308,7 +309,6 @@
                     this.element.dispatchEvent(new Event('input')); // Trigger change event
                 }
             };
-
 
             const input = document.createElement('input');
             input.type = 'number';
@@ -325,9 +325,10 @@
                 this.element.dispatchEvent(new Event('input')); // Trigger change event
             };
 
-            container.appendChild(decrementButton);
-            container.appendChild(input);
-            container.appendChild(incrementButton);
+            buttonContainer.appendChild(decrementButton);
+            buttonContainer.appendChild(input);
+            buttonContainer.appendChild(incrementButton);
+            container.appendChild(buttonContainer);
 
             this.addListeners();
             return container;
