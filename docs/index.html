@@ -163,15 +163,10 @@
             container.classList.add("question");
             const label = document.createElement('label');
             label.innerHTML = this.title;
+            container.appendChild(label);
 
-            if (this.separateLine) {
-                const labelContainer = document.createElement('div');
-                labelContainer.appendChild(label);
-                container.appendChild(labelContainer);
-            } else {
-                label.style.marginRight = '2%';
-                container.appendChild(label);
-            }
+            if (this.separateLine) container.appendChild(document.createElement('br'));
+            else label.style.marginRight = '5%';
 
             return container;
         }
@@ -538,8 +533,8 @@
                     {"id": "scouter_name", "title": "Scouter name", "type": TextQuestion.type},
                     {"id": "game_type", "title": "Game Type", "choices": ["Training", "Qualifications", "Playoffs"], "type": MultipleChoiceQuestion.type},
                     {"id": "game_number", "title": "Game Number", "separateLine": true, "type": NumberQuestion.type}, "Team Info",
-                    {"id": "team_number", "title": "Team Number", "choices": ALL_TEAMS, "type": NumberFromChoicesQuestion.type},
-                    {"id": "alliance", "title": "Alliance", "choices": ["Red", "Blue"], "type": MultipleChoiceQuestion.type}
+                    {"id": "team_number", "title": "Team Number", "choices": ALL_TEAMS, "separateLine": true, "type": NumberFromChoicesQuestion.type},
+                    {"id": "alliance", "title": "Alliance", "choices": ["Red", "Blue"], "separateLine": true, "type": MultipleChoiceQuestion.type}
                 ]
             },
             {
