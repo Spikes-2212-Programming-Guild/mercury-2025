@@ -282,11 +282,11 @@
 
             const decrementButton = document.createElement('button');
             decrementButton.textContent = '-';
-            decrementButton.style.marginRight = "40px"; // Add some space to the right
+            decrementButton.style.marginRight = "40px";
             decrementButton.style.fontSize = "2em";
             decrementButton.onclick = () => {
                 if (this.element.value > 0) {
-                    this.element.stepDown(); // Decrease the number
+                    this.element.stepDown(); // dec the number
                     this.element.dispatchEvent(new Event('input')); // Trigger change event
                 }
             };
@@ -300,9 +300,9 @@
             const incrementButton = document.createElement('button');
             incrementButton.textContent = "+";
             incrementButton.style.fontSize = "2em";
-            incrementButton.style.marginLeft = "40px"; // Add some space to the left
+            incrementButton.style.marginLeft = "40px";
             incrementButton.onclick = () => {
-                this.element.stepUp(); // Increase the number
+                this.element.stepUp(); // inc the number
                 this.element.dispatchEvent(new Event('input')); // Trigger change event
             };
 
@@ -310,7 +310,7 @@
             container.appendChild(input);
             container.appendChild(incrementButton);
 
-            this.addListeners(); // Add event listeners if needed
+            this.addListeners();
             return container;
         }
     }
@@ -547,8 +547,8 @@
                     {"id": "auto_low_algae", "title": "Low", "type": NumberQuestion.type},
                     {"id": "auto_high_algae", "title": "High", "type": NumberQuestion.type},
                     "Algae:",
-                    {"id": "auto_robot_algae_throws", "title": "Successful Robot Net Throws", "type": NumberQuestion.type},
-                    {"id": "auto_algae_inserts", "title": "Algae Processor Inserts", "type": NumberQuestion.type},
+                    {"id": "auto_robot_algae_throws", "title": "Robot Throws to Net", "type": NumberQuestion.type},
+                    {"id": "auto_algae_inserts", "title": "Algae Inserts to Processor", "type": NumberQuestion.type},
                     "Human Player:",
                     {"id": "auto_human_player_algae_successful_throws", "title": "Human Player Successful Net Throws", "type": NumberQuestion.type},
                     {"id": "auto_human_player_algae_failed_throws", "title": "Human Player Failed Net Throws", "type": NumberQuestion.type},
@@ -566,7 +566,7 @@
                     {"id": "teleop_low_algae", "title": "Low", "type": NumberQuestion.type},
                     {"id": "teleop_high_algae", "title": "High", "type": NumberQuestion.type},
                     "Algae:",
-                    {"id": "teleop_robot_algae_throws", "title": "Successful Robot Net Throws", "type": NumberQuestion.type},
+                    {"id": "teleop_robot_algae_throws", "title": "Robot Throws to Net", "type": NumberQuestion.type},
                     {"id": "teleop_algae_inserts", "title": "Algae Inserts to Processor", "type": NumberQuestion.type},
                     "Human Player:",
                     {"id": "teleop_human_player_algae_successful_throws", "title": "Human Player Successful Net Throws", "type": NumberQuestion.type},
