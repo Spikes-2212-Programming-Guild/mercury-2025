@@ -354,25 +354,20 @@
         for (const question of questionObjects) {
             question.updateColor();
             if (!question.isValid()) {
-                // Mark the invalid question
                 question.setOutlineColor("yellow");
-
-                // Move it to its page
                 displayPage(question.getPage.name);
 
                 // Move the user to its position
                 const rect = question.getBoundingRect;
                 const absoluteY = window.scrollY + rect.top - window.innerHeight / 2 + rect.height / 2;
                 window.scrollTo({ top: absoluteY, behavior: "smooth" });
-
-                // Re-enable UI before returning
-                document.body.style.pointerEvents = "auto";
                 return;
             }
             formData[question.id] = question.getValue;
         }
 
         // Disable all interactive elements
+        submitting = true;
         document.body.style.pointerEvents = "none";
         htmlGlobals.loadingOverlay.style.visibility = "visible";
 
@@ -402,6 +397,7 @@
         clearAllAnswers();
         document.body.style.pointerEvents = "auto";
         htmlGlobals.loadingOverlay.style.visibility = "hidden";
+        submitting = false;
     }
 
     function saveAnswers(saved, formAnswers) {
@@ -469,7 +465,7 @@
         for (const page of document.getElementsByClassName('page')) {
             page.style.display = page.id === pageName ? 'block' : 'none';
         }
-        window.scrollTo({ top: 0});
+        window.scrollTo({ top: 0, behavior: 'smooth' });
         updateButtons(pageName);
         htmlGlobals.titleLabel.innerHTML = pageName;
         localStorage.setItem('currentPage', pageName);
@@ -555,8 +551,7 @@
     function handleSwipe() {
         let diffX = endX - startX;
         let distanceY = Math.abs(endY - startY);
-        if (distanceY > 300) return;
-        if (htmlGlobals.loadingOverlay.style.visibility === 'visible') return;
+        if (submitting || distanceY > 300) return;
 
         if (diffX > 125) {
             htmlGlobals.relativeNavigationButtons.prev.click();
@@ -580,7 +575,7 @@
                     {"id": "game_type", "title": "Game Type", "choices": ["Training", "Qualifications", "Playoffs"], "type": MultipleChoiceQuestion.type},
                     {"id": "game_number", "title": "Game Number", "separateLine": true, "type": NumberQuestion.type}, "Team Info",
                     {"id": "team_number", "title": "Team Number", "choices": ALL_TEAMS, "separateLine": true, "type": NumberFromChoicesQuestion.type},
-                    {"id": "alliance", "title": "Alliance", "choices": ["Red", "Blue"], "separateLine": true, "type": MultipleChoiceQuestion.type}
+                    {"id": "alliance_color", "title": "Alliance", "choices": ["Red", "Blue"], "separateLine": true, "type": MultipleChoiceQuestion.type}
                 ]
             },
             {
@@ -652,6 +647,7 @@
         }
     };
 
+    let submitting = false;
     let startX, startY, endX, endY;
     const pageMaps = json.Pages;
     const pageAmount = pageMaps.length;
@@ -664,7 +660,7 @@
     // try to save all unsaved answers every 4 minutes
     setInterval(() => {
         try {
-            sendAllUnSavedAnswers();
+            if (!submitting) sendAllUnSavedAnswers();
         } catch (error) {
             console.error("Error in sendAllUnSavedAnswers:", error);
         }
