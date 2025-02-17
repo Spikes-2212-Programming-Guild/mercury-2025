@@ -147,36 +147,29 @@
 
 <script>
     class Question {
-        constructor(id, title, separateLine, page) {
+        constructor(id, title, separateLine, resetType, pageName) {
             this.id = id;
             this.title = title;
-            this.page = page;
+            this.pageName = pageName;
             this.element = null;
             this.separateLine = separateLine;
+            this.resetType = resetType;
         }
 
         set value(newValue) {
-            if (this.element) {
-                this.element.value = newValue;
-            }
+            this.element.value = newValue;
         }
 
         get value() {
-            return this.element ? this.element.value : null;
+            return this.element.value;
         }
 
         set outlineColor(color) {
-            if (this.element) {
-                this.element.style.outlineColor = color;
-            }
+            this.element.style.outlineColor = color;
         }
 
         get boundingRect() {
-            return this.element ? this.element.getBoundingClientRect() : null;
-        }
-
-        get pageName() {
-            return this.page;
+            return this.element.getBoundingClientRect();
         }
 
         createElement() {
@@ -219,7 +212,7 @@
         static type = 'text';
 
         isValid() {
-            return super.isValid() && this.getValue.length > 0 && this.getValue.length < 100;
+            return super.isValid() && this.value.length > 0 && this.value.length < 100;
         }
 
         createElement() {
@@ -236,8 +229,8 @@
     class MultipleChoiceQuestion extends Question {
         static type = 'choices';
 
-        constructor(id, title, separateLine, page, choices) {
-            super(id, title, separateLine, page);
+        constructor(id, title, separateLine, resetType, pageName, choices) {
+            super(id, title, separateLine, resetType, pageName);
             this.choices = choices;
         }
 
@@ -267,13 +260,13 @@
     class NumberFromChoicesQuestion extends Question {
         static type = 'numberFromChoices';
 
-        constructor(id, title, separateLine, page, choices) {
-            super(id, title, separateLine, page);
+        constructor(id, title, separateLine, resetType, pageName, choices) {
+            super(id, title, separateLine, resetType, pageName);
             this.choices = choices;
         }
 
         isValid() {
-            return super.isValid() && this.choices.includes(parseInt(this.getValue));
+            return super.isValid() && this.choices.includes(parseInt(this.value));
         }
 
         createElement() {
@@ -307,12 +300,12 @@
         static type = 'number';
 
         isValid() {
-            return super.isValid() && this.getValue <= 32767 && this.getValue >= 0;
+            return super.isValid() && this.value <= 32767 && this.value >= 0;
         }
 
         clear() {
-            this.setValue = -1;
-            this.setOutlineColor = COLORS.NEUTRAL;
+            this.value = -1;
+            this.outlineColor = COLORS.NEUTRAL;
         }
 
         createElement() {
@@ -324,7 +317,7 @@
             decrementButton.onclick = () => {
                 if (this.element.value > 0) {
                     this.element.stepDown(); // dec the number
-                    this.element.dispatchEvent(new Event('input'));
+                    this.element.dispatchEvent(new Event('input')); // Trigger change event
                 }
             };
 
@@ -357,16 +350,16 @@
         for (const question of questionObjects) {
             question.updateOutlineColor();
             if (!question.isValid()) {
-                question.setOutlineColor = COLORS.WARNING;
-                displayPage(question.getPage.name);
+                question.outlineColor = COLORS.WARNING;
+                displayPage(question.pageName);
 
-                // Move the user to its position
-                const rect = question.getBoundingRect;
+                // Move the user to the question pos on the screen
+                const rect = question.boundingRect;
                 const absoluteY = window.scrollY + rect.top - window.innerHeight / 2 + rect.height / 2;
                 window.scrollTo({ top: absoluteY, behavior: "smooth" });
                 return;
             }
-            formData[question.id] = question.getValue;
+            formData[question.id] = question.value;
         }
         // Disable all interactive elements
         submitting = true;
@@ -448,6 +441,13 @@
 
     function clearAllAnswers() {
         for (const question of questionObjects) {
+            if (question.resetType === RESET_TYPES.KEEP) continue;
+            if (question.resetType === RESET_TYPES.INCREASE) {
+                let value = localStorage.getItem(question.id);
+                localStorage.setItem(question.id, value + 1);
+                question.value = value;
+                continue;
+            }
             localStorage.removeItem(question.id);
             question.clear();
         }
@@ -507,11 +507,11 @@
                     pageContainer.appendChild(label);
                 } else {
                     // questions
-                    const questionObject = createQuestion(question, page);
+                    const questionObject = createQuestion(question, page.name);
                     pageContainer.appendChild(questionObject.createElement()); // add the html element
 
                     const savedValue = localStorage.getItem(question.id);
-                    if (savedValue) questionObject.setValue = savedValue;
+                    if (savedValue) questionObject.value = savedValue;
                     questionObject.updateOutlineColor();
 
                     questionObjects.push(questionObject); // Add to the page's question list
@@ -521,17 +521,18 @@
         });
     }
 
-    function createQuestion(question, page) {
+    function createQuestion(question, pageName) {
         const separateLine = question.separateLine || false;
+        const resetType = question.resetType || RESET_TYPES.CLEAR;
         switch (question.type) {
             case TextQuestion.type:
-                return new TextQuestion(question.id, question.title, separateLine, page);
+                return new TextQuestion(question.id, question.title, separateLine, resetType, pageName);
             case NumberQuestion.type:
-                return new NumberQuestion(question.id, question.title, separateLine, page);
+                return new NumberQuestion(question.id, question.title, separateLine, resetType, pageName);
             case MultipleChoiceQuestion.type:
-                return new MultipleChoiceQuestion(question.id, question.title, separateLine, page, question.choices);
+                return new MultipleChoiceQuestion(question.id, question.title, separateLine, resetType, pageName, question.choices);
             case NumberFromChoicesQuestion.type:
-                return new NumberFromChoicesQuestion(question.id, question.title, separateLine, page, question.choices);
+                return new NumberFromChoicesQuestion(question.id, question.title, separateLine, resetType, pageName, question.choices);
         }
     }
 
@@ -575,15 +576,21 @@
         3211, 5635, 1576, 9740, 6168, 4416, 3083, 2679, 7112, 8223, 5135, 7177, 4744, 5291, 4586, 2230, 6230, 2212,
         3388, 9304, 8175, 1580, 9303, 1943, 6741, 4319, 1954, 4661].sort();
 
+    const RESET_TYPES = {
+        CLEAR: 'clear',
+        KEEP: 'keep',
+        INCREASE: 'increase',
+    }
+
     const json = {
         "Pages": [
             {
                 "name": "Pre",
                 "questions": [
                     "General Info",
-                    {"id": "scouter_name", "title": "Scouter name", "type": TextQuestion.type},
+                    {"id": "scouter_name", "title": "Scouter name", "reset_type": RESET_TYPES.KEEP, "type": TextQuestion.type},
                     {"id": "game_type", "title": "Game Type", "choices": ["Training", "Qualifications", "Playoffs"], "type": MultipleChoiceQuestion.type},
-                    {"id": "game_number", "title": "Game Number", "separateLine": true, "type": NumberQuestion.type}, "Team Info",
+                    {"id": "game_number", "title": "Game Number", "separateLine": true,"reset_type": RESET_TYPES.INCREASE, "type": NumberQuestion.type}, "Team Info",
                     {"id": "team_number", "title": "Team Number", "choices": ALL_TEAMS, "separateLine": true, "type": NumberFromChoicesQuestion.type},
                     {"id": "alliance_color", "title": "Alliance", "choices": ["Red", "Blue"], "separateLine": true, "type": MultipleChoiceQuestion.type}
                 ]
