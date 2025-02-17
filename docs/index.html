@@ -443,8 +443,9 @@
         for (const question of questionObjects) {
             if (question.resetType === RESET_TYPES.KEEP) continue;
             if (question.resetType === RESET_TYPES.INCREASE) {
-                let value = localStorage.getItem(question.id);
-                localStorage.setItem(question.id, value + 1);
+                let value = localStorage.getItem(question.id) || 0;
+                value = String(parseInt(value) + 1)
+                localStorage.setItem(question.id, value);
                 question.value = value;
                 continue;
             }
@@ -588,11 +589,11 @@
                 "name": "Pre",
                 "questions": [
                     "General Info",
-                    {"id": "scouter_name", "title": "Scouter name", "reset_type": RESET_TYPES.KEEP, "type": TextQuestion.type},
-                    {"id": "game_type", "title": "Game Type", "choices": ["Training", "Qualifications", "Playoffs"], "type": MultipleChoiceQuestion.type},
-                    {"id": "game_number", "title": "Game Number", "separateLine": true,"reset_type": RESET_TYPES.INCREASE, "type": NumberQuestion.type}, "Team Info",
+                    {"id": "scouter_name", "title": "Scouter name", "resetType": RESET_TYPES.KEEP, "type": TextQuestion.type},
+                    {"id": "game_type", "title": "Game Type", "resetType": RESET_TYPES.KEEP, "choices": ["Training", "Qualifications", "Playoffs"], "type": MultipleChoiceQuestion.type},
+                    {"id": "game_number", "title": "Game Number", "separateLine": true,"resetType": RESET_TYPES.INCREASE, "type": NumberQuestion.type}, "Team Info",
                     {"id": "team_number", "title": "Team Number", "choices": ALL_TEAMS, "separateLine": true, "type": NumberFromChoicesQuestion.type},
-                    {"id": "alliance_color", "title": "Alliance", "choices": ["Red", "Blue"], "separateLine": true, "type": MultipleChoiceQuestion.type}
+                    {"id": "alliance_color", "title": "Alliance", "resetType": RESET_TYPES.KEEP, "choices": ["Red", "Blue"], "separateLine": true, "type": MultipleChoiceQuestion.type}
                 ]
             },
             {
