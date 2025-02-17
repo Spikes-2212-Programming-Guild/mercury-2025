@@ -387,7 +387,7 @@
 
             if (response.ok) {
                 saveAnswers(true, formData);
-                displayPage(pagesConfig[0].name);
+                displayPage(pageMaps[0].name);
             }
         } catch (error) {
             if (error instanceof TypeError) {
@@ -455,7 +455,7 @@
     }
 
     function renderAbsoluteNavigationButtons(container) {
-        pagesConfig.forEach(page => {
+        pageMaps.forEach(page => {
             const button = document.createElement('button');
             button.innerHTML = page.name;
             button.classList.add('absolute_navigation');
@@ -476,18 +476,18 @@
     }
 
     function updateButtons(pageName) {
-        let currentPageConfig = pagesConfig.find(page => page.name === pageName);
-        const pageIndex = pagesConfig.indexOf(currentPageConfig);
+        let currentPageMap = pageMaps.find(page => page.name === pageName);
+        const pageIndex = pageMaps.indexOf(currentPageMap);
         const nextButton = htmlGlobals.relativeNavigationButtons.next;
         const prevButton = htmlGlobals.relativeNavigationButtons.prev;
 
         prevButton.style.disabeled = pageIndex > 0 ? 'true' : 'false';
         prevButton.style.color = pageIndex > 0 ? 'white' : 'gray';
-        prevButton.onclick = pageIndex > 0 ? () => displayPage(pagesConfig[pageIndex - 1].name) : null;
+        prevButton.onclick = pageIndex > 0 ? () => displayPage(pageMaps[pageIndex - 1].name) : null;
 
         nextButton.style.color = pageIndex + 1 < pageAmount ? 'white' : 'gray';
         nextButton.style.disabeled = pageIndex + 1 < pageAmount ? 'true' : 'false';
-        nextButton.onclick = pageIndex + 1 < pageAmount ? () => displayPage(pagesConfig[pageIndex + 1].name) : null;
+        nextButton.onclick = pageIndex + 1 < pageAmount ? () => displayPage(pageMaps[pageIndex + 1].name) : null;
 
         for (const pageButton of absoluteNavigationElements) {
             pageButton.style.fontWeight = pageButton.innerHTML === pageName ? 'bold' : 'normal'
@@ -495,7 +495,7 @@
     }
 
     function createAllQuestions() {
-        pagesConfig.forEach(page => {
+        pageMaps.forEach(page => {
             const pageContainer = document.createElement('fieldset');
             pageContainer.classList.add('page');
             pageContainer.id = page.name;
@@ -537,7 +537,7 @@
     function initializeApp() {
         createAllQuestions();
         renderAbsoluteNavigationButtons(htmlGlobals.absoluteNavContainer);
-        displayPage(localStorage.getItem('currentPage') || pagesConfig[0].name);
+        displayPage(localStorage.getItem('currentPage') || pageMaps[0].name);
     }
 
     function setUpSwipeListeners() {
@@ -652,8 +652,8 @@
     };
 
     let startX, startY, endX, endY;
-    const pagesConfig = json.Pages;
-    const pageAmount = pagesConfig.length;
+    const pageMaps = json.Pages;
+    const pageAmount = pageMaps.length;
     const questionObjects = [];
     const absoluteNavigationElements = []
 
