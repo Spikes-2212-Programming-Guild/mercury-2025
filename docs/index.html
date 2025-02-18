@@ -226,8 +226,8 @@
         }
     }
 
-    class MultipleChoiceQuestion extends Question {
-        static type = 'choices';
+    class SelectQuestion extends Question {
+        static type = 'select';
 
         constructor(id, title, separateLine, resetType, pageName, choices) {
             super(id, title, separateLine, resetType, pageName);
@@ -530,8 +530,8 @@
                 return new TextQuestion(question.id, question.title, separateLine, resetType, pageName);
             case NumberQuestion.type:
                 return new NumberQuestion(question.id, question.title, separateLine, resetType, pageName);
-            case MultipleChoiceQuestion.type:
-                return new MultipleChoiceQuestion(question.id, question.title, separateLine, resetType, pageName, question.choices);
+            case SelectQuestion.type:
+                return new SelectQuestion(question.id, question.title, separateLine, resetType, pageName, question.choices);
             case NumberFromChoicesQuestion.type:
                 return new NumberFromChoicesQuestion(question.id, question.title, separateLine, resetType, pageName, question.choices);
         }
@@ -590,16 +590,16 @@
                 "questions": [
                     "General Info",
                     {"id": "scouter_name", "title": "Scouter name", "resetType": RESET_TYPES.KEEP, "type": TextQuestion.type},
-                    {"id": "game_type", "title": "Game Type", "resetType": RESET_TYPES.KEEP, "choices": ["Training", "Qualifications", "Playoffs"], "type": MultipleChoiceQuestion.type},
+                    {"id": "game_type", "title": "Game Type", "resetType": RESET_TYPES.KEEP, "choices": ["Training", "Qualifications", "Playoffs"], "type": SelectQuestion.type},
                     {"id": "game_number", "title": "Game Number", "separateLine": true,"resetType": RESET_TYPES.INCREASE, "type": NumberQuestion.type}, "Team Info",
                     {"id": "team_number", "title": "Team Number", "choices": ALL_TEAMS, "separateLine": true, "type": NumberFromChoicesQuestion.type},
-                    {"id": "alliance_color", "title": "Alliance", "resetType": RESET_TYPES.KEEP, "choices": ["Red", "Blue"], "separateLine": true, "type": MultipleChoiceQuestion.type}
+                    {"id": "alliance_color", "title": "Alliance", "resetType": RESET_TYPES.KEEP, "choices": ["Red", "Blue"], "separateLine": true, "type": SelectQuestion.type}
                 ]
             },
             {
                 "name": "Auto",
                 "questions": [
-                    {"id": "left_starting_line", "title": "Left starting line", "choices": ["Yes", "No"], "type": MultipleChoiceQuestion.type},
+                    {"id": "left_starting_line", "title": "Left starting line", "choices": ["Yes", "No"], "type": SelectQuestion.type},
                     "Enter the Amount of Corals Scored:",
                     {"id": "auto_coral_l4", "title": "L4", "type": NumberQuestion.type},
                     {"id": "auto_coral_l3", "title": "L3", "type": NumberQuestion.type},
@@ -638,17 +638,25 @@
             {
                 "name": "End",
                 "questions": [
-                    {"id": "attempted_climbing", "title": "Attempted Climbing", "choices": ["Yes", "No"], "type": MultipleChoiceQuestion.type},
-                    {"id": "climb_time", "title": "Time Took to climb", "choices": ["0-5", "5-15", "15-20"], "type": MultipleChoiceQuestion.type},
-                    {"id": "successfully_climbed", "title": "Successfully Climbed", "choices": ["Yes", "No"], "type": MultipleChoiceQuestion.type},
+                    {"id": "attempted_climbing", "title": "Attempted Climbing", "choices": ["Yes", "No"], "type": SelectQuestion.type},
+                    {"id": "climb_time", "title": "Time Took to climb", "choices": ["0-5", "5-15", "15-20"], "type": SelectQuestion.type},
+                    {"id": "successfully_climbed", "title": "Successfully Climbed", "choices": ["Yes", "No"], "type": SelectQuestion.type},
                     "High - Shallow ; Low - Deep",
-                    {"id": "cage_type", "title": "Cage Type", "choices": ["High", "Low", "None"], "type": MultipleChoiceQuestion.type},
+                    {"id": "cage_type", "title": "Cage Type", "choices": ["High", "Low", "None"], "type": SelectQuestion.type},
                 ]
             },
             {
                 "name": "Post",
                 "questions": [
-                    {"id": "played_defence", "title": "Played Defence", "choices": ["Yes", "No"], "type": MultipleChoiceQuestion.type},
+                    {"id": "played_defence", "title": "Played Defence", "choices": ["Yes", "No"], "type": SelectQuestion.type},
+                    {"id": "robot_status", "title": "Robot Status", "choices": ["Working Properly", "Working Badly" ,"Stunned", "Falling Apart"], "type": SelectQuestion.type},
+                    "Systems:",
+                    {"id": "climb_status", "title": "Climb Status", "choices": ["Working Properly", "Working Badly", "Not Functioning"], "type": SelectQuestion.type},
+                    {"id": "drive_status", "title": "Drive Status", "choices": ["Working Properly", "Working Badly", "Not Functioning"], "type": SelectQuestion.type},
+                    {"id": "coral_status", "title": "Coral Status", "choices": ["Working Properly", "Working Badly", "Not Functioning"], "type": SelectQuestion.type},
+                    {"id": "algae_status", "title": "Algae Status", "choices": ["Working Properly", "Working Badly", "Not Functioning"], "type": SelectQuestion.type},
+                    {"id": "pickup_status", "title": "Pickup Status", "choices": ["Working Properly", "Working Badly", "Not Functioning"], "type": SelectQuestion.type},
+                    {"id": "notes", "title": "Notes:", "separateLine": true, "type": TextQuestion.type},
                 ]
             },
         ]
