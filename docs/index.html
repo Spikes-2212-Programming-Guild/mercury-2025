@@ -129,6 +129,13 @@
         border-radius: 10px;
     }
 
+    #notes input {
+        height: 10em;
+        display:table-cell;
+        width:100%;
+        text-align-last: start;
+    }
+
     /* ========== HOVER EFFECTS ========== */
     .absolute_navigation:hover,
     #submit_button:hover {
@@ -219,6 +226,7 @@
             const container = super.createElement();
             const input = document.createElement('input');
             input.type = 'text';
+            input.maxLength = 100;
             container.appendChild(input);
             this.element = input;
             this.addListeners()
@@ -303,11 +311,6 @@
             return super.isValid() && this.value <= 32767 && this.value >= 0;
         }
 
-        clear() {
-            this.value = -1;
-            this.outlineColor = COLORS.NEUTRAL;
-        }
-
         createElement() {
             const container = super.createElement();
             const decrementButton = document.createElement('button');
@@ -323,7 +326,6 @@
 
             const input = document.createElement('input');
             input.type = 'number';
-            input.value = '-1';
             input.style.width = "2em";
             this.element = input;
 
@@ -336,9 +338,11 @@
                 this.element.dispatchEvent(new Event('input')); // Trigger change event
             };
 
-            container.appendChild(decrementButton);
-            container.appendChild(input);
-            container.appendChild(incrementButton);
+            const buttonContainer = document.createElement('div');
+            buttonContainer.appendChild(decrementButton);
+            buttonContainer.appendChild(input);
+            buttonContainer.appendChild(incrementButton);
+            container.appendChild(buttonContainer);
 
             this.addListeners();
             return container;
@@ -575,7 +579,7 @@
     const ALL_TEAMS = [1690, 3339, 5951, 2231, 1574, 1577, 5614, 3075, 5990, 5715, 6740, 1937, 5987, 1657, 4590,
         5654, 7039, 2630, 9739, 2096, 3065, 1942, 6104, 7845, 3316, 5554, 6738, 4320, 9738, 7067, 5928, 3835, 4338,
         3211, 5635, 1576, 9740, 6168, 4416, 3083, 2679, 7112, 8223, 5135, 7177, 4744, 5291, 4586, 2230, 6230, 2212,
-        3388, 9304, 8175, 1580, 9303, 1943, 6741, 4319, 1954, 4661].sort();
+        3388, 9304, 8175, 1580, 9303, 1943, 6741, 4319, 1954, 4661, 10139, 10695].sort();
 
     const RESET_TYPES = {
         CLEAR: 'clear',
@@ -639,7 +643,7 @@
                 "name": "End",
                 "questions": [
                     {"id": "attempted_climbing", "title": "Attempted Climbing", "choices": ["Yes", "No"], "type": SelectQuestion.type},
-                    {"id": "climb_time", "title": "Time Took to climb", "choices": ["0-5", "5-15", "15-20"], "type": SelectQuestion.type},
+                    {"id": "climb_time", "title": "Time Took to climb", "choices": ["N/A","0-5", "5-15", "15-20", "20+"], "type": SelectQuestion.type},
                     {"id": "successfully_climbed", "title": "Successfully Climbed", "choices": ["Yes", "No"], "type": SelectQuestion.type},
                     "High - Shallow ; Low - Deep",
                     {"id": "cage_type", "title": "Cage Type", "choices": ["High", "Low", "None"], "type": SelectQuestion.type},
@@ -649,13 +653,8 @@
                 "name": "Post",
                 "questions": [
                     {"id": "played_defence", "title": "Played Defence", "choices": ["Yes", "No"], "type": SelectQuestion.type},
-                    {"id": "robot_status", "title": "Robot Status", "choices": ["Working Properly", "Working Badly" ,"Stunned", "Falling Apart"], "type": SelectQuestion.type},
-                    "Systems:",
-                    {"id": "climb_status", "title": "Climb Status", "choices": ["Working Properly", "Working Badly", "Not Functioning"], "type": SelectQuestion.type},
-                    {"id": "drive_status", "title": "Drive Status", "choices": ["Working Properly", "Working Badly", "Not Functioning"], "type": SelectQuestion.type},
-                    {"id": "coral_status", "title": "Coral Status", "choices": ["Working Properly", "Working Badly", "Not Functioning"], "type": SelectQuestion.type},
-                    {"id": "algae_status", "title": "Algae Status", "choices": ["Working Properly", "Working Badly", "Not Functioning"], "type": SelectQuestion.type},
-                    {"id": "pickup_status", "title": "Pickup Status", "choices": ["Working Properly", "Working Badly", "Not Functioning"], "type": SelectQuestion.type},
+                    {"id": "was_defended", "title": "Was Defended", "choices": ["Yes", "No"], "type": SelectQuestion.type},
+                    {"id": "robot_status", "title": "Robot Status", "choices": ["Operating Properly", "Operating Poorly" ,"Non-Functional"], "type": SelectQuestion.type},
                     {"id": "notes", "title": "Notes:", "separateLine": true, "type": TextQuestion.type},
                 ]
             },
