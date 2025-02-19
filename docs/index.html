@@ -246,10 +246,15 @@
             return this.value.length < 100;
         }
 
+        clear() {
+            this.value = ' ';
+        }
+
         createElement() {
             const container = super.createElement();
             const textarea = document.createElement('textarea');
             textarea.maxLength = 100;
+            textarea.value = ' ';
             container.appendChild(textarea);
             this.element = textarea;
             this.addListeners()
