@@ -330,6 +330,11 @@
             return super.isValid() && this.value <= 32767 && this.value >= 0;
         }
 
+        clear() {
+            this.value = 0;
+            this.outlineColor = 'white';
+        }
+
         createElement() {
             const container = super.createElement();
             const decrementButton = document.createElement('button');
