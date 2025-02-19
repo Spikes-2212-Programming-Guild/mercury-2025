@@ -291,7 +291,7 @@
             super(id, title, separateLine, resetType, pageName);
             this.choices = choices;
             this._value = null;
-            this.buttonMap = {};
+            this.buttonMap = new Map();
         }
 
         set value(newValue) {
