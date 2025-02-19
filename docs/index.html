@@ -129,11 +129,12 @@
         border-radius: 10px;
     }
 
-    #notes input {
-        height: 10em;
-        display:table-cell;
-        width:100%;
-        text-align-last: start;
+    .question textarea {
+        outline: white 3px solid;
+        margin: 0.3em;
+        width: 10em;
+        height: 7em;
+        border-radius: 10px;
     }
 
     /* ========== HOVER EFFECTS ========== */
@@ -215,8 +216,27 @@
         }
     }
 
-    class TextQuestion extends Question {
-        static type = 'text';
+    class LineQuestion extends Question {
+        static type = 'line';
+
+        isValid() {
+            return super.isValid() && this.value.length > 0 && this.value.length < 20;
+        }
+
+        createElement() {
+            const container = super.createElement();
+            const input = document.createElement('input');
+            input.type = 'text';
+            input.maxLength = 20;
+            container.appendChild(input);
+            this.element = input;
+            this.addListeners()
+            return container;
+        }
+    }
+
+    class TextBoxQuestion extends Question {
+        static type = 'textBox';
 
         isValid() {
             return super.isValid() && this.value.length > 0 && this.value.length < 100;
@@ -224,11 +244,10 @@
 
         createElement() {
             const container = super.createElement();
-            const input = document.createElement('input');
-            input.type = 'text';
-            input.maxLength = 100;
-            container.appendChild(input);
-            this.element = input;
+            const textarea = document.createElement('textarea');
+            textarea.maxLength = 100;
+            container.appendChild(textarea);
+            this.element = textarea;
             this.addListeners()
             return container;
         }
@@ -530,8 +549,10 @@
         const separateLine = question.separateLine || false;
         const resetType = question.resetType || RESET_TYPES.CLEAR;
         switch (question.type) {
-            case TextQuestion.type:
-                return new TextQuestion(question.id, question.title, separateLine, resetType, pageName);
+            case LineQuestion.type:
+                return new LineQuestion(question.id, question.title, separateLine, resetType, pageName);
+            case TextBoxQuestion.type:
+                return new TextBoxQuestion(question.id, question.title, separateLine, resetType, pageName);
             case NumberQuestion.type:
                 return new NumberQuestion(question.id, question.title, separateLine, resetType, pageName);
             case SelectQuestion.type:
@@ -593,7 +614,7 @@
                 "name": "Pre",
                 "questions": [
                     "General Info",
-                    {"id": "scouter_name", "title": "Scouter name", "resetType": RESET_TYPES.KEEP, "type": TextQuestion.type},
+                    {"id": "scouter_name", "title": "Scouter name", "resetType": RESET_TYPES.KEEP, "type": LineQuestion.type},
                     {"id": "game_type", "title": "Game Type", "resetType": RESET_TYPES.KEEP, "choices": ["Training", "Qualifications", "Playoffs"], "type": SelectQuestion.type},
                     {"id": "game_number", "title": "Game Number", "separateLine": true,"resetType": RESET_TYPES.INCREASE, "type": NumberQuestion.type}, "Team Info",
                     {"id": "team_number", "title": "Team Number", "choices": ALL_TEAMS, "separateLine": true, "type": NumberFromChoicesQuestion.type},
@@ -655,7 +676,7 @@
                     {"id": "played_defence", "title": "Played Defence", "choices": ["Yes", "No"], "type": SelectQuestion.type},
                     {"id": "was_defended", "title": "Was Defended", "choices": ["Yes", "No"], "type": SelectQuestion.type},
                     {"id": "robot_status", "title": "Robot Status", "choices": ["Operating Properly", "Operating Poorly" ,"Non-Functional"], "type": SelectQuestion.type},
-                    {"id": "notes", "title": "Notes:", "separateLine": true, "type": TextQuestion.type},
+                    {"id": "notes", "title": "Notes:", "separateLine": true, "type": TextBoxQuestion.type},
                 ]
             },
         ]
