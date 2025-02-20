@@ -455,15 +455,14 @@
             if (response.ok) {
                 console.log("Submitted Successfully: ", formData);
                 saveAnswers(true, formData);
-                displayPage(pageMaps[0].name);
             }
         } catch (error) {
             console.error("Submitting Failed: ", formData);
             if (error instanceof TypeError) {
-                console.error("Submission Failed Due to Wifi, Sending to Unsaved. Error: " + error);
+                console.error("Submission Failed Due to Wifi, Sending to Unsaved ", error);
                 saveAnswers(false, formData);
             } else {
-                console.error("Bugged submission, not saving");
+                console.error("Bugged submission, not saving ", error);
             }
         }
 
@@ -475,6 +474,7 @@
     }
 
     function saveAnswers(saved, formAnswers) {
+        displayPage(pageMaps[0].name);
         // save in allSubmissions
         let allSubmissions = JSON.parse(localStorage.getItem('allSubmissions')) || [];
         allSubmissions.push(formAnswers);
@@ -509,7 +509,7 @@
                     console.error("Re-Submit Failed Due to Wifi ", error);
                     newUnsentSubmissions.push(submission);
                 } else {
-                    console.error("Removing Bugged Submission");
+                    console.error("Removing Bugged Submission ", error);
                 }
             }
         }
