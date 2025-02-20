@@ -17,7 +17,7 @@
 
 <div id="relative_navigation_container">
     <button id="prev_button" class="relative_navigation">< Previous</button>
-    <button id="submit_button" onclick="submit()">Submit</button>
+    <button id="submit_button" onclick="submit()" oncontextmenu="submit(); saveAllUnSavedAnswers()">Submit</button>
     <button id="next_button" class="relative_navigation">Next></button>
 </div>
 
@@ -321,7 +321,6 @@
                 if (this._value === choice) button.classList.add('selected');
 
                 button.addEventListener('click', () => (this.value = choice));
-
                 buttonContainer.appendChild(button);
             });
 
@@ -399,6 +398,7 @@
 
             const input = document.createElement('input');
             input.type = 'number';
+            input.disabled = true;
             input.style.width = "2em";
             input.value = '0';
             this.element = input;
