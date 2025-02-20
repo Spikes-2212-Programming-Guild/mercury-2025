@@ -264,7 +264,7 @@
         static type = 'textBox';
 
         isValid() {
-            return this.value.length < 100;
+            return this.value.length < 150;
         }
 
         clear() {
@@ -275,7 +275,7 @@
             const container = super.createElement();
             container.classList.add('text_box_question');
             const textarea = document.createElement('textarea');
-            textarea.maxLength = 100;
+            textarea.maxLength = 150;
             textarea.value = ' ';
             container.appendChild(textarea);
             this.element = textarea;
@@ -304,7 +304,6 @@
         }
 
         get value() {
-            console.log(this._value);
             return this._value;
         }
 
