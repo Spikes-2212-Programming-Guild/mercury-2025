@@ -205,6 +205,7 @@
             container.classList.add('question');
             const label = document.createElement('label');
             label.innerHTML = this.title;
+            label.style.marginRight = "5%"
             container.appendChild(label);
             return container;
         }
@@ -382,7 +383,7 @@
             container.classList.add('number_question');
             const decrementButton = document.createElement('button');
             decrementButton.textContent = '-';
-            decrementButton.style.marginRight = "0.5em";
+            decrementButton.style.marginRight = "0.25em";
             decrementButton.style.fontSize = "2em";
             decrementButton.onclick = () => {
                 if (this.element.value > 0) {
@@ -401,13 +402,13 @@
             const incrementButton = document.createElement('button');
             incrementButton.textContent = "+";
             incrementButton.style.fontSize = "2em";
-            incrementButton.style.marginLeft = "0.5em";
+            incrementButton.style.marginLeft = "0.25em";
             incrementButton.onclick = () => {
                 this.element.stepUp(); // inc the number
                 this.element.dispatchEvent(new Event('input')); // Trigger change event
             };
 
-            const buttonContainer = document.createElement('div');
+            const buttonContainer = document.createElement('fieldset');
             buttonContainer.appendChild(decrementButton);
             buttonContainer.appendChild(input);
             buttonContainer.appendChild(incrementButton);
