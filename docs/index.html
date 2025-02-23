@@ -394,7 +394,7 @@
             const input = document.createElement('input');
             input.type = 'number';
             input.disabled = true;
-            input.style.width = "5em";
+            input.style.width = "1em";
             input.value = '0';
             this.element = input;
 
@@ -406,7 +406,7 @@
                 this.element.dispatchEvent(new Event('input')); // Trigger change event
             };
 
-            const buttonContainer = document.createElement('fieldset');
+            const buttonContainer = document.createElement('div');
             buttonContainer.appendChild(decrementButton);
             buttonContainer.appendChild(input);
             buttonContainer.appendChild(incrementButton);
