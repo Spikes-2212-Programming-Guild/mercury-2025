@@ -166,6 +166,7 @@
     }
 
     .number_question div {
+        margin-top: 0.5em;
         align-items: center; /* Align items in the same line */
         gap: 0.5em; /* Control the space between elements */
     }
@@ -181,11 +182,14 @@
         line-height: 1; /* Prevents Safari from adding extra height */
     }
 
-    .number_question input {
+    .number_question_number {
         width: 2em;
         height: 1.5em;
         text-align: center;
         appearance: none; /* Removes Apple's input styling */
+        outline: white 3px solid;
+        border-radius: 10px;
+        padding: 0.25em 0.75em;
         margin-right: 0.75em; /* Prevents extra space */
         margin-left: 0.75em; /* Prevents extra space */
     }
@@ -239,7 +243,7 @@
             container.classList.add('question');
             const label = document.createElement('label');
             label.innerHTML = this.title;
-            label.style.marginRight = '0.5em';
+            label.style.marginRight = '4%';
             container.appendChild(label);
             return container;
         }
@@ -415,31 +419,33 @@
         createElement() {
             const container = super.createElement();
             container.classList.add('number_question');
+
+            const numberLabel = document.createElement('label');
+            numberLabel.classList.add('number_question_number');
+            numberLabel.type = 'number';
+            numberLabel.innerText = '0';
+            this.element = numberLabel;
+
             const decrementButton = document.createElement('button');
             decrementButton.textContent = '-';
             decrementButton.onclick = () => {
-                if (this.element.value > 0) {
-                    this.element.stepDown(); // dec the number
-                    this.element.dispatchEvent(new Event('input')); // Trigger change event
-                }
+                let value = parseInt(numberLabel.innerText);
+                if (value <= 0) return;
+                numberLabel.innerText = String(value-1);
+                this.element.dispatchEvent(new Event('input')); // Trigger change event
             };
-
-            const input = document.createElement('input');
-            input.type = 'number';
-            input.disabled = true;
-            input.value = '0';
-            this.element = input;
 
             const incrementButton = document.createElement('button');
             incrementButton.textContent = "+";
             incrementButton.onclick = () => {
-                this.element.stepUp(); // inc the number
+                let value = parseInt(numberLabel.innerText);
+                numberLabel.innerText = String(value+1);
                 this.element.dispatchEvent(new Event('input')); // Trigger change event
             };
 
             const buttonContainer = document.createElement('div');
             buttonContainer.appendChild(decrementButton);
-            buttonContainer.appendChild(input);
+            buttonContainer.appendChild(numberLabel);
             buttonContainer.appendChild(incrementButton);
             container.appendChild(buttonContainer);
 
