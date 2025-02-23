@@ -616,24 +616,26 @@
         }
     }
 
+    function disableZoom() {
+        document.addEventListener('gesturestart', function (e) {
+            e.preventDefault();
+        });
+        let lastTouchEnd = 0;
+        document.addEventListener('touchend', function (event) {
+            let now = (new Date()).getTime();
+            if (now - lastTouchEnd <= 300) {
+                event.preventDefault();
+            }
+            lastTouchEnd = now;
+        }, false);
+    }
+
     function initializeApp() {
         createAllQuestions();
         renderAbsoluteNavigationButtons(htmlGlobals.absoluteNavContainer);
         displayPage(localStorage.getItem('currentPage') || pageMaps[0].name);
         setUpSwipeListeners();
-
-        // document.addEventListener('gesturestart', function (e) {
-        //     e.preventDefault();
-        // });
-        // let lastTouchEnd = 0;
-        // document.addEventListener('touchend', function (event) {
-        //     let now = (new Date()).getTime();
-        //     if (now - lastTouchEnd <= 300) {
-        //         event.preventDefault();
-        //     }
-        //     lastTouchEnd = now;
-        // }, false);
-
+        disableZoom();
         setInterval(() => { // try to save all unsaved answers every 4 minutes
             try {
                 if (!submitting) saveAllUnSavedAnswers();
