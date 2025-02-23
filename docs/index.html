@@ -3,7 +3,6 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="user-scalable=no">
-    <meta name="viewport" content="width=device-width, initial-scale=0.4, maximum-scale=0.4">
     <title>Mercury 2025</title>
 </head>
 <body>
@@ -622,6 +621,9 @@
         renderAbsoluteNavigationButtons(htmlGlobals.absoluteNavContainer);
         displayPage(localStorage.getItem('currentPage') || pageMaps[0].name);
         setUpSwipeListeners();
+        document.addEventListener('gesturestart', function (e) {
+            e.preventDefault();
+        });
         setInterval(() => { // try to save all unsaved answers every 4 minutes
             try {
                 if (!submitting) saveAllUnSavedAnswers();
