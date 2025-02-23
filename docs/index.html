@@ -630,7 +630,7 @@
             }
 
             // Block double-tap zoom for everything else
-            if (now - lastTouchEnd <= 50) {
+            if (now - lastTouchEnd <= 100) {
                 event.preventDefault();
             }
             lastTouchEnd = now;
