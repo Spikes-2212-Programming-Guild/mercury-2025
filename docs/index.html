@@ -399,6 +399,7 @@
             input.type = 'number';
             input.disabled = true;
             input.style.width = "2em";
+            input.style.margin = "0";
             input.value = '0';
             this.element = input;
 
@@ -412,6 +413,7 @@
 
             const buttonContainer = document.createElement('div');
             buttonContainer.style.justifyContent = 'space-between';
+            buttonContainer.style.gap = '0px';
 
             buttonContainer.appendChild(decrementButton);
             buttonContainer.appendChild(input);
