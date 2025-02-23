@@ -175,12 +175,11 @@
 <script>
     class Question {
 
-        constructor(id, title, separateLine, resetType, pageName) {
+        constructor(id, title, resetType, pageName) {
             this.id = id;
             this.title = title;
             this.pageName = pageName;
             this.element = null;
-            this.separateLine = separateLine;
             this.resetType = resetType;
         }
 
@@ -208,8 +207,8 @@
             label.innerHTML = this.title;
             container.appendChild(label);
 
-            if (this.separateLine) container.appendChild(document.createElement('br'));
-            else label.style.marginRight = '5%';
+            container.appendChild(document.createElement('br'));
+            label.style.marginRight = '5%';
 
             return container;
         }
@@ -287,8 +286,8 @@
     class SelectQuestion extends Question {
         static type = 'select';
 
-        constructor(id, title, separateLine, resetType, pageName, choices) {
-            super(id, title, separateLine, resetType, pageName);
+        constructor(id, title, resetType, pageName, choices) {
+            super(id, title, resetType, pageName);
             this.choices = choices;
             this._value = null;
             this.buttonMap = new Map();
@@ -334,8 +333,8 @@
     class NumberFromChoicesQuestion extends Question {
         static type = 'numberFromChoices';
 
-        constructor(id, title, separateLine, resetType, pageName, choices) {
-            super(id, title, separateLine, resetType, pageName);
+        constructor(id, title, resetType, pageName, choices) {
+            super(id, title, resetType, pageName);
             this.choices = choices;
         }
 
@@ -601,19 +600,18 @@
     }
 
     function createQuestion(question, pageName) {
-        const separateLine = question.separateLine || false;
         const resetType = question.resetType || RESET_TYPES.CLEAR;
         switch (question.type) {
             case LineQuestion.type:
-                return new LineQuestion(question.id, question.title, separateLine, resetType, pageName);
+                return new LineQuestion(question.id, question.title, resetType, pageName);
             case TextBoxQuestion.type:
-                return new TextBoxQuestion(question.id, question.title, separateLine, resetType, pageName);
+                return new TextBoxQuestion(question.id, question.title, resetType, pageName);
             case NumberQuestion.type:
-                return new NumberQuestion(question.id, question.title, separateLine, resetType, pageName);
+                return new NumberQuestion(question.id, question.title, resetType, pageName);
             case SelectQuestion.type:
-                return new SelectQuestion(question.id, question.title, separateLine, resetType, pageName, question.choices);
+                return new SelectQuestion(question.id, question.title, resetType, pageName, question.choices);
             case NumberFromChoicesQuestion.type:
-                return new NumberFromChoicesQuestion(question.id, question.title, separateLine, resetType, pageName, question.choices);
+                return new NumberFromChoicesQuestion(question.id, question.title, resetType, pageName, question.choices);
         }
     }
 
@@ -708,11 +706,11 @@
                     {"id": "teleop_high_algae", "title": "High", "type": NumberQuestion.type},
                     {"id": "teleop_low_algae", "title": "Low", "type": NumberQuestion.type},
                     "Algae:",
-                    {"id": "teleop_robot_algae_throws", "title": "Robot Throws to Net", "separateLine": true, "type": NumberQuestion.type},
-                    {"id": "teleop_algae_inserts", "title": "Algae Processor Inserts", "separateLine": true, "type": NumberQuestion.type},
+                    {"id": "teleop_robot_algae_throws", "title": "Robot Throws to Net", "type": NumberQuestion.type},
+                    {"id": "teleop_algae_inserts", "title": "Algae Processor Inserts", "type": NumberQuestion.type},
                     "Human Player:",
-                    {"id": "teleop_human_player_algae_successful_throws", "title": "Successful Net Throws", "separateLine": true, "type": NumberQuestion.type},
-                    {"id": "teleop_human_player_algae_failed_throws", "title": "Failed Net Throws", "separateLine": true, "type": NumberQuestion.type},
+                    {"id": "teleop_human_player_algae_successful_throws", "title": "Successful Net Throws", "type": NumberQuestion.type},
+                    {"id": "teleop_human_player_algae_failed_throws", "title": "Failed Net Throws", "type": NumberQuestion.type},
                 ]
             },
             {
@@ -731,7 +729,7 @@
                     {"id": "played_defence", "title": "Played Defence", "choices": ["Yes", "No"], "type": SelectQuestion.type},
                     {"id": "was_defended", "title": "Was Defended", "choices": ["Yes", "No"], "type": SelectQuestion.type},
                     {"id": "robot_status", "title": "Robot Status", "choices": ["Operating Properly", "Operating Poorly" ,"Non-Functional"], "type": SelectQuestion.type},
-                    {"id": "notes", "title": "Notes:", "separateLine": true, "type": TextBoxQuestion.type},
+                    {"id": "notes", "title": "Notes:", "type": TextBoxQuestion.type},
                 ]
             },
         ]
