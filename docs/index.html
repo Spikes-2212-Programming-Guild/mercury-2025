@@ -421,7 +421,8 @@
         }
 
         get value() {
-            return parseInt(this.element.innerText);
+            if (typeof this.element.innerText === 'string') return parseInt(this.element.innerText);
+            else return 0;
         }
 
         createElement() {
