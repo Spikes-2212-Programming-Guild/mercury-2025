@@ -27,6 +27,7 @@
 <style>
     /* ========== GLOBAL STYLES ========== */
     * {
+        backface-visibility: hidden;
         touch-action: manipulation; /* Disables double-tap zoom */
         background-color: #282c34;
         color: white;
@@ -57,7 +58,6 @@
 
     /* ========== NAVIGATION ========== */
     #absolute_navigation_container {
-        backface-visibility: hidden;
         position: fixed;
         top: 0;
         left: 50%;
@@ -158,6 +158,31 @@
         width: 10em;
         height: 7em;
         border-radius: 10px;
+    }
+
+    .number_question div {
+        display: flex;
+        align-items: center; /* Align items in the same line */
+        gap: 5px; /* Control the space between elements */
+    }
+
+    .number_question button {
+        appearance: none; /* Removes Apple-specific button styling */
+        border: none;
+        background: none;
+        padding: 0;
+        font-size: 2em;
+        cursor: pointer;
+        line-height: 1; /* Prevents Safari from adding extra height */
+    }
+
+    .number_question input {
+        width: 2em;
+        text-align: center;
+        font-size: 1.5em;
+        border: 1px solid black;
+        appearance: none; /* Removes Apple's input styling */
+        margin: 0; /* Prevents extra space */
     }
 
     /* ========== HOVER EFFECTS ========== */
@@ -399,7 +424,6 @@
             input.type = 'number';
             input.disabled = true;
             input.style.width = "2em";
-            input.style.margin = "0";
             input.value = '0';
             this.element = input;
 
@@ -412,9 +436,6 @@
             };
 
             const buttonContainer = document.createElement('div');
-            buttonContainer.style.justifyContent = 'space-between';
-            buttonContainer.style.gap = '0px';
-
             buttonContainer.appendChild(decrementButton);
             buttonContainer.appendChild(input);
             buttonContainer.appendChild(incrementButton);
