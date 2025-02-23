@@ -17,7 +17,7 @@
 
 <div id="relative_navigation_container">
     <button id="prev_button" class="relative_navigation">< Previous</button>
-    <button id="submit_button" onclick="submit()" oncontextmenu="submit(); saveAllUnSavedAnswers()">Submit</button>
+    <button id="submit_button" onclick="submit()" oncontextmenu="saveAllUnSavedAnswers()">Submit</button>
     <button id="next_button" class="relative_navigation">Next></button>
 </div>
 
@@ -387,31 +387,30 @@
             decrementButton.style.fontSize = "2em";
             decrementButton.onclick = () => {
                 if (this.element.value > 0) {
-                    this.element.stepDown(); // dec the number
+                    // this.element.stepDown(); // dec the number
                     this.element.dispatchEvent(new Event('input')); // Trigger change event
                 }
             };
 
-            const input = document.createElement('input');
-            input.type = 'number';
-            input.disabled = true;
-            input.style.width = "2em";
-            input.style.marginRight = "0.5em";
-            input.style.marginLeft = "0.5em";
-            input.value = '0';
-            this.element = input;
+            const numberLabel = document.createElement('label');
+            numberLabel.style.width = "2em";
+            numberLabel.style.marginRight = "0.5em";
+            numberLabel.style.marginLeft = "0.5em";
+            numberLabel.style.border = "4px black solid";
+            numberLabel.innerHTML = '0';
+            this.element = numberLabel;
 
             const incrementButton = document.createElement('button');
             incrementButton.textContent = "+";
             incrementButton.style.fontSize = "2em";
             incrementButton.onclick = () => {
-                this.element.stepUp(); // inc the number
+                // this.element.stepUp(); // inc the number
                 this.element.dispatchEvent(new Event('input')); // Trigger change event
             };
 
             const buttonContainer = document.createElement('div');
             buttonContainer.appendChild(decrementButton);
-            buttonContainer.appendChild(input);
+            buttonContainer.appendChild(numberLabel);
             buttonContainer.appendChild(incrementButton);
             container.appendChild(buttonContainer);
 
