@@ -203,12 +203,13 @@
             const container = document.createElement('fieldset');
             container.id = this.id;
             container.classList.add('question');
+
+            const labelContainer = document.createElement('fieldset');
             const label = document.createElement('label');
             label.innerHTML = this.title;
-            container.appendChild(label);
-
-            container.appendChild(document.createElement('br'));
             label.style.marginRight = '5%';
+            labelContainer.appendChild(label);
+            container.appendChild(labelContainer);
 
             return container;
         }
@@ -411,9 +412,11 @@
                 this.element.dispatchEvent(new Event('input')); // Trigger change event
             };
 
-            container.appendChild(decrementButton);
-            container.appendChild(input);
-            container.appendChild(incrementButton);
+            const buttonContainer = document.createElement('div');
+            buttonContainer.appendChild(decrementButton);
+            buttonContainer.appendChild(input);
+            buttonContainer.appendChild(incrementButton);
+            container.appendChild(buttonContainer);
 
             this.addListeners();
             return container;
