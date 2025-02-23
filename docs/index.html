@@ -387,30 +387,31 @@
             decrementButton.style.fontSize = "2em";
             decrementButton.onclick = () => {
                 if (this.element.value > 0) {
-                    // this.element.stepDown(); // dec the number
+                    this.element.stepDown(); // dec the number
                     this.element.dispatchEvent(new Event('input')); // Trigger change event
                 }
             };
 
-            const numberLabel = document.createElement('label');
-            numberLabel.style.width = "2em";
-            numberLabel.style.marginRight = "0.5em";
-            numberLabel.style.marginLeft = "0.5em";
-            numberLabel.style.border = "4px black solid";
-            numberLabel.innerHTML = '0';
-            this.element = numberLabel;
+            const input = document.createElement('input');
+            input.type = 'number';
+            input.disabled = true;
+            input.style.width = "2em";
+            input.style.marginRight = "0.5em";
+            input.style.marginLeft = "0.5em";
+            input.value = '0';
+            this.element = input;
 
             const incrementButton = document.createElement('button');
             incrementButton.textContent = "+";
             incrementButton.style.fontSize = "2em";
             incrementButton.onclick = () => {
-                // this.element.stepUp(); // inc the number
+                this.element.stepUp(); // inc the number
                 this.element.dispatchEvent(new Event('input')); // Trigger change event
             };
 
             const buttonContainer = document.createElement('div');
             buttonContainer.appendChild(decrementButton);
-            buttonContainer.appendChild(numberLabel);
+            buttonContainer.appendChild(input);
             buttonContainer.appendChild(incrementButton);
             container.appendChild(buttonContainer);
 
