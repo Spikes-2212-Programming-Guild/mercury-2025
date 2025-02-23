@@ -12,7 +12,9 @@
 
 <h1 id="title">Mercury 2025</h1>
 
-<div id="pages_container"></div>
+<div id="pages_container">
+    <button id="reset_button" onclick="clearAllAnswers(false); displayPage(pageMaps[0].name)">Reset</button>
+</div>
 
 <div id="loadingOverlay">Submitting...</div>
 
@@ -95,6 +97,14 @@
     }
 
     /* ========== BUTTONS ========== */
+
+    #reset_button {
+        position: absolute;
+        bottom: -130vh;
+        left: 50%;
+        transform: translateX(-50%);
+        font-size: 2em;
+    }
 
     button, input, label {
         position: static;
@@ -504,7 +514,7 @@
         }
 
         // clearing old answers and enabling interactive elements
-        clearAllAnswers();
+        clearAllAnswers(true);
         document.body.style.pointerEvents = "auto";
         htmlGlobals.loadingOverlay.style.visibility = "hidden";
         submitting = false;
@@ -554,15 +564,17 @@
         localStorage.setItem('unsentSubmissions', JSON.stringify(newUnsentSubmissions));
     }
 
-    function clearAllAnswers() {
+    function clearAllAnswers(ignoreResetTypes) {
         for (const question of questionObjects) {
-            if (question.resetType === RESET_TYPES.KEEP) continue;
-            if (question.resetType === RESET_TYPES.INCREASE) {
-                let value = localStorage.getItem(question.id) || 0;
-                value = String(parseInt(value) + 1)
-                localStorage.setItem(question.id, value);
-                question.value = value;
-                continue;
+            if (ignoreResetTypes) {
+                if (question.resetType === RESET_TYPES.KEEP) continue;
+                if (question.resetType === RESET_TYPES.INCREASE) {
+                    let value = localStorage.getItem(question.id) || 0;
+                    value = String(parseInt(value) + 1)
+                    localStorage.setItem(question.id, value);
+                    question.value = value;
+                    continue;
+                }
             }
             localStorage.removeItem(question.id);
             question.reset();
@@ -672,6 +684,10 @@
             }
             lastTouchEnd = now;
         }, false);
+    }
+
+    function resetAll() {
+        s
     }
 
     function initializeApp() {
