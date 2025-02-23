@@ -101,6 +101,7 @@
     }
 
     .absolute_navigation {
+        z-index: 1000;
         padding: 1%;
         width: 20vw;
         background-color: #0056b3;
@@ -426,7 +427,6 @@
             const input = document.createElement('input');
             input.type = 'number';
             input.disabled = true;
-            input.style.zIndex = '0';
             input.value = '0';
             this.element = input;
 
