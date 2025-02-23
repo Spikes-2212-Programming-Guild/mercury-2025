@@ -411,11 +411,9 @@
                 this.element.dispatchEvent(new Event('input')); // Trigger change event
             };
 
-            const buttonContainer = document.createElement('div');
-            buttonContainer.appendChild(decrementButton);
-            buttonContainer.appendChild(input);
-            buttonContainer.appendChild(incrementButton);
-            container.appendChild(buttonContainer);
+            container.appendChild(decrementButton);
+            container.appendChild(input);
+            container.appendChild(incrementButton);
 
             this.addListeners();
             return container;
