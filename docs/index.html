@@ -208,8 +208,6 @@
             label.style.marginRight = '0.5em';
             container.appendChild(label);
             container.appendChild(document.createElement('br'));
-            container.appendChild(document.createElement('br'));
-            container.appendChild(document.createElement('br'));
             return container;
         }
 
@@ -387,7 +385,7 @@
             const decrementButton = document.createElement('button');
             decrementButton.textContent = '-';
             decrementButton.style.marginRight = "0.25em";
-            decrementButton.style.fontSize = "2em";
+            decrementButton.style.fontSize = "1.5em";
             decrementButton.onclick = () => {
                 if (this.element.value > 0) {
                     this.element.stepDown(); // dec the number
@@ -404,7 +402,7 @@
 
             const incrementButton = document.createElement('button');
             incrementButton.textContent = "+";
-            incrementButton.style.fontSize = "2em";
+            incrementButton.style.fontSize = "1.5em";
             incrementButton.style.marginLeft = "0.25em";
             incrementButton.onclick = () => {
                 this.element.stepUp(); // inc the number
