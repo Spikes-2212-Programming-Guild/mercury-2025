@@ -189,9 +189,9 @@
         appearance: none; /* Removes Apple's input styling */
         outline: white 3px solid;
         border-radius: 10px;
-        padding: 0.25em 0.75em;
-        margin-right: 0.75em; /* Prevents extra space */
-        margin-left: 0.75em; /* Prevents extra space */
+        padding: 0.2em 0.75em;
+        margin-right: 0.5em; /* Prevents extra space */
+        margin-left: 0.5em; /* Prevents extra space */
     }
 
     /* ========== HOVER EFFECTS ========== */
@@ -416,6 +416,14 @@
             this.value = 0;
         }
 
+        set value(newValue) {
+            this.element.innerText = String(newValue);
+        }
+
+        get value() {
+            return parseInt(this.element.innerText);
+        }
+
         createElement() {
             const container = super.createElement();
             container.classList.add('number_question');
@@ -429,17 +437,15 @@
             const decrementButton = document.createElement('button');
             decrementButton.textContent = '-';
             decrementButton.onclick = () => {
-                let value = parseInt(numberLabel.innerText);
-                if (value <= 0) return;
-                numberLabel.innerText = String(value-1);
+                if (this.value <= 0) return;
+                this.value = this.value - 1;
                 this.element.dispatchEvent(new Event('input')); // Trigger change event
             };
 
             const incrementButton = document.createElement('button');
             incrementButton.textContent = "+";
             incrementButton.onclick = () => {
-                let value = parseInt(numberLabel.innerText);
-                numberLabel.innerText = String(value+1);
+                this.value = this.value + 1;
                 this.element.dispatchEvent(new Event('input')); // Trigger change event
             };
 
