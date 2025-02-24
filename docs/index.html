@@ -476,7 +476,7 @@
                 window.scrollTo({ top: absoluteY, behavior: "smooth" });
                 return;
             }
-            formData[question.id] = question.value;
+            formData[question.id] = String(question.value);
         }
 
         // Disable all interactive elements
