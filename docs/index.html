@@ -689,11 +689,9 @@
     function resetAllButton() {
         const userConfirmed = confirm("Are you sure you want to reset All?");
         if (userConfirmed) {
-            // Reset action if user confirms
-            alert("Data has been reset!");
             clearAllAnswers(false);
-            displayPage(pageMaps[0].name)
         }
+        displayPage(pageMaps[0].name)
     }
 
     function initializeApp() {
