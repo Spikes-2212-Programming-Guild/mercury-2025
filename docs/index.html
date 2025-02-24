@@ -13,7 +13,7 @@
 <h1 id="title">Mercury 2025</h1>
 
 <div id="pages_container">
-    <button id="reset_button" onclick="resetPageButton()">Reset Page</button>
+    <button id="reset_button" onclick="resetAllButton()">Reset All</button>
 </div>
 
 <div id="loadingOverlay">Submitting...</div>
@@ -514,7 +514,7 @@
         }
 
         // clearing old answers and enabling interactive elements
-        clearAllAnswers(true);
+        clearAllAnswers(false);
         document.body.style.pointerEvents = "auto";
         htmlGlobals.loadingOverlay.style.visibility = "hidden";
         submitting = false;
@@ -564,23 +564,17 @@
         localStorage.setItem('unsentSubmissions', JSON.stringify(newUnsentSubmissions));
     }
 
-    function clearPageAnswers(pageName) {
+    function clearAllAnswers(ignoreResetTypes) {
         for (const question of questionObjects) {
-            if (question.pageName !== pageName) continue;
-            localStorage.removeItem(question.id);
-            question.reset();
-        }
-    }
-
-    function clearAllAnswers() {
-        for (const question of questionObjects) {
-            if (question.resetType === RESET_TYPES.KEEP) continue;
-            if (question.resetType === RESET_TYPES.INCREASE) {
-                let value = localStorage.getItem(question.id) || 0;
-                value = String(parseInt(value) + 1)
-                localStorage.setItem(question.id, value);
-                question.value = value;
-                continue;
+            if (!ignoreResetTypes) {
+                if (question.resetType === RESET_TYPES.KEEP) continue;
+                if (question.resetType === RESET_TYPES.INCREASE) {
+                    let value = localStorage.getItem(question.id) || 0;
+                    value = String(parseInt(value) + 1)
+                    localStorage.setItem(question.id, value);
+                    question.value = value;
+                    continue;
+                }
             }
             localStorage.removeItem(question.id);
             question.reset();
@@ -692,12 +686,14 @@
         }, false);
     }
 
-    function resetPageButton() {
-        const userConfirmed = confirm("Are you sure you want to reset Page?");
+    function resetAllButton() {
+        const userConfirmed = confirm("Are you sure you want to reset All?");
         if (userConfirmed) {
-            clearPageAnswers(localStorage.getItem('currentPage') || pageMaps[0].name);
+            clearAllAnswers(true);
+            displayPage(pageMaps[0].name);
+        } else {
+            displayPage(localStorage.getItem('currentPage') || pageMaps[0].name);
         }
-        displayPage(localStorage.getItem('currentPage') || pageMaps[0].name);
     }
 
     function initializeApp() {
