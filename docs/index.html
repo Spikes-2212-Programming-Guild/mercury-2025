@@ -234,8 +234,7 @@
 
         set value(newValue) {
             this.element.value = newValue;
-            localStorage.setItem(this.id, newValue);
-            this.updateOutlineColor();
+            this.saveAndUpdateUI();
         }
 
         get value() {
@@ -275,10 +274,12 @@
         }
 
         addListener() {
-            this.element.addEventListener('input', () => {
-                localStorage.setItem(this.id, this.value);
-                this.updateOutlineColor();
-            });
+            this.element.addEventListener('input', () => this.saveAndUpdateUI(this.value));
+        }
+
+        saveAndUpdateUI(newValue) {
+            localStorage.setItem(this.id, newValue);
+            this.updateOutlineColor();
         }
 
         updateOutlineColor() {
@@ -311,7 +312,7 @@
         static type = 'textBox';
 
         isValid() {
-            return this.value.length < 150;
+            return this.value.length < 250;
         }
 
         clear() {
@@ -322,7 +323,7 @@
             const container = super.createElement();
             container.classList.add('text_box_question');
             const textarea = document.createElement('textarea');
-            textarea.maxLength = 150;
+            textarea.maxLength = 250;
             container.appendChild(textarea);
             this.element = textarea;
             this.addListener();
@@ -345,9 +346,7 @@
             this._value = newValue;
             this.buttonMap.forEach(btn => btn.classList.remove('selected'));
             this.buttonMap.get(newValue)?.classList.add('selected');
-
-            localStorage.setItem(this.id, newValue);
-            this.updateOutlineColor();
+            this.saveAndUpdateUI(newValue);
         }
 
         get value() {
@@ -431,8 +430,7 @@
 
         set value(newValue) {
             this.element.textContent = String(newValue);
-            localStorage.setItem(this.id, newValue);
-            this.updateOutlineColor();
+            this.saveAndUpdateUI(newValue);
         }
 
         get value() {
