@@ -278,7 +278,7 @@
         }
 
         saveAndUpdateUI(newValue) {
-            localStorage.setItem(this.id, newValue);
+            localStorage.setItem(this.id, newValue || this.defaultValue);
             this.updateOutlineColor();
         }
 
