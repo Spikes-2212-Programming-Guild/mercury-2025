@@ -223,16 +223,19 @@
 <script>
     class Question {
 
-        constructor(id, title, resetType, pageName) {
+        constructor(id, title, defaultValue, resetType, pageName) {
             this.id = id;
             this.title = title;
             this.pageName = pageName;
             this.element = null;
             this.resetType = resetType;
+            this.defaultValue = defaultValue;
         }
 
         set value(newValue) {
             this.element.value = newValue;
+            localStorage.setItem(this.id, newValue);
+            this.updateOutlineColor();
         }
 
         get value() {
@@ -252,7 +255,7 @@
             container.id = this.id;
             container.classList.add('question');
             const label = document.createElement('label');
-            label.innerHTML = this.title;
+            label.textContent = this.title;
             label.style.marginRight = '4%';
             container.appendChild(label);
             return container;
@@ -268,18 +271,18 @@
         }
 
         clear() {
-            this.value = '';
+            this.value = this.defaultValue;
         }
 
-        updateOutlineColor() {
-            this.outlineColor = this.isValid() ? COLORS.VALID : COLORS.INVALID;
-        }
-
-        addListeners() {
+        addListener() {
             this.element.addEventListener('input', () => {
                 localStorage.setItem(this.id, this.value);
                 this.updateOutlineColor();
             });
+        }
+
+        updateOutlineColor() {
+            this.outlineColor = this.isValid() ? COLORS.VALID : COLORS.INVALID;
         }
     }
 
@@ -299,7 +302,7 @@
             input.maxLength = 20;
             container.appendChild(input);
             this.element = input;
-            this.addListeners()
+            this.addListener();
             return container;
         }
     }
@@ -312,7 +315,7 @@
         }
 
         clear() {
-            this.value = ' ';
+            this.value = this.defaultValue || '';
         }
 
         createElement() {
@@ -320,10 +323,9 @@
             container.classList.add('text_box_question');
             const textarea = document.createElement('textarea');
             textarea.maxLength = 150;
-            textarea.value = ' ';
             container.appendChild(textarea);
             this.element = textarea;
-            this.addListeners()
+            this.addListener();
             return container;
         }
     }
@@ -331,11 +333,12 @@
     class SelectQuestion extends Question {
         static type = 'select';
 
-        constructor(id, title, resetType, pageName, choices) {
-            super(id, title, resetType, pageName);
+        constructor(id, title, defaultValue, resetType, pageName, choices) {
+            super(id, title, defaultValue, resetType, pageName);
             this.choices = choices;
             this._value = null;
             this.buttonMap = new Map();
+            this._value = localStorage.getItem(this.id) || defaultValue;
         }
 
         set value(newValue) {
@@ -378,8 +381,8 @@
     class NumberFromChoicesQuestion extends Question {
         static type = 'numberFromChoices';
 
-        constructor(id, title, resetType, pageName, choices) {
-            super(id, title, resetType, pageName);
+        constructor(id, title, defaultValue, resetType, pageName, choices) {
+            super(id, title, defaultValue, resetType, pageName);
             this.choices = choices;
         }
 
@@ -410,7 +413,7 @@
             container.appendChild(input);
             container.appendChild(datalist);
             this.element = input;
-            this.addListeners()
+            this.addListener();
             return container;
         }
     }
@@ -423,15 +426,17 @@
         }
 
         clear() {
-            this.value = 0;
+            this.value = this.defaultValue || 0;
         }
 
         set value(newValue) {
-            this.element.innerText = String(newValue);
+            this.element.textContent = String(newValue);
+            localStorage.setItem(this.id, newValue);
+            this.updateOutlineColor();
         }
 
         get value() {
-            return parseInt(this.element.innerText);
+            return parseInt(this.element.textContent);
         }
 
         createElement() {
@@ -441,22 +446,19 @@
             const numberLabel = document.createElement('label');
             numberLabel.classList.add('number_question_number');
             numberLabel.type = 'number';
-            numberLabel.innerText = '0';
             this.element = numberLabel;
 
             const decrementButton = document.createElement('button');
             decrementButton.textContent = '-';
             decrementButton.onclick = () => {
-                if (this.value <= 0) return;
+                if (this.value <= 0 || this.value <= this.defaultValue) return;
                 this.value = this.value - 1;
-                this.element.dispatchEvent(new Event('input')); // Trigger change event
             };
 
             const incrementButton = document.createElement('button');
             incrementButton.textContent = "+";
             incrementButton.onclick = () => {
                 this.value = this.value + 1;
-                this.element.dispatchEvent(new Event('input')); // Trigger change event
             };
 
             const buttonContainer = document.createElement('div');
@@ -464,8 +466,6 @@
             buttonContainer.appendChild(numberLabel);
             buttonContainer.appendChild(incrementButton);
             container.appendChild(buttonContainer);
-
-            this.addListeners()
             return container;
         }
     }
@@ -584,7 +584,7 @@
     function renderAbsoluteNavigationButtons(container) {
         pageMaps.forEach(page => {
             const button = document.createElement('button');
-            button.innerHTML = page.name;
+            button.textContent = page.name;
             button.classList.add('absolute_navigation');
             button.addEventListener('click', () => displayPage(page.name));
             container.appendChild(button);
@@ -598,7 +598,7 @@
         }
         window.scrollTo({ top: 0, behavior: 'smooth' });
         updateButtons(pageName);
-        htmlGlobals.titleLabel.innerHTML = pageName;
+        htmlGlobals.titleLabel.textContent = pageName;
         localStorage.setItem('currentPage', pageName);
     }
 
@@ -617,7 +617,7 @@
         nextButton.onclick = pageIndex + 1 < pageAmount ? () => displayPage(pageMaps[pageIndex + 1].name) : null;
 
         for (const pageButton of absoluteNavigationElements) {
-            pageButton.style.fontWeight = pageButton.innerHTML === pageName ? 'bold' : 'normal';
+            pageButton.style.fontWeight = pageButton.textContent === pageName ? 'bold' : 'normal';
         }
     }
 
@@ -630,7 +630,7 @@
                 if (typeof question === 'string') {
                     // titles
                     const label = document.createElement('label');
-                    label.innerHTML = question;
+                    label.textContent = question;
                     label.style.borderBottom = '0.1em solid gray';
                     pageContainer.appendChild(label);
                 } else {
@@ -640,6 +640,7 @@
 
                     const savedValue = localStorage.getItem(question.id);
                     if (savedValue) questionObject.value = savedValue;
+                    else questionObject.clear();
                     questionObject.updateOutlineColor();
 
                     questionObjects.push(questionObject); // Add to the page's question list
@@ -651,17 +652,18 @@
 
     function createQuestion(question, pageName) {
         const resetType = question.resetType || RESET_TYPES.CLEAR;
+        const defaultValue = question.defaultValue || '';
         switch (question.type) {
             case LineQuestion.type:
-                return new LineQuestion(question.id, question.title, resetType, pageName);
+                return new LineQuestion(question.id, question.title, defaultValue, resetType, pageName);
             case TextBoxQuestion.type:
-                return new TextBoxQuestion(question.id, question.title, resetType, pageName);
+                return new TextBoxQuestion(question.id, question.title, defaultValue, resetType, pageName);
             case NumberQuestion.type:
-                return new NumberQuestion(question.id, question.title, resetType, pageName);
+                return new NumberQuestion(question.id, question.title, defaultValue, resetType, pageName);
             case SelectQuestion.type:
-                return new SelectQuestion(question.id, question.title, resetType, pageName, question.choices);
+                return new SelectQuestion(question.id, question.title, defaultValue, resetType, pageName, question.choices);
             case NumberFromChoicesQuestion.type:
-                return new NumberFromChoicesQuestion(question.id, question.title, resetType, pageName, question.choices);
+                return new NumberFromChoicesQuestion(question.id, question.title, defaultValue, resetType, pageName, question.choices);
         }
     }
 
@@ -672,12 +674,10 @@
         let lastTouchEnd = 0;
         document.addEventListener('touchend', function (event) {
             let now = Date.now();
-
             // Allow normal clicks on buttons
             if (event.target.tagName === 'BUTTON' || event.target.closest('[role="button"]')) {
                 return;
             }
-
             // Block double-tap zoom for everything else
             if (now - lastTouchEnd <= 300) {
                 event.preventDefault();
@@ -751,9 +751,9 @@
                     "General Info",
                     {"id": "scouter_name", "title": "Scouter name", "resetType": RESET_TYPES.KEEP, "type": LineQuestion.type},
                     {"id": "game_type", "title": "Game Type", "resetType": RESET_TYPES.KEEP, "choices": ["Practice", "Qualifications", "Playoffs"], "type": SelectQuestion.type},
-                    {"id": "game_number", "title": "Game Number", "separateLine": true,"resetType": RESET_TYPES.INCREASE, "type": NumberQuestion.type}, "Team Info",
-                    {"id": "team_number", "title": "Team Number", "choices": ALL_TEAMS, "separateLine": true, "type": NumberFromChoicesQuestion.type},
-                    {"id": "alliance_color", "title": "Alliance", "resetType": RESET_TYPES.KEEP, "choices": ["Red", "Blue"], "separateLine": true, "type": SelectQuestion.type}
+                    {"id": "game_number", "title": "Game Number", "defaultValue": 1, "resetType": RESET_TYPES.INCREASE, "type": NumberQuestion.type}, "Team Info",
+                    {"id": "team_number", "title": "Team Number", "choices": ALL_TEAMS, "type": NumberFromChoicesQuestion.type},
+                    {"id": "alliance_color", "title": "Alliance", "resetType": RESET_TYPES.KEEP, "choices": ["Red", "Blue"], "type": SelectQuestion.type}
                 ]
             },
             {
@@ -769,11 +769,11 @@
                     {"id": "auto_high_algae", "title": "High", "type": NumberQuestion.type},
                     {"id": "auto_low_algae", "title": "Low", "type": NumberQuestion.type},
                     "Algae:",
-                    {"id": "auto_robot_algae_throws", "title": "Robot Throws to Net", "separateLine": true, "type": NumberQuestion.type},
-                    {"id": "auto_algae_inserts", "title": "Algae Processor Inserts", "separateLine": true, "type": NumberQuestion.type},
+                    {"id": "auto_robot_algae_throws", "title": "Robot Throws to Net", "type": NumberQuestion.type},
+                    {"id": "auto_algae_inserts", "title": "Algae Processor Inserts", "type": NumberQuestion.type},
                     "Human Player:",
-                    {"id": "auto_human_player_algae_successful_throws", "title": "Successful Net Throws", "separateLine": true, "type": NumberQuestion.type},
-                    {"id": "auto_human_player_algae_failed_throws", "title": "Failed Net Throws", "separateLine": true, "type": NumberQuestion.type},
+                    {"id": "auto_human_player_algae_successful_throws", "title": "Successful Net Throws", "type": NumberQuestion.type},
+                    {"id": "auto_human_player_algae_failed_throws", "title": "Failed Net Throws", "type": NumberQuestion.type},
                 ]
             },
             {
