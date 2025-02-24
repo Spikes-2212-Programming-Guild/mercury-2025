@@ -234,7 +234,7 @@
 
         set value(newValue) {
             this.element.value = newValue;
-            this.saveAndUpdateUI();
+            this.saveValueAndUpdateUI(newValue);
         }
 
         get value() {
@@ -260,25 +260,21 @@
             return container;
         }
 
-        reset() {
-            this.clear()
-            this.outlineColor = COLORS.NEUTRAL;
-        }
-
         isValid() {
             return this.value !== null && this.value !== '' && this.value !== undefined;
         }
 
         clear() {
             this.value = this.defaultValue;
+            this.outlineColor = COLORS.NEUTRAL;
         }
 
         addListener() {
-            this.element.addEventListener('input', () => this.saveAndUpdateUI(this.value));
+            this.element.addEventListener('input', () => this.saveValueAndUpdateUI(this.value));
         }
 
-        saveAndUpdateUI(newValue) {
-            localStorage.setItem(this.id, newValue || this.defaultValue);
+        saveValueAndUpdateUI(newValue) {
+            localStorage.setItem(this.id, newValue);
             this.updateOutlineColor();
         }
 
@@ -346,7 +342,7 @@
             this._value = newValue;
             this.buttonMap.forEach(btn => btn.classList.remove('selected'));
             this.buttonMap.get(newValue)?.classList.add('selected');
-            this.saveAndUpdateUI(newValue);
+            this.saveValueAndUpdateUI(newValue);
         }
 
         get value() {
@@ -430,7 +426,7 @@
 
         set value(newValue) {
             this.element.textContent = String(newValue);
-            this.saveAndUpdateUI(newValue);
+            this.saveValueAndUpdateUI(newValue);
         }
 
         get value() {
@@ -475,7 +471,6 @@
             if (!question.isValid()) {
                 question.outlineColor = COLORS.WARNING;
                 displayPage(question.pageName);
-
                 // Move the user to the question pos on the screen
                 const rect = question.boundingRect;
                 const absoluteY = window.scrollY + rect.top - window.innerHeight / 2 + rect.height / 2;
@@ -484,6 +479,7 @@
             }
             formData[question.id] = question.value;
         }
+
         // Disable all interactive elements
         submitting = true;
         document.body.style.pointerEvents = "none";
@@ -537,6 +533,8 @@
     }
 
     async function saveAllUnSavedAnswers() {
+        if (submitting) return;
+        submitting = true;
         let unsentSubmissions = JSON.parse(localStorage.getItem('unsentSubmissions')) || []
         let newUnsentSubmissions = []; // Store only failed ones
         console.log("Attempting to saved all unsaved answers", unsentSubmissions);
@@ -560,6 +558,7 @@
         }
         // Only keep failed submissions
         localStorage.setItem('unsentSubmissions', JSON.stringify(newUnsentSubmissions));
+        submitting = false;
     }
 
     function clearAllAnswers(ignoreResetTypes) {
@@ -574,8 +573,8 @@
                     continue;
                 }
             }
+            question.clear();
             localStorage.removeItem(question.id);
-            question.reset();
         }
     }
 
@@ -639,7 +638,6 @@
                     const savedValue = localStorage.getItem(question.id);
                     if (savedValue) questionObject.value = savedValue;
                     else questionObject.clear();
-                    questionObject.updateOutlineColor();
 
                     questionObjects.push(questionObject); // Add to the page's question list
                 }
@@ -728,6 +726,21 @@
 
         if (diffX > 125) htmlGlobals.relativeNavigationButtons.prev.click();
         else if (diffX < -200) htmlGlobals.relativeNavigationButtons.next.click();
+    }
+
+    function sendLifeTimeAnswers() {
+        const unsentSubmissions = JSON.parse(localStorage.getItem('unsentSubmissions')) || [];
+        console.log("Unsent Submissions:", unsentSubmissions);
+
+        const allSubmissions = JSON.parse(localStorage.getItem('allSubmissions')) || [];
+        localStorage.setItem('unsentSubmissions', allSubmissions);
+        saveAllUnSavedAnswers();
+    }
+
+    function clearLifeTimeAnswers() {
+        const allSubmissions = JSON.parse(localStorage.getItem('allSubmissions')) || [];
+        console.log("All Submissions:", allSubmissions);
+        localStorage.setItem('allSubmissions', null);
     }
 
     const ALL_TEAMS = [1690, 3339, 5951, 2231, 1574, 1577, 5614, 3075, 5990, 5715, 6740, 1937, 5987, 1657, 4590,
