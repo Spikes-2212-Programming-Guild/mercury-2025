@@ -690,8 +690,10 @@
         const userConfirmed = confirm("Are you sure you want to reset All?");
         if (userConfirmed) {
             clearAllAnswers(false);
+            displayPage(pageMaps[0].name);
+        } else {
+            displayPage(localStorage.getItem('currentPage') || pageMaps[0].name);
         }
-        displayPage(pageMaps[0].name)
     }
 
     function initializeApp() {
