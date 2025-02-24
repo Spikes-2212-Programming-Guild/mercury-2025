@@ -13,7 +13,7 @@
 <h1 id="title">Mercury 2025</h1>
 
 <div id="pages_container">
-    <button id="reset_button" onclick="resetAllButton()">Reset All</button>
+    <button id="reset_button" onclick="resetPageButton()">Reset Page</button>
 </div>
 
 <div id="loadingOverlay">Submitting...</div>
@@ -564,17 +564,23 @@
         localStorage.setItem('unsentSubmissions', JSON.stringify(newUnsentSubmissions));
     }
 
-    function clearAllAnswers(ignoreResetTypes) {
+    function clearPageAnswers(pageName) {
         for (const question of questionObjects) {
-            if (ignoreResetTypes) {
-                if (question.resetType === RESET_TYPES.KEEP) continue;
-                if (question.resetType === RESET_TYPES.INCREASE) {
-                    let value = localStorage.getItem(question.id) || 0;
-                    value = String(parseInt(value) + 1)
-                    localStorage.setItem(question.id, value);
-                    question.value = value;
-                    continue;
-                }
+            if (question.pageName !== pageName) continue;
+            localStorage.removeItem(question.id);
+            question.reset();
+        }
+    }
+
+    function clearAllAnswers() {
+        for (const question of questionObjects) {
+            if (question.resetType === RESET_TYPES.KEEP) continue;
+            if (question.resetType === RESET_TYPES.INCREASE) {
+                let value = localStorage.getItem(question.id) || 0;
+                value = String(parseInt(value) + 1)
+                localStorage.setItem(question.id, value);
+                question.value = value;
+                continue;
             }
             localStorage.removeItem(question.id);
             question.reset();
@@ -686,14 +692,12 @@
         }, false);
     }
 
-    function resetAllButton() {
-        const userConfirmed = confirm("Are you sure you want to reset All?");
+    function resetPageButton() {
+        const userConfirmed = confirm("Are you sure you want to reset Page?");
         if (userConfirmed) {
-            clearAllAnswers(false);
-            displayPage(pageMaps[0].name);
-        } else {
-            displayPage(localStorage.getItem('currentPage') || pageMaps[0].name);
+            clearPageAnswers(localStorage.getItem('currentPage') || pageMaps[0].name);
         }
+        displayPage(localStorage.getItem('currentPage') || pageMaps[0].name);
     }
 
     function initializeApp() {
