@@ -261,7 +261,8 @@
         }
 
         isValid() {
-            return this.value !== null && this.value !== '' && this.value !== undefined;
+            const value = this.value;
+            return value !== null && value !== '' && value !== undefined;
         }
 
         clear() {
@@ -287,7 +288,8 @@
         static type = 'line';
 
         isValid() {
-            return super.isValid() && this.value.length > 0 && this.value.length < 20;
+            const value = this.value;
+            return super.isValid() && value.length > 0 && value.length < 20;
         }
 
         createElement() {
@@ -304,6 +306,7 @@
     }
 
     class TextBoxQuestion extends Question {
+
         static type = 'textBox';
 
         isValid() {
@@ -327,6 +330,7 @@
     }
 
     class SelectQuestion extends Question {
+
         static type = 'select';
 
         constructor(id, title, defaultValue, resetType, pageName, choices) {
@@ -373,6 +377,7 @@
 
 
     class NumberFromChoicesQuestion extends Question {
+
         static type = 'numberFromChoices';
 
         constructor(id, title, defaultValue, resetType, pageName, choices) {
@@ -413,10 +418,12 @@
     }
 
     class NumberQuestion extends Question {
+
         static type = 'number';
 
         isValid() {
-            return super.isValid() && this.value <= 32767 && this.value >= 0;
+            const value = this.value;
+            return super.isValid() && value <= 32767 && value >= 0;
         }
 
         clear() {
@@ -515,12 +522,6 @@
 
     function saveAnswers(saved, formAnswers) {
         displayPage(pageMaps[0].name);
-        // save in allSubmissions
-        let allSubmissions = JSON.parse(localStorage.getItem('allSubmissions')) || [];
-        allSubmissions.push(formAnswers);
-        localStorage.setItem('allSubmissions', JSON.stringify(allSubmissions));
-        console.log("Submission saved to All Submissions:", formAnswers);
-
         // if didn't manage to save, upload to unsentSubmission to resend later
         if (!saved) {
             let unsentSubmissions = JSON.parse(localStorage.getItem('unsentSubmissions')) || [];
@@ -726,21 +727,6 @@
 
         if (diffX > 125) htmlGlobals.relativeNavigationButtons.prev.click();
         else if (diffX < -200) htmlGlobals.relativeNavigationButtons.next.click();
-    }
-
-    function sendLifeTimeAnswers() {
-        const unsentSubmissions = JSON.parse(localStorage.getItem('unsentSubmissions')) || [];
-        console.log("Unsent Submissions:", unsentSubmissions);
-
-        const allSubmissions = JSON.parse(localStorage.getItem('allSubmissions')) || [];
-        localStorage.setItem('unsentSubmissions', allSubmissions);
-        saveAllUnSavedAnswers();
-    }
-
-    function clearLifeTimeAnswers() {
-        const allSubmissions = JSON.parse(localStorage.getItem('allSubmissions')) || [];
-        console.log("All Submissions:", allSubmissions);
-        localStorage.setItem('allSubmissions', null);
     }
 
     const ALL_TEAMS = [1690, 3339, 5951, 2231, 1574, 1577, 5614, 3075, 5990, 5715, 6740, 1937, 5987, 1657, 4590,
