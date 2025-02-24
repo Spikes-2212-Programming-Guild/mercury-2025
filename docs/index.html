@@ -13,7 +13,7 @@
 <h1 id="title">Mercury 2025</h1>
 
 <div id="pages_container">
-    <button id="reset_button" onclick="clearAllAnswers(false); displayPage(pageMaps[0].name)">Reset</button>
+    <button id="reset_button" onclick="resetAllButton()">Reset All</button>
 </div>
 
 <div id="loadingOverlay">Submitting...</div>
@@ -686,8 +686,14 @@
         }, false);
     }
 
-    function resetAll() {
-        s
+    function resetAllButton() {
+        const userConfirmed = confirm("Are you sure you want to reset All?");
+        if (userConfirmed) {
+            // Reset action if user confirms
+            alert("Data has been reset!");
+            clearAllAnswers(false);
+            displayPage(pageMaps[0].name)
+        }
     }
 
     function initializeApp() {
