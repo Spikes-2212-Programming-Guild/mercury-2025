@@ -266,7 +266,6 @@
 
         clear() {
             this.value = this.defaultValue;
-            this.outlineColor = COLORS.NEUTRAL;
         }
 
         addListener() {
@@ -574,6 +573,7 @@
                 }
             }
             question.clear();
+            question.outlineColor = COLORS.NEUTRAL;
             localStorage.removeItem(question.id);
         }
     }
