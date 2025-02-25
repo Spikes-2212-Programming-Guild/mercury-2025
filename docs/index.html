@@ -748,7 +748,7 @@
                 "questions": [
                     "General Info",
                     {"id": "scouter_name", "title": "Scouter name", "resetType": RESET_TYPES.KEEP, "type": LineQuestion.type},
-                    {"id": "game_type", "title": "Game Type", "resetType": RESET_TYPES.KEEP, "choices": ["Practice", "Qualifications", "Playoffs"], "type": SelectQuestion.type},
+                    {"id": "game_type", "title": "Game Type", "resetType": RESET_TYPES.KEEP, "choices": ["Practice", "Qualifications"], "type": SelectQuestion.type},
                     {"id": "game_number", "title": "Game Number", "defaultValue": 1, "resetType": RESET_TYPES.INCREASE, "type": NumberQuestion.type}, "Team Info",
                     {"id": "team_number", "title": "Team Number", "choices": ALL_TEAMS, "type": NumberFromChoicesQuestion.type},
                     {"id": "alliance_color", "title": "Alliance", "resetType": RESET_TYPES.KEEP, "choices": ["Red", "Blue"], "type": SelectQuestion.type}
@@ -801,6 +801,7 @@
                     {"id": "successfully_climbed", "title": "Successfully Climbed", "choices": ["Yes", "No"], "type": SelectQuestion.type},
                     "High - Shallow ; Low - Deep",
                     {"id": "cage_type", "title": "Cage Type", "choices": ["High", "Low", "N/A"], "type": SelectQuestion.type},
+                    {"id": "end_state", "title": "End State", "choices": ["Parked", "Climbed", "Kept Playing"], "type": SelectQuestion.type},
                 ]
             },
             {
