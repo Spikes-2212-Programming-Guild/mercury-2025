@@ -336,7 +336,6 @@
         constructor(id, title, defaultValue, resetType, pageName, choices) {
             super(id, title, defaultValue, resetType, pageName);
             this.choices = choices;
-            this._value = null;
             this.buttonMap = new Map();
             this._value = localStorage.getItem(this.id) || defaultValue;
         }
