@@ -274,7 +274,7 @@
         }
 
         saveValueAndUpdateUI(newValue) {
-            localStorage.setItem(this.id, newValue);
+            setToLocalStorage(this.id, newValue);
             this.updateOutlineColor();
         }
 
@@ -337,7 +337,7 @@
             super(id, title, defaultValue, resetType, pageName);
             this.choices = choices;
             this.buttonMap = new Map();
-            this._value = localStorage.getItem(this.id) || defaultValue;
+            this._value = getFromLocalStorage(this.id) || defaultValue;
         }
 
         set value(newValue) {
@@ -373,7 +373,6 @@
             return container;
         }
     }
-
 
     class NumberFromChoicesQuestion extends Question {
 
@@ -525,10 +524,10 @@
         displayPage(pageMaps[0].name);
         // if didn't manage to save, upload to unsentSubmission to resend later
         if (!saved) {
-            let unsentSubmissions = JSON.parse(localStorage.getItem('unsentSubmissions')) || [];
+            let unsentSubmissions = JSON.parse(getFromLocalStorage('unsentSubmissions')) || [];
             console.log('Submission saved to UNSAVED Submissions:', formAnswers);
             unsentSubmissions.push(formAnswers);
-            localStorage.setItem('unsentSubmissions', JSON.stringify(unsentSubmissions));
+            setToLocalStorage('unsentSubmissions', JSON.stringify(unsentSubmissions));
         }
         alert('Saved successfully')
     }
@@ -536,7 +535,7 @@
     async function saveAllUnSavedAnswers() {
         if (submitting) return;
         submitting = true;
-        let unsentSubmissions = JSON.parse(localStorage.getItem('unsentSubmissions')) || []
+        let unsentSubmissions = JSON.parse(getFromLocalStorage('unsentSubmissions')) || [];
         let newUnsentSubmissions = []; // Store only failed ones
         console.log("Attempting to saved all unsaved answers", unsentSubmissions);
         for (const submission of unsentSubmissions) {
@@ -558,7 +557,7 @@
             }
         }
         // Only keep failed submissions
-        localStorage.setItem('unsentSubmissions', JSON.stringify(newUnsentSubmissions));
+        setToLocalStorage('unsentSubmissions', JSON.stringify(newUnsentSubmissions));
         submitting = false;
     }
 
@@ -567,16 +566,16 @@
             if (!ignoreResetTypes) {
                 if (question.resetType === RESET_TYPES.KEEP) continue;
                 if (question.resetType === RESET_TYPES.INCREASE) {
-                    let value = localStorage.getItem(question.id) || 0;
+                    let value = getFromLocalStorage(question.id) || 0;
                     value = String(parseInt(value) + 1)
-                    localStorage.setItem(question.id, value);
+                    setToLocalStorage(question.id, value);
                     question.value = value;
                     continue;
                 }
             }
             question.clear();
             question.outlineColor = COLORS.NEUTRAL;
-            localStorage.removeItem(question.id);
+            removeFromLocalStorage(question.id);
         }
     }
 
@@ -598,7 +597,7 @@
         window.scrollTo({ top: 0, behavior: 'smooth' });
         updateButtons(pageName);
         htmlGlobals.titleLabel.textContent = pageName;
-        localStorage.setItem('currentPage', pageName);
+        localStorage.setItem(appId + 'currentPage', pageName);
     }
 
     function updateButtons(pageName) {
@@ -637,7 +636,7 @@
                     const questionObject = createQuestion(question, page.name);
                     pageContainer.appendChild(questionObject.createElement()); // add the html element
 
-                    const savedValue = localStorage.getItem(question.id);
+                    const savedValue = getFromLocalStorage(question.id);
                     if (savedValue) questionObject.value = savedValue;
                     else questionObject.clear();
 
@@ -690,14 +689,26 @@
             clearAllAnswers(true);
             displayPage(pageMaps[0].name);
         } else {
-            displayPage(localStorage.getItem('currentPage') || pageMaps[0].name);
+            displayPage(getFromLocalStorage('currentPage') || pageMaps[0].name);
         }
+    }
+
+    function setToLocalStorage(key, value) {
+        localStorage.setItem(appId + key, value);
+    }
+
+    function getFromLocalStorage(key) {
+        return localStorage.getItem(appId + key);
+    }
+
+    function removeFromLocalStorage(key) {
+        return localStorage.removeItem(appId + key);
     }
 
     function initializeApp() {
         createAllQuestions();
         renderAbsoluteNavigationButtons(htmlGlobals.absoluteNavContainer);
-        displayPage(localStorage.getItem('currentPage') || pageMaps[0].name);
+        displayPage(getFromLocalStorage('currentPage') || pageMaps[0].name);
         setUpSwipeListeners();
         disableZoom();
         setInterval(() => { // try to save all unsaved answers every 4 minutes
@@ -840,6 +851,7 @@
     const pageAmount = pageMaps.length;
     const questionObjects = [];
     const absoluteNavigationElements = []
+    const appId = "qualification_practice_"
 
     initializeApp();
 
