@@ -501,6 +501,8 @@
             if (response.ok) {
                 console.log("Submitted Successfully: ", formData);
                 saveAnswers(true, formData);
+            } else {
+                console.log("Submitting failed: ", formData);
             }
         } catch (error) {
             console.error("Submitting Failed: ", formData);
