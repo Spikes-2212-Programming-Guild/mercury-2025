@@ -14,13 +14,14 @@
 
 <div id="pages_container">
     <button id="reset_button" onclick="resetAllButton()">Reset All</button>
+    <button id="re_send_button" onclick="saveAllUnSavedAnswers(); alert('trying to resend unsaved answers')">Send Unsaved Data</button>
 </div>
 
 <div id="loadingOverlay">Submitting...</div>
 
 <div id="relative_navigation_container">
     <button id="prev_button" class="relative_navigation">< Previous</button>
-    <button id="submit_button" onclick="submit()" oncontextmenu="saveAllUnSavedAnswers(); alert('trying to resend unsaved answers')">Submit</button>
+    <button id="submit_button" onclick="submit()">Submit</button>
     <button id="next_button" class="relative_navigation">Next></button>
 </div>
 
@@ -101,6 +102,14 @@
     #reset_button {
         position: absolute;
         bottom: -160vh;
+        left: 50%;
+        transform: translateX(-50%);
+        font-size: 2em;
+    }
+
+    #re_send_button {
+        position: absolute;
+        bottom: -150vh;
         left: 50%;
         transform: translateX(-50%);
         font-size: 2em;
@@ -717,7 +726,7 @@
             } catch (error) {
                 console.error("Error in sendAllUnSavedAnswers:", error);
             }
-        }, 4 * 60 * 1000);
+        }, 2 * 60 * 1000);
     }
 
     function setUpSwipeListeners() {
