@@ -493,26 +493,6 @@
             formData[question.id] = String(question.value);
         }
 
-        // Disable all interactive elements
-        submitting = true;
-        document.body.style.pointerEvents = "none";
-        htmlGlobals.loadingOverlay.style.visibility = "visible";
-
-        const formData = {};
-        for (const question of questionObjects) {
-            question.updateOutlineColor();
-            if (!question.isValid()) {
-                question.outlineColor = COLORS.WARNING;
-                displayPage(question.pageName);
-                // Move the user to the question position on the screen
-                const rect = question.boundingRect;
-                const absoluteY = window.scrollY + rect.top - window.innerHeight / 2 + rect.height / 2;
-                window.scrollTo({ top: absoluteY, behavior: "smooth" });
-                return;
-            }
-            formData[question.id] = String(question.value);
-        }
-
         submitting = true;
         document.body.style.pointerEvents = "none";
         htmlGlobals.loadingOverlay.style.visibility = "visible";
