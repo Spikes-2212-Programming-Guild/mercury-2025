@@ -778,7 +778,7 @@
                     "General Info",
                     {"id": "scouter_name", "title": "Scouter name", "resetType": RESET_TYPES.KEEP, "type": LineQuestion.type},
                     {"id": "game_type", "title": "Game Type", "resetType": RESET_TYPES.KEEP, "choices": ["Practice", "Qualifications"], "type": SelectQuestion.type},
-                    {"id": "game_number", "title": "Game Number", "defaultValue": 1, "resetType": RESET_TYPES.INCREASE, "type": NumberQuestion.type}, "Team Info",
+                    {"id": "game_number", "title": "Game Number", "defaultValue": 1, "type": NumberQuestion.type}, "Team Info",
                     {"id": "team_number", "title": "Team Number", "choices": ALL_TEAMS, "type": NumberFromChoicesQuestion.type},
                     {"id": "alliance_color", "title": "Alliance", "resetType": RESET_TYPES.KEEP, "choices": ["Red", "Blue"], "type": SelectQuestion.type}
                 ]
@@ -825,17 +825,16 @@
             {
                 "name": "End",
                 "questions": [
-                    {"id": "climb_state", "title": "Climbed", "choices": ["Yes", "No", "Failed"], "type": SelectQuestion.type},
-                    {"id": "climb_time", "title": "Time Took to Climb", "choices": ["N/A","0-5", "5-15", "15-20", "20+"], "type": SelectQuestion.type},
+                    {"id": "climb_time", "title": "Time Took to Climb", "choices": ["Didn't Climb","0-5", "5-15", "15-20", "20+"], "type": SelectQuestion.type},
                     "High - Shallow ; Low - Deep",
-                    {"id": "end_state", "title": "End State", "choices": ["Parked", "High", "Low", "On Field"], "type": SelectQuestion.type},
+                    {"id": "end_state", "title": "Climbed", "choices": ["High", "Low", "Failed", "Parked", "Didn't attempt"], "type": SelectQuestion.type},
                 ]
             },
             {
                 "name": "Post",
                 "questions": [
                     {"id": "played_defense", "title": "Played Defense", "choices": ["Yes", "No"], "type": SelectQuestion.type},
-                    {"id": "was_defended", "title": "Was Defended", "choices": ["Yes", "No"], "type": SelectQuestion.type},
+                    {"id": "was_defended", "title": "Was Defended Against", "choices": ["Yes", "No"], "type": SelectQuestion.type},
                     {"id": "robot_status", "title": "Robot Status", "choices": ["Operating Properly", "Operating Poorly" ,"Non-Functional"], "type": SelectQuestion.type},
                     {"id": "notes", "title": "Notes:", "type": TextBoxQuestion.type},
                 ]
