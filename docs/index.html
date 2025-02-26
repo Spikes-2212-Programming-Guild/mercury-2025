@@ -778,7 +778,7 @@
                     "General Info",
                     {"id": "scouter_name", "title": "Scouter name", "resetType": RESET_TYPES.KEEP, "type": LineQuestion.type},
                     {"id": "game_type", "title": "Game Type", "resetType": RESET_TYPES.KEEP, "choices": ["Practice", "Qualifications"], "type": SelectQuestion.type},
-                    {"id": "game_number", "title": "Game Number", "defaultValue": 1, "type": NumberQuestion.type}, "Team Info",
+                    {"id": "game_number", "title": "Game Number", "defaultValue": 1, "resetType": RESET_TYPES.INCREASE, "type": NumberQuestion.type}, "Team Info",
                     {"id": "team_number", "title": "Team Number", "choices": ALL_TEAMS, "type": NumberFromChoicesQuestion.type},
                     {"id": "alliance_color", "title": "Alliance", "resetType": RESET_TYPES.KEEP, "choices": ["Red", "Blue"], "type": SelectQuestion.type}
                 ]
