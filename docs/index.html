@@ -14,13 +14,14 @@
 
 <div id="pages_container">
     <button id="reset_button" onclick="resetAllButton()">Reset All</button>
+    <button id="re_send_button" onclick="saveAllUnSavedAnswers(); alert('trying to resend unsaved answers')">Send Unsaved Data</button>
 </div>
 
 <div id="loadingOverlay">Submitting...</div>
 
 <div id="relative_navigation_container">
     <button id="prev_button" class="relative_navigation">< Previous</button>
-    <button id="submit_button" onclick="submit()" oncontextmenu="saveAllUnSavedAnswers(); alert('trying to resend unsaved answers')">Submit</button>
+    <button id="submit_button" onclick="submit()">Submit</button>
     <button id="next_button" class="relative_navigation">Next></button>
 </div>
 
@@ -101,6 +102,14 @@
     #reset_button {
         position: absolute;
         bottom: -160vh;
+        left: 50%;
+        transform: translateX(-50%);
+        font-size: 2em;
+    }
+
+    #re_send_button {
+        position: absolute;
+        bottom: -150vh;
         left: 50%;
         transform: translateX(-50%);
         font-size: 2em;
@@ -484,10 +493,13 @@
             formData[question.id] = String(question.value);
         }
 
-        // Disable all interactive elements
         submitting = true;
         document.body.style.pointerEvents = "none";
         htmlGlobals.loadingOverlay.style.visibility = "visible";
+
+        const TIMEOUT = 5000; // Set the timeout duration in milliseconds (5 seconds)
+        const controller = new AbortController();
+        const timeoutId = setTimeout(() => controller.abort(), TIMEOUT);
 
         try {
             const response = await fetch("https://mercury-2025-server.onrender.com/submit", {
@@ -496,7 +508,11 @@
                     "Content-Type": "application/json",
                 },
                 body: JSON.stringify(formData),
+                signal: controller.signal, // Attach the abort signal
             });
+
+            clearTimeout(timeoutId); // Clear the timeout if the request succeeds
+
             if (response.ok) {
                 console.log("Submitted Successfully: ", formData);
                 saveAnswers(true, formData);
@@ -505,7 +521,10 @@
             }
         } catch (error) {
             console.error("Submitting Failed: ", formData);
-            if (error instanceof TypeError) {
+            if (error instanceof DOMException && error.name === "AbortError") {
+                console.error("Submission timed out, saving to unsaved submissions.");
+                saveAnswers(false, formData);
+            } else if (error instanceof TypeError) {
                 console.error("Submission Failed Due to Wifi, Sending to Unsaved ", error);
                 saveAnswers(false, formData);
             } else {
@@ -513,7 +532,6 @@
             }
         }
 
-        // clearing old answers and enabling interactive elements
         clearAllAnswers(false);
         document.body.style.pointerEvents = "auto";
         htmlGlobals.loadingOverlay.style.visibility = "hidden";
@@ -717,7 +735,7 @@
             } catch (error) {
                 console.error("Error in sendAllUnSavedAnswers:", error);
             }
-        }, 4 * 60 * 1000);
+        }, 2 * 60 * 1000);
     }
 
     function setUpSwipeListeners() {
@@ -760,7 +778,7 @@
                     "General Info",
                     {"id": "scouter_name", "title": "Scouter name", "resetType": RESET_TYPES.KEEP, "type": LineQuestion.type},
                     {"id": "game_type", "title": "Game Type", "resetType": RESET_TYPES.KEEP, "choices": ["Practice", "Qualifications"], "type": SelectQuestion.type},
-                    {"id": "game_number", "title": "Game Number", "defaultValue": 1, "resetType": RESET_TYPES.INCREASE, "type": NumberQuestion.type}, "Team Info",
+                    {"id": "game_number", "title": "Game Number", "defaultValue": 1, "type": NumberQuestion.type}, "Team Info",
                     {"id": "team_number", "title": "Team Number", "choices": ALL_TEAMS, "type": NumberFromChoicesQuestion.type},
                     {"id": "alliance_color", "title": "Alliance", "resetType": RESET_TYPES.KEEP, "choices": ["Red", "Blue"], "type": SelectQuestion.type}
                 ]
@@ -807,17 +825,16 @@
             {
                 "name": "End",
                 "questions": [
-                    {"id": "climb_state", "title": "Climbed", "choices": ["Yes", "No", "Failed"], "type": SelectQuestion.type},
-                    {"id": "climb_time", "title": "Time Took to Climb", "choices": ["N/A","0-5", "5-15", "15-20", "20+"], "type": SelectQuestion.type},
+                    {"id": "climb_time", "title": "Time Took to Climb", "choices": ["Didn't Climb","0-5", "5-15", "15-20", "20+"], "type": SelectQuestion.type},
                     "High - Shallow ; Low - Deep",
-                    {"id": "end_state", "title": "End State", "choices": ["Parked", "High", "Low", "On Field"], "type": SelectQuestion.type},
+                    {"id": "end_state", "title": "Climbed", "choices": ["High", "Low", "Failed", "Parked", "Didn't attempt"], "type": SelectQuestion.type},
                 ]
             },
             {
                 "name": "Post",
                 "questions": [
                     {"id": "played_defense", "title": "Played Defense", "choices": ["Yes", "No"], "type": SelectQuestion.type},
-                    {"id": "was_defended", "title": "Was Defended", "choices": ["Yes", "No"], "type": SelectQuestion.type},
+                    {"id": "was_defended", "title": "Was Defended Against", "choices": ["Yes", "No"], "type": SelectQuestion.type},
                     {"id": "robot_status", "title": "Robot Status", "choices": ["Operating Properly", "Operating Poorly" ,"Non-Functional"], "type": SelectQuestion.type},
                     {"id": "notes", "title": "Notes:", "type": TextBoxQuestion.type},
                 ]
