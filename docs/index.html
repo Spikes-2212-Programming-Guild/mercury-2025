@@ -759,8 +759,8 @@
         let distanceY = Math.abs(endY - startY);
         if (submitting || distanceY > 300) return;
 
-        if (diffX > 125) htmlGlobals.relativeNavigationButtons.prev.click();
-        else if (diffX < -200) htmlGlobals.relativeNavigationButtons.next.click();
+        if (diffX > 200) htmlGlobals.relativeNavigationButtons.prev.click();
+        else if (diffX < -300) htmlGlobals.relativeNavigationButtons.next.click();
     }
 
     const ALL_TEAMS = [1690, 3339, 5951, 2231, 1574, 1577, 5614, 3075, 5990, 5715, 6740, 1937, 5987, 1657, 4590,
@@ -839,6 +839,8 @@
                 "questions": [
                     {"id": "played_defense", "title": "Played Defense", "choices": ["Yes", "No"], "type": SelectQuestion.type},
                     {"id": "was_defended", "title": "Was Defended Against", "choices": ["Yes", "No"], "type": SelectQuestion.type},
+                    {"id": "received_penalty", "title": "Received Penalty", "choices": ["Yes", "No"], "type": SelectQuestion.type},
+                    {"id": "penalty_description", "title": "Penalty Description", "type": TextBoxQuestion.type},
                     {"id": "robot_status", "title": "Robot Status", "choices": ["Operating Properly", "Operating Poorly" ,"Non-Functional"], "type": SelectQuestion.type},
                     {"id": "notes", "title": "Notes:", "type": TextBoxQuestion.type},
                 ]
