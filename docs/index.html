@@ -511,7 +511,7 @@
                 signal: controller.signal, // Attach the abort signal
             });
 
-            clearTimeout(timeoutId); // Clear the timeout if the request succeeds
+            clearTimeout(timeoutId);
 
             if (response.ok) {
                 console.log("Submitted Successfully: ", formData);
@@ -815,7 +815,7 @@
                     {"id": "teleop_high_algae", "title": "High", "type": NumberQuestion.type},
                     {"id": "teleop_low_algae", "title": "Low", "type": NumberQuestion.type},
                     "Algae:",
-                    {"id": "teleop_robot_algae_throws", "title": "Robot Throws to Net", "type": NumberQuestion.type},
+                    {"id": "teleop_robot_algae_throws", "title": "Robot Throws/Places in Net", "type": NumberQuestion.type},
                     {"id": "teleop_algae_inserts", "title": "Algae Processor Inserts", "type": NumberQuestion.type},
                     "Human Player:",
                     {"id": "teleop_human_player_algae_successful_throws", "title": "Successful Net Throws", "type": NumberQuestion.type},
@@ -825,9 +825,9 @@
             {
                 "name": "End",
                 "questions": [
-                    {"id": "climb_time", "title": "Time Took to Climb", "choices": ["Didn't Climb","0-5", "5-15", "15-20", "20+"], "type": SelectQuestion.type},
+                    {"id": "climb_time", "title": "Climb start time", "choices": ["Didn't Climb","0-5", "5-15", "15-20", "20+"], "type": SelectQuestion.type},
                     "High - Shallow ; Low - Deep",
-                    {"id": "end_state", "title": "Climbed", "choices": ["High", "Low", "Failed", "Parked", "Didn't attempt"], "type": SelectQuestion.type},
+                    {"id": "end_state", "title": "Climbed", "choices": ["High", "Low", "Failed", "Parked", "On Field"], "type": SelectQuestion.type},
                 ]
             },
             {
