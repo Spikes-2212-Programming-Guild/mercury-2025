@@ -694,14 +694,13 @@
     }
 
     function getClosestTitleIndex(titleElements) {
-        let currentScrollY = window.scrollY - window.innerHeight / 2;
+        let currentScrollY = window.scrollY - window.innerHeight / 3;
         let closestIndex = -1;
         let minDistance = Infinity;
         for (let i = 0; i < titleElements.length; i++) {
             const rect = titleElements[i].getBoundingClientRect();
             const elementY = rect.top;
             const distance = Math.abs(currentScrollY - elementY);
-            console.log(distance)
             if (distance < minDistance) {
                 minDistance = distance;
                 closestIndex = i;
