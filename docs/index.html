@@ -781,8 +781,8 @@
         let distanceY = Math.abs(endY - startY);
         if (submitting || distanceY > 300) return;
 
-        if (diffX > 200) htmlGlobals.relativeNavigationButtons.prev.click();
-        else if (diffX < -300) htmlGlobals.relativeNavigationButtons.next.click();
+        if (diffX > 250) htmlGlobals.relativeNavigationButtons.prev.click();
+        else if (diffX < -250) htmlGlobals.relativeNavigationButtons.next.click();
     }
 
     const ALL_TEAMS = [1690, 3339, 5951, 2231, 1574, 1577, 5614, 3075, 5990, 5715, 6740, 1937, 5987, 1657, 4590,
