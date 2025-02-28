@@ -493,6 +493,10 @@
             formData[question.id] = String(question.value);
         }
 
+        if (submitting) {
+            saveAnswers(false, formData);
+        }
+
         submitting = true;
         document.body.style.pointerEvents = "none";
         htmlGlobals.loadingOverlay.style.visibility = "visible";
@@ -825,7 +829,7 @@
             {
                 "name": "End",
                 "questions": [
-                    {"id": "climb_time", "title": "Climb start time", "choices": ["Didn't Climb","0-5", "5-15", "15-20", "20+"], "type": SelectQuestion.type},
+                    {"id": "climb_time", "title": "Climb Start Time", "choices": ["Didn't Climb","0-5", "5-15", "15-20", "20+"], "type": SelectQuestion.type},
                     "High - Shallow ; Low - Deep",
                     {"id": "end_state", "title": "Climbed", "choices": ["High", "Low", "Failed", "Parked", "On Field"], "type": SelectQuestion.type},
                 ]
