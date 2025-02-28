@@ -14,8 +14,8 @@
 
 <div id="pages_container">
     <button id="reset_button" onclick="resetAllButton()">Reset All</button>
-    <button id="side_navigation_up" >▲</button>
-    <button id="side_navigation_down" >▼</button>
+    <button id="title_navigation_up" >▲</button>
+    <button id="title_navigation_down" >▼</button>
     <button id="re_send_button" onclick="saveAllUnSavedAnswers(); alert('trying to resend unsaved answers')">Send Unsaved Data</button>
 </div>
 
@@ -117,7 +117,7 @@
         font-size: 2em;
     }
 
-    #side_navigation_up {
+    #title_navigation_up {
         position: fixed;
         right: 0.5em; /* Adjust as needed */
         top: 50%;
@@ -127,7 +127,7 @@
         font-size: 2em;
     }
 
-    #side_navigation_down {
+    #title_navigation_down {
         position: fixed;
         right: 0.5em;
         top: 57.5%;
@@ -645,6 +645,14 @@
     }
 
     function updateButtons(pageName) {
+        for (const pageButton of absoluteNavigationElements) {
+            pageButton.style.fontWeight = pageButton.textContent === pageName ? 'bold' : 'normal';
+        }
+        updateTitleNavigationButtons(pageName);
+        updateRelativeNavigationButtons(pageName);
+    }
+
+    function updateRelativeNavigationButtons(pageName) {
         let currentPageMap = pageMaps.find(page => page.name === pageName);
         const pageIndex = pageMaps.indexOf(currentPageMap);
         const nextButton = htmlGlobals.relativeNavigationButtons.next;
@@ -658,9 +666,47 @@
         nextButton.style.disabeled = pageIndex + 1 < pageAmount ? 'true' : 'false';
         nextButton.onclick = pageIndex + 1 < pageAmount ? () => displayPage(pageMaps[pageIndex + 1].name) : null;
 
-        for (const pageButton of absoluteNavigationElements) {
-            pageButton.style.fontWeight = pageButton.textContent === pageName ? 'bold' : 'normal';
+    }
+
+    function updateTitleNavigationButtons(pageName) {
+        const titleElements = pagesTitleHTMLObjects.get(pageName) || [];
+        const upButton = htmlGlobals.titleNavigationButtons.up;
+        const downButton = htmlGlobals.titleNavigationButtons.down;
+
+        upButton.onclick = () => {
+            if (titleElements.length === 0) return;
+            let closestIndex = getClosestTitleIndex(titleElements);
+            if (closestIndex < 1) closestIndex = 1;
+            const rect = titleElements[closestIndex - 1].getBoundingClientRect();
+            const absoluteY = window.scrollY + rect.top - window.innerHeight / 3.5 + rect.height / 2;
+            window.scrollTo({ top: absoluteY, behavior: "smooth" });
+
+        };
+
+        downButton.onclick = () => {
+            if (titleElements.length === 0) return;
+            let closestIndex = getClosestTitleIndex(titleElements);
+            if (closestIndex > titleElements.length - 2) closestIndex = titleElements.length - 2;
+            const rect = titleElements[closestIndex + 1].getBoundingClientRect();
+            const absoluteY = window.scrollY + rect.top - window.innerHeight / 3.5 + rect.height / 2;
+            window.scrollTo({top: absoluteY, behavior: "smooth"});
+        };
+    }
+
+    function getClosestTitleIndex(titleElements) {
+        let currentScrollY = window.scrollY - window.innerHeight / 2;
+        let closestIndex = -1;
+        let minDistance = Infinity;
+        for (let i = 0; i < titleElements.length; i++) {
+            const rect = titleElements[i].getBoundingClientRect();
+            const elementY = rect.top;
+            const distance = Math.abs(currentScrollY - elementY);
+            if (distance < minDistance) {
+                minDistance = distance;
+                closestIndex = i;
+            }
         }
+        return closestIndex;
     }
 
     function createAllQuestions() {
@@ -668,26 +714,29 @@
             const pageContainer = document.createElement('fieldset');
             pageContainer.classList.add('page');
             pageContainer.id = page.name;
+            const pageTitles = []
             page.questions.forEach(question => {
                 if (typeof question === 'string') {
                     // titles
-                    const label = document.createElement('label');
-                    label.textContent = question;
-                    label.style.borderBottom = '0.1em solid gray';
-                    pageContainer.appendChild(label);
+                    const title = document.createElement('label');
+                    title.textContent = question;
+                    title.style.borderBottom = '0.1em solid gray';
+                    pageContainer.appendChild(title);
+                    pageTitles.push(title);
                 } else {
                     // questions
                     const questionObject = createQuestion(question, page.name);
-                    pageContainer.appendChild(questionObject.createElement()); // add the html element
+                    pageContainer.appendChild(questionObject.createElement());
 
                     const savedValue = getFromLocalStorage(question.id);
                     if (savedValue) questionObject.value = savedValue;
                     else questionObject.clear();
 
-                    questionObjects.push(questionObject); // Add to the page's question list
+                    questionObjects.push(questionObject);
                 }
             });
             htmlGlobals.pagesContainer.appendChild(pageContainer);
+            pagesTitleHTMLObjects.set(page.name, pageTitles);
         });
     }
 
@@ -755,13 +804,13 @@
         displayPage(getFromLocalStorage('currentPage') || pageMaps[0].name);
         setUpSwipeListeners();
         disableZoom();
-        setInterval(() => { // try to save all unsaved answers every 4 minutes
+        setInterval(() => { // try to save all unsaved answers every 3 minutes
             try {
                 if (!submitting) saveAllUnSavedAnswers();
             } catch (error) {
                 console.error("Error in sendAllUnSavedAnswers:", error);
             }
-        }, 2 * 60 * 1000);
+        }, 3 * 60 * 1000);
     }
 
     function setUpSwipeListeners() {
@@ -852,15 +901,16 @@
                 "name": "End",
                 "questions": [
                     {"id": "climb_time", "title": "Climb Start Time", "choices": ["Didn't Climb","0-5", "5-15", "15-20", "20+"], "type": SelectQuestion.type},
-                    "High - Shallow ; Low - Deep",
                     {"id": "end_state", "title": "Climbed", "choices": ["High", "Low", "Failed", "Parked", "On Field"], "type": SelectQuestion.type},
                 ]
             },
             {
                 "name": "Post",
                 "questions": [
+                    "Defense:",
                     {"id": "played_defense", "title": "Played Defense", "choices": ["Yes", "No"], "type": SelectQuestion.type},
                     {"id": "was_defended", "title": "Was Defended Against", "choices": ["Yes", "No"], "type": SelectQuestion.type},
+                    "Robot:",
                     {"id": "robot_status", "title": "Robot Status", "choices": ["Operating Properly", "Operating Poorly" ,"Non-Functional"], "type": SelectQuestion.type},
                     {"id": "received_penalty", "title": "Received Penalty", "choices": ["Yes", "No"], "type": SelectQuestion.type},
                     {"id": "penalty_description", "title": "Penalty Description", "type": TextBoxQuestion.type},
@@ -887,6 +937,10 @@
         relativeNavigationButtons: {
             prev: document.getElementById('prev_button'),
             next: document.getElementById('next_button'),
+        },
+        titleNavigationButtons: {
+            up: document.getElementById('title_navigation_up'),
+            down: document.getElementById('title_navigation_down'),
         }
     };
 
@@ -896,6 +950,7 @@
     const pageAmount = pageMaps.length;
     const questionObjects = [];
     const absoluteNavigationElements = []
+    const pagesTitleHTMLObjects = new Map();
     const appId = "qualification_practice_"
 
     initializeApp();
