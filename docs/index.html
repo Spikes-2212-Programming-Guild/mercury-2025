@@ -14,6 +14,8 @@
 
 <div id="pages_container">
     <button id="reset_button" onclick="resetAllButton()">Reset All</button>
+    <button id="side_navigation_up" >▲</button>
+    <button id="side_navigation_down" >▼</button>
     <button id="re_send_button" onclick="saveAllUnSavedAnswers(); alert('trying to resend unsaved answers')">Send Unsaved Data</button>
 </div>
 
@@ -112,6 +114,26 @@
         bottom: -150vh;
         left: 50%;
         transform: translateX(-50%);
+        font-size: 2em;
+    }
+
+    #side_navigation_up {
+        position: fixed;
+        right: 0.5em; /* Adjust as needed */
+        top: 50%;
+        transform: translateY(-50%); /* Centers them vertically */
+        display: flex;
+        flex-direction: column;
+        font-size: 2em;
+    }
+
+    #side_navigation_down {
+        position: fixed;
+        right: 0.5em;
+        top: 57.5%;
+        transform: translateY(-50%); /* Centers them vertically */
+        display: flex;
+        flex-direction: column;
         font-size: 2em;
     }
 
@@ -791,12 +813,12 @@
                 "name": "Auto",
                 "questions": [
                     {"id": "left_starting_line", "title": "Left the Starting Line", "choices": ["Yes", "No"], "type": SelectQuestion.type},
-                    "Enter the Amount of Corals Scored:",
+                    "Amount of Corals Scored:",
                     {"id": "auto_coral_l4", "title": "L4", "type": NumberQuestion.type},
                     {"id": "auto_coral_l3", "title": "L3", "type": NumberQuestion.type},
                     {"id": "auto_coral_l2", "title": "L2", "type": NumberQuestion.type},
                     {"id": "auto_coral_l1", "title": "L1", "type": NumberQuestion.type},
-                    "Enter the Amount of Algae removed:",
+                    "Amount of Algae removed:",
                     {"id": "auto_high_algae", "title": "High", "type": NumberQuestion.type},
                     {"id": "auto_low_algae", "title": "Low", "type": NumberQuestion.type},
                     "Algae:",
@@ -810,12 +832,12 @@
             {
                 "name": "Teleop",
                 "questions": [
-                    "Enter the Amount of Corals Scored:",
+                    "Amount of Corals Scored:",
                     {"id": "teleop_coral_l4", "title": "L4", "type": NumberQuestion.type},
                     {"id": "teleop_coral_l3", "title": "L3", "type": NumberQuestion.type},
                     {"id": "teleop_coral_l2", "title": "L2", "type": NumberQuestion.type},
                     {"id": "teleop_coral_l1", "title": "L1", "type": NumberQuestion.type},
-                    "Enter the Amount of Algae removed:",
+                    "Amount of Algae removed:",
                     {"id": "teleop_high_algae", "title": "High", "type": NumberQuestion.type},
                     {"id": "teleop_low_algae", "title": "Low", "type": NumberQuestion.type},
                     "Algae:",
