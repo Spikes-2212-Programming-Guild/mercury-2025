@@ -61,7 +61,7 @@
         align-content: start;
         flex-direction: column;
         gap: 1em;
-        height: 220vh;
+        height: 250vh;
     }
 
     /* ========== NAVIGATION ========== */
@@ -103,7 +103,7 @@
 
     #reset_button {
         position: absolute;
-        bottom: -160vh;
+        bottom: -185vh;
         left: 50%;
         transform: translateX(-50%);
         font-size: 2em;
@@ -111,7 +111,7 @@
 
     #re_send_button {
         position: absolute;
-        bottom: -150vh;
+        bottom: -175vh;
         left: 50%;
         transform: translateX(-50%);
         font-size: 2em;
@@ -753,7 +753,8 @@
                     // titles
                     const title = document.createElement('label');
                     title.textContent = question;
-                    title.style.borderBottom = '0.1em solid gray';
+                    title.style.borderBottom = '0.1em solid #0056b3';
+                    title.style.color = '#0056b3';
                     pageContainer.appendChild(title);
                     pageTitles.push(title);
                 } else {
