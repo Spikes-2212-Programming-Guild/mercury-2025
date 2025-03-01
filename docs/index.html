@@ -677,6 +677,8 @@
             let closestIndex = getClosestTitleIndex(titleElements);
             if (closestIndex > 0) {
                 scrollToTitle(titleElements[closestIndex - 1]);
+            } else if (closestIndex !== -1) {
+                scrollToTitle(titleElements[0]);
             }
         };
 
@@ -684,13 +686,15 @@
             let closestIndex = getClosestTitleIndex(titleElements);
             if (closestIndex < titleElements.length - 1) {
                 scrollToTitle(titleElements[closestIndex + 1]);
+            } else if (closestIndex !== -1) {
+                scrollToTitle(titleElements[titleElements.length - 1]);
             }
         };
     }
 
     function getClosestTitleIndex(titleElements) {
         let currentScrollY = window.scrollY + window.innerHeight / 2; // Use middle of screen as reference
-        let closestIndex = 0;
+        let closestIndex = -1;
         let minDistance = Infinity;
 
         for (let i = 0; i < titleElements.length; i++) {
