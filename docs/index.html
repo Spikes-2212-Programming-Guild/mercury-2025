@@ -693,13 +693,13 @@
     }
 
     function getClosestTitleIndex(titleElements) {
-        let currentScrollY = window.scrollY + window.innerHeight / 2; // Use middle of screen as reference
+        const currentScrollY = window.scrollY + titleOffset;
         let closestIndex = -1;
         let minDistance = Infinity;
 
         for (let i = 0; i < titleElements.length; i++) {
             const rect = titleElements[i].getBoundingClientRect();
-            const elementY = window.scrollY + rect.top; // Convert to absolute Y
+            const elementY = window.scrollY + rect.top - titleOffset;
 
             const distance = Math.abs(elementY - currentScrollY);
             if (distance < minDistance) {
@@ -712,7 +712,8 @@
 
     function scrollToTitle(titleElement) {
         const rect = titleElement.getBoundingClientRect();
-        const absoluteY = window.scrollY + rect.top - window.innerHeight / 2 + rect.height / 2;
+        const absoluteY = window.scrollY + rect.top - titleOffset;
+
         window.scrollTo({ top: absoluteY });
     }
 
@@ -953,6 +954,7 @@
 
     let submitting = false;
     let startX, startY, endX, endY;
+    const titleOffset = 225;
     const pageMaps = json.Pages;
     const pageAmount = pageMaps.length;
     const questionObjects = [];
