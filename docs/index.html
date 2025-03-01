@@ -540,7 +540,13 @@
         }
 
         if (submitting) {
-            saveAnswers(false, formData)
+            displayPage(pageMaps[0].name);
+
+            let pendingSubmissions = JSON.parse(getFromLocalStorage('pendingSubmissions')) || [];
+            pendingSubmissions.push(formData);
+            setToLocalStorage('pendingSubmissions', JSON.stringify(pendingSubmissions));
+
+            alert('Saved successfully')
             clearAllAnswers(false);
             return;
         }
@@ -614,9 +620,16 @@
                 newUnsentSubmissions.push(submission);
             }
         }
-        // Only keep failed submissions
         setToLocalStorage('unsentSubmissions', JSON.stringify(newUnsentSubmissions));
         submitting = false;
+
+        let unsent = JSON.parse(getFromLocalStorage('unsentSubmissions')) || [];
+        const pendingSubmissions = JSON.parse(getFromLocalStorage('pendingSubmissions')) || [];
+        for (const submission of pendingSubmissions) {
+            console.log('adding to unsent', submission);
+            unsent.push(submission);
+        }
+        setToLocalStorage('unsentSubmissions', JSON.stringify(unsent));
     }
 
     function clearAllAnswers(ignoreResetTypes) {
