@@ -206,13 +206,13 @@
         border-radius: 10px;
     }
 
-    .number_question div {
+    .counter_question div {
         margin-top: 0.5em;
         align-items: center; /* Align items in the same line */
         gap: 0.5em; /* Control the space between elements */
     }
 
-    .number_question button {
+    .counter_question button {
         appearance: none; /* Removes Apple-specific button styling */
         border: none;
         background: none;
@@ -223,7 +223,7 @@
         line-height: 1; /* Prevents Safari from adding extra height */
     }
 
-    .number_question_number {
+    .counter_question_number, .number_question input {
         width: 2em;
         height: 1.5em;
         text-align: center;
@@ -350,11 +350,35 @@
 
         createElement() {
             const container = super.createElement();
-            container.classList.add('text_box_question');
+            container.classList.add('textbox_question');
             const textarea = document.createElement('textarea');
             textarea.maxLength = 250;
             container.appendChild(textarea);
             this.element = textarea;
+            this.addListener();
+            return container;
+        }
+    }
+
+    class NumberQuestion extends Question {
+
+        static type = 'number';
+
+        isValid() {
+            return super.isValid() && this.value >= 1 && this.value <= 100;
+        }
+
+        clear() {
+            this.value = this.defaultValue || 0;
+        }
+
+        createElement() {
+            const container = super.createElement();
+            container.classList.add('number_question');
+            const input = document.createElement('input');
+            input.type = 'number';
+            container.appendChild(input);
+            this.element = input;
             this.addListener();
             return container;
         }
@@ -446,9 +470,9 @@
         }
     }
 
-    class NumberQuestion extends Question {
+    class CounterQuestion extends Question {
 
-        static type = 'number';
+        static type = 'counter';
 
         isValid() {
             const value = this.value;
@@ -470,10 +494,10 @@
 
         createElement() {
             const container = super.createElement();
-            container.classList.add('number_question');
+            container.classList.add('counter_question');
 
             const numberLabel = document.createElement('label');
-            numberLabel.classList.add('number_question_number');
+            numberLabel.classList.add('counter_question_number');
             numberLabel.type = 'number';
             this.element = numberLabel;
 
@@ -758,6 +782,8 @@
                 return new TextBoxQuestion(question.id, question.title, defaultValue, resetType, pageName);
             case NumberQuestion.type:
                 return new NumberQuestion(question.id, question.title, defaultValue, resetType, pageName);
+            case CounterQuestion.type:
+                return new CounterQuestion(question.id, question.title, defaultValue, resetType, pageName);
             case SelectQuestion.type:
                 return new SelectQuestion(question.id, question.title, defaultValue, resetType, pageName, question.choices);
             case NumberFromChoicesQuestion.type:
@@ -871,38 +897,38 @@
                 "questions": [
                     {"id": "left_starting_line", "title": "Left the Starting Line", "choices": ["Yes", "No"], "type": SelectQuestion.type},
                     "Amount of Corals Scored:",
-                    {"id": "auto_coral_l4", "title": "L4", "type": NumberQuestion.type},
-                    {"id": "auto_coral_l3", "title": "L3", "type": NumberQuestion.type},
-                    {"id": "auto_coral_l2", "title": "L2", "type": NumberQuestion.type},
-                    {"id": "auto_coral_l1", "title": "L1", "type": NumberQuestion.type},
+                    {"id": "auto_coral_l4", "title": "L4", "type": CounterQuestion.type},
+                    {"id": "auto_coral_l3", "title": "L3", "type": CounterQuestion.type},
+                    {"id": "auto_coral_l2", "title": "L2", "type": CounterQuestion.type},
+                    {"id": "auto_coral_l1", "title": "L1", "type": CounterQuestion.type},
                     "Amount of Algae removed:",
-                    {"id": "auto_high_algae", "title": "High", "type": NumberQuestion.type},
-                    {"id": "auto_low_algae", "title": "Low", "type": NumberQuestion.type},
+                    {"id": "auto_high_algae", "title": "High", "type": CounterQuestion.type},
+                    {"id": "auto_low_algae", "title": "Low", "type": CounterQuestion.type},
                     "Algae:",
-                    {"id": "auto_robot_algae_throws", "title": "Robot Throws to Net", "type": NumberQuestion.type},
-                    {"id": "auto_algae_inserts", "title": "Algae Processor Inserts", "type": NumberQuestion.type},
+                    {"id": "auto_robot_algae_throws", "title": "Robot Throws to Net", "type": CounterQuestion.type},
+                    {"id": "auto_algae_inserts", "title": "Algae Processor Inserts", "type": CounterQuestion.type},
                     "Human Player:",
-                    {"id": "auto_human_player_algae_successful_throws", "title": "Successful Net Throws", "type": NumberQuestion.type},
-                    {"id": "auto_human_player_algae_failed_throws", "title": "Failed Net Throws", "type": NumberQuestion.type},
+                    {"id": "auto_human_player_algae_successful_throws", "title": "Successful Net Throws", "type": CounterQuestion.type},
+                    {"id": "auto_human_player_algae_failed_throws", "title": "Failed Net Throws", "type": CounterQuestion.type},
                 ]
             },
             {
                 "name": "Teleop",
                 "questions": [
                     "Amount of Corals Scored:",
-                    {"id": "teleop_coral_l4", "title": "L4", "type": NumberQuestion.type},
-                    {"id": "teleop_coral_l3", "title": "L3", "type": NumberQuestion.type},
-                    {"id": "teleop_coral_l2", "title": "L2", "type": NumberQuestion.type},
-                    {"id": "teleop_coral_l1", "title": "L1", "type": NumberQuestion.type},
+                    {"id": "teleop_coral_l4", "title": "L4", "type": CounterQuestion.type},
+                    {"id": "teleop_coral_l3", "title": "L3", "type": CounterQuestion.type},
+                    {"id": "teleop_coral_l2", "title": "L2", "type": CounterQuestion.type},
+                    {"id": "teleop_coral_l1", "title": "L1", "type": CounterQuestion.type},
                     "Amount of Algae removed:",
-                    {"id": "teleop_high_algae", "title": "High", "type": NumberQuestion.type},
-                    {"id": "teleop_low_algae", "title": "Low", "type": NumberQuestion.type},
+                    {"id": "teleop_high_algae", "title": "High", "type": CounterQuestion.type},
+                    {"id": "teleop_low_algae", "title": "Low", "type": CounterQuestion.type},
                     "Algae:",
-                    {"id": "teleop_robot_algae_throws", "title": "Robot Throws/Places in Net", "type": NumberQuestion.type},
-                    {"id": "teleop_algae_inserts", "title": "Algae Processor Inserts", "type": NumberQuestion.type},
+                    {"id": "teleop_robot_algae_throws", "title": "Robot Throws/Places in Net", "type": CounterQuestion.type},
+                    {"id": "teleop_algae_inserts", "title": "Algae Processor Inserts", "type": CounterQuestion.type},
                     "Human Player:",
-                    {"id": "teleop_human_player_algae_successful_throws", "title": "Successful Net Throws", "type": NumberQuestion.type},
-                    {"id": "teleop_human_player_algae_failed_throws", "title": "Failed Net Throws", "type": NumberQuestion.type},
+                    {"id": "teleop_human_player_algae_successful_throws", "title": "Successful Net Throws", "type": CounterQuestion.type},
+                    {"id": "teleop_human_player_algae_failed_throws", "title": "Failed Net Throws", "type": CounterQuestion.type},
                 ]
             },
             {
