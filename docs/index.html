@@ -839,13 +839,13 @@
         displayPage(getFromLocalStorage('currentPage') || pageMaps[0].name);
         setUpSwipeListeners();
         disableZoom();
-        setInterval(() => { // try to save all unsaved answers every 3 minutes
+        setInterval(() => { // try to save all unsaved answers every 4 minutes
             try {
-                if (!submitting) saveAllUnSavedAnswers();
+                saveAllUnSavedAnswers();
             } catch (error) {
                 console.error("Error in sendAllUnSavedAnswers:", error);
             }
-        }, 3 * 60 * 1000);
+        }, 4 * 60 * 1000);
     }
 
     function setUpSwipeListeners() {
