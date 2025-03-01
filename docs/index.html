@@ -678,7 +678,7 @@
             let closestIndex = getClosestTitleIndex(titleElements);
             if (closestIndex < 1) closestIndex = 1;
             const rect = titleElements[closestIndex - 1].getBoundingClientRect();
-            const absoluteY = window.scrollY + rect.top - window.innerHeight / 3 + rect.height / 2;
+            const absoluteY = window.scrollY + rect.top - window.innerHeight / 2.5 + rect.height / 2;
             window.scrollTo({ top: absoluteY });
 
         };
@@ -688,7 +688,7 @@
             let closestIndex = getClosestTitleIndex(titleElements);
             if (closestIndex > titleElements.length - 2) closestIndex = titleElements.length - 2;
             const rect = titleElements[closestIndex + 1].getBoundingClientRect();
-            const absoluteY = window.scrollY + rect.top - window.innerHeight / 3 + rect.height / 2;
+            const absoluteY = window.scrollY + rect.top - window.innerHeight / 2.5 + rect.height / 2;
             window.scrollTo({top: absoluteY });
         };
     }
