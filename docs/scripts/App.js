@@ -1,8 +1,8 @@
 import {PageManager} from './PageManager.js';
 import {QuestionManager} from './QuestionManager.js';
 import {SubmissionHandler} from './SubmissionHandler.js';
-import {TitleManager} from './TitleManager';
-import {config} from "./Config";
+import {TitleManager} from './TitleManager.js';
+import {config} from "./Config.js";
 
 class App {
     constructor() {
