@@ -60,7 +60,7 @@ export const QUESTION_TYPES = {
     NUMBER_FROM_CHOICES_QUESTION: NumberFromChoicesQuestion,
     SELECT_QUESTION: SelectQuestion,
     SINGLE_NUMBER_QUESTION: SingleNumberQuestion,
-    TEXTBOX_QUESTION: TextBoxQuestion,
+    TEXTBOX_QUESTION: TextboxQuestion,
     TEXT_LINE_QUESTION: TextLineQuestion,
 }
 
