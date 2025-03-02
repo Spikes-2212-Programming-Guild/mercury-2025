@@ -1,6 +1,6 @@
 import {Question} from "./Question.js";
 
-class CounterQuestion extends Question {
+export class CounterQuestion extends Question {
 
     isValid() {
         const value = this.value;

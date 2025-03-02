@@ -1,5 +1,9 @@
 import {SingleNumberQuestion} from "../questions/SingleNumberQuestion.js";
 import {TextLineQuestion} from "../questions/TextLineQuestion.js";
+import {CounterQuestion} from "../questions/CounterQuestion.js";
+import {NumberFromChoicesQuestion} from "../questions/NumberFromChoicesQuestion.js";
+import {SelectQuestion} from "../questions/SelectQuestion.js";
+import {TextboxQuestion} from "../questions/TextboxQuestion.js";
 
 export const COLORS = {
     VALID: 'green',

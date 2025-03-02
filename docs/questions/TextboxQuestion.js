@@ -1,6 +1,6 @@
 import {Question} from "./Question.js";
 
-class TextboxQuestion extends Question {
+export class TextboxQuestion extends Question {
 
     isValid() {
         return this.value.length < 250;

@@ -1,6 +1,6 @@
 import {Question} from "./Question.js";
 
-class NumberFromChoicesQuestion extends Question {
+export class NumberFromChoicesQuestion extends Question {
     constructor(id, title, defaultValue, resetType, pageName, choices) {
         super(id, title, defaultValue, resetType, pageName);
         this.choices = choices;
