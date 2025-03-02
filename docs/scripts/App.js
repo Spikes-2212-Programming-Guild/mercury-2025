@@ -15,7 +15,6 @@ class App {
 
     initialize() {
         this.pageManager.initialize();
-        this.questionManager.initialize();
         this.submissionHandler.initialize(this.questionManager);
         this.render();
         this.setupEventListeners();
