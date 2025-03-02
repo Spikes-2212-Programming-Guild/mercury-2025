@@ -62,7 +62,7 @@ export const config = [
             "General Info",
             {"id": "scouter_name", "title": "Scouter name", "resetType": RESET_TYPES.KEEP, "type": TextLineQuestion},
             {"id": "game_type", "title": "Game Type", "resetType": RESET_TYPES.KEEP, "choices": ["Practice", "Qualifications"], "type": SelectQuestion},
-            {"id": "game_number", "title": "Game Number", "resetType": RESET_TYPES.INCREASE, "type": NumberQuestion},
+            {"id": "game_number", "title": "Game Number", "resetType": RESET_TYPES.INCREASE, "type": SingleNumberQuestion},
             "Team Info",
             {"id": "team_number", "title": "Team Number", "choices": ALL_TEAMS, "type": NumberFromChoicesQuestion},
             {"id": "alliance_color", "title": "Alliance", "resetType": RESET_TYPES.KEEP, "choices": ["Red", "Blue"], "type": SelectQuestion}
@@ -123,9 +123,9 @@ export const config = [
             "Robot:",
             {"id": "robot_status", "title": "Robot Status", "choices": ["Operating Properly", "Operating Poorly" ,"Non-Functional"], "type": SelectQuestion},
             {"id": "penalty_amount", "title": "Penalty Amount", "type": CounterQuestion},
-            {"id": "penalty_description", "title": "Penalty Description", "type": TextBoxQuestion},
+            {"id": "penalty_description", "title": "Penalty Description", "type": TextboxQuestion},
             "Notes:",
-            {"id": "notes", "title": "Notes:", "type": TextBoxQuestion},
+            {"id": "notes", "title": "Notes:", "type": TextboxQuestion},
         ]
     },
 ]
