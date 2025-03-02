@@ -1,4 +1,4 @@
-import {config, QUESTION_TYPES} from "./Config";
+import {config, QUESTION_TYPES} from "./Config.js";
 
 export class QuestionManager {
     constructor() {

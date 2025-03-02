@@ -1,4 +1,4 @@
-import {Question} from "./Question";
+import {Question} from "./Question.js";
 
 class CounterQuestion extends Question {
 

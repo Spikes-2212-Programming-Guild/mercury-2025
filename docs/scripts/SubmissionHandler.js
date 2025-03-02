@@ -1,8 +1,9 @@
+import {HTML_GLOBALS} from "./Config.js";
+
 export class SubmissionHandler {
     constructor(questionManager) {
         this.submissionQueue = [];
         this.submitting = false;
-        this.questionManager = questionManager;
     }
 
     initialize() {

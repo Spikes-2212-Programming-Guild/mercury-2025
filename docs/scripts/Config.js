@@ -1,5 +1,5 @@
-import {SingleNumberQuestion} from "../questions/SingleNumberQuestion";
-import {TextLineQuestion} from "../questions/TextLineQuestion";
+import {SingleNumberQuestion} from "../questions/SingleNumberQuestion.js";
+import {TextLineQuestion} from "../questions/TextLineQuestion.js";
 
 export const COLORS = {
     VALID: 'green',

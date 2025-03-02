@@ -1,4 +1,4 @@
-import {config, getFromLocalStorage, setToLocalStorage} from "./Config";
+import {config, getFromLocalStorage, setToLocalStorage} from "./Config.js";
 
 export class PageManager {
 
