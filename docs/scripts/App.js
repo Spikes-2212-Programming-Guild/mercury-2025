@@ -12,6 +12,10 @@ class App {
         this.pageManager = new PageManager(this.navigationManager, this.titleManager);
         this.questionManager = new QuestionManager();
         this.submissionHandler = new SubmissionHandler(this.questionManager, this.pageManager);
+        this.startX = 0;
+        this.startY = 0;
+        this.endX = 0;
+        this.endY = 0;
         this.initialize();
     }
 
@@ -19,8 +23,8 @@ class App {
         this.pageManager.initialize();
         this.submissionHandler.initialize();
         this.render();
-        this.setupEventListeners();
         this.pageManager.navigateTo(this.pageManager.getCurrentPageName());
+        this.setupEventListeners();
     }
 
     render() {
@@ -61,7 +65,45 @@ class App {
     }
 
     setupEventListeners() {
-        // Add your global event listeners here
+        this.disableIOSZoom();
+        this.setUpSwipeListeners(this.navigationManager);
+    }
+
+    setUpSwipeListeners(navigationManager) {
+        document.addEventListener("touchstart", function (event) {
+            this.startX = event.touches[0].clientX;
+            this.startY = event.touches[0].clientY;
+        });
+        document.addEventListener("touchend", function (event) {
+            this.endX = event.changedTouches[0].clientX;
+            this.endY = event.changedTouches[0].clientY;
+
+            let diffX = this.endX - this.startX;
+            let distanceY = Math.abs(this.endY - this.startY);
+            if (distanceY > 300) return;
+
+            if (diffX > 200) navigationManager.prevButton.click();
+            else if (diffX < -200) navigationManager.nextButton.click();
+        });
+    }
+
+    disableIOSZoom() {
+        document.addEventListener('gesturestart', function (e) {
+            e.preventDefault();
+        });
+        let lastTouchEnd = 0;
+        document.addEventListener('touchend', function (event) {
+            let now = Date.now();
+            // Allow normal clicks on buttons
+            if (event.target.tagName === 'BUTTON' || event.target.closest('[role="button"]')) {
+                return;
+            }
+            // Block double-tap zoom for everything else
+            if (now - lastTouchEnd <= 300) {
+                event.preventDefault();
+            }
+            lastTouchEnd = now;
+        }, false);
     }
 }
 
