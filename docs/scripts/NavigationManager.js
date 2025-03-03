@@ -1,9 +1,6 @@
-import {config} from "./Config.js";
+import {COLORS, config} from "./Config.js";
 
 export class NavigationManager {
-    constructor(pageManager) {
-        this.pageManager = pageManager;
-    }
 
     createAbsoluteNavigation(pageManager) {
         const absoluteNavigationContainer = document.createElement('div')
@@ -23,9 +20,15 @@ export class NavigationManager {
     createRelativeNavigation(submitButton) {
         const relativeNavigationContainer = document.createElement('div');
         relativeNavigationContainer.id = 'relative_navigation_container';
-        relativeNavigationContainer.appendChild(this.createRelativeNavigationButton('Previous', 'prev'));
+
+        this.prevButton = this.createRelativeNavigationButton('Previous', 'prev');
+        relativeNavigationContainer.appendChild(this.prevButton);
+
         relativeNavigationContainer.appendChild(submitButton);
-        relativeNavigationContainer.appendChild(this.createRelativeNavigationButton('Next', 'next'));
+
+        this.nextButton = this.createRelativeNavigationButton('Next', 'next');
+        relativeNavigationContainer.appendChild(this.nextButton);
+
         return relativeNavigationContainer;
     }
 
@@ -37,13 +40,16 @@ export class NavigationManager {
         return button;
     }
 
-    updateRelativeNavigation() {
-        // prevButton.style.disabeled = pageIndex > 0 ? 'true' : 'false';
-        // prevButton.style.color = pageIndex > 0 ? COLORS.ACTIVE : COLORS.INACTIVE;
-        // prevButton.onclick = pageIndex > 0 ? () => displayPage(pageMaps[pageIndex - 1].name) : null;
-        //
-        // nextButton.style.color = pageIndex + 1 < pageAmount ? COLORS.ACTIVE : COLORS.INACTIVE;
-        // nextButton.style.disabeled = pageIndex + 1 < pageAmount ? 'true' : 'false';
-        // nextButton.onclick = pageIndex + 1 < pageAmount ? () => displayPage(pageMaps[pageIndex + 1].name) : null;
+    updateRelativeNavigation(pageManager) {
+        const pageIndex = pageManager.currentPageIndex;
+        const pageAmount = config.length;
+
+        this.prevButton.style.disabeled = pageIndex > 0 ? 'true' : 'false';
+        this.prevButton.style.color = pageIndex > 0 ? COLORS.ACTIVE : COLORS.INACTIVE;
+        this.prevButton.onclick = pageIndex > 0 ? () => pageManager.navigateTo(config[pageIndex - 1].name) : null;
+
+        this.nextButton.style.color = pageIndex + 1 < pageAmount ? COLORS.ACTIVE : COLORS.INACTIVE;
+        this.nextButton.style.disabeled = pageIndex + 1 < pageAmount ? 'true' : 'false';
+        this.nextButton.onclick = pageIndex + 1 < pageAmount ? () => pageManager.navigateTo(config[pageIndex + 1].name) : null;
     }
 }

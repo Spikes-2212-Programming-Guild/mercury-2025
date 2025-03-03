@@ -2,10 +2,16 @@ import {config, getFromLocalStorage, setToLocalStorage} from "./Config.js";
 
 export class PageManager {
 
+    constructor(navigationManager, titleManager) {
+        this.navigationManager = navigationManager;
+        this.titleManager = titleManager;
+    }
+
     initialize() {
         this.currentPageName = this.getCurrentPageName();
         this.currentPageIndex = 0;
         this.pages = new Map();
+        this.title = this.createTitle();
     }
 
     createPage(pageName) {
@@ -16,14 +22,23 @@ export class PageManager {
         return pageContainer;
     }
 
+    createTitle() {
+        const title = document.createElement('h1');
+        title.id = 'title';
+        return title;
+    }
+
     getCurrentPageName() {
         return getFromLocalStorage('currentPageName') || config[0].name;
     }
 
     updateCurrentPage(pageName) {
-        this.currentPageName = Object.keys(this.pages).find(p => p.name === pageName);
-        this.currentPageIndex = this.pages.keys().toArray().indexOf(this.currentPageName);
+        this.currentPageName = [...this.pages.keys()].find(p => p === pageName);
+        this.currentPageIndex = [...this.pages.keys()].indexOf(this.currentPageName);
         setToLocalStorage('currentPageName', pageName);
+        this.navigationManager.updateRelativeNavigation(this);
+        this.titleManager.updateTitleNavigationButtons(pageName);
+        this.title.textContent = pageName;
     }
 
     navigateTo(pageName, scrollToTop = true) {

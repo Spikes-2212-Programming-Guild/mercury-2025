@@ -51,25 +51,9 @@ html, body {
     display: flex;
 }
 
-#loading_overlay {
-    visibility: hidden;
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100vw;
-    height: 100vh;
-    background: rgba(0, 0, 0, 0.7);
-    color: white;
-    font-size: 2em;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    z-index: 9999;
-}
-
 /* ========== BUTTONS ========== */
 
-#reset_button {
+#reset_all_button {
     position: absolute;
     bottom: -185vh;
     left: 50%;
@@ -77,7 +61,7 @@ html, body {
     font-size: 2em;
 }
 
-#re_send_button {
+#resend_button {
     position: absolute;
     bottom: -175vh;
     left: 50%;
@@ -107,6 +91,11 @@ html, body {
 
 button, input, label, div {
     position: static;
+}
+
+.question_title {
+    border-bottom: 0.1em solid #0056b3;
+    color: #1f65a6;
 }
 
 .absolute_navigation {

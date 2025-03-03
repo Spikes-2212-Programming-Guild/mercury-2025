@@ -27,22 +27,6 @@ export const RESET_TYPES = {
     INCREASE: 'increase',
 }
 
-export const HTML_GLOBALS = {
-    pagesContainer: document.getElementById('pages_container'),
-    titleLabel: document.getElementById('title'),
-    absoluteNavContainer: document.getElementById('absolute_navigation_container'),
-    loadingOverlay: document.getElementById("loadingOverlay"),
-    relativeNavigationButtons: {
-        prev: document.getElementById('prev_button'),
-        next: document.getElementById('next_button'),
-    },
-    titleNavigationButtons: {
-        up: document.getElementById('title_navigation_up'),
-        down: document.getElementById('title_navigation_down'),
-    },
-    submit_button: document.getElementById('submit_button'),
-};
-
 const appId = "qualification_practice_"
 
 export function setToLocalStorage(key, value) {

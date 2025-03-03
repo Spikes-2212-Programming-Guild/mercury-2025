@@ -7,7 +7,7 @@ export class Question {
         this.pageName = pageName;
         this.element = null;
         this.resetType = resetType;
-        this.defaultValue = defaultValue;
+        this.defaultValue = defaultValue || '';
     }
 
     set value(newValue) {
