@@ -1,3 +1,5 @@
+import {titleOffset} from "./Config.js";
+
 export class TitleManager {
     constructor() {
         this.titles = {}
@@ -7,7 +9,11 @@ export class TitleManager {
         const titleElement = document.createElement('label');
         titleElement.textContent = title;
         titleElement.classList.add('question-title');
-        this.titles[pageName].push(titleElement);
+        if (this.titles[pageName]) {
+            this.titles[pageName].push(titleElement);
+        } else {
+            this.titles[pageName] = [title];
+        }
         return titleElement;
     }
 

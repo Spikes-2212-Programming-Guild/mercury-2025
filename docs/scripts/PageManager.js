@@ -4,15 +4,15 @@ export class PageManager {
 
     initialize() {
         this.currentPageName = this.getCurrentPageName();
-        this.navigateTo(this.currentPageName);
-        this.pages = {}
+        this.currentPageIndex = 0;
+        this.pages = new Map();
     }
 
     createPage(pageName) {
         const pageContainer = document.createElement('fieldset');
         pageContainer.classList.add('page');
         pageContainer.id = pageName;
-        this.pages[pageName] = pageContainer;
+        this.pages.set(pageName, pageContainer);
         return pageContainer;
     }
 
@@ -22,11 +22,16 @@ export class PageManager {
 
     updateCurrentPage(pageName) {
         this.currentPageName = Object.keys(this.pages).find(p => p.name === pageName);
-        setToLocalStorage('currentPageName', this.currentPageName);
+        this.currentPageIndex = this.pages.keys().toArray().indexOf(this.currentPageName);
+        setToLocalStorage('currentPageName', pageName);
     }
 
     navigateTo(pageName, scrollToTop = true) {
         this.updateCurrentPage(pageName);
         if (scrollToTop) window.scrollTo(0, 0);
+
+        for (const page of this.pages.values()) {
+            page.style.display = page.id === pageName ? 'block' : 'none';
+        }
     }
 }

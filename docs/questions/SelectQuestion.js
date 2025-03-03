@@ -1,4 +1,5 @@
 import {Question} from "./Question.js";
+import {getFromLocalStorage} from "../scripts/Config.js";
 
 export class SelectQuestion extends Question {
     constructor(id, title, defaultValue, resetType, pageName, choices) {

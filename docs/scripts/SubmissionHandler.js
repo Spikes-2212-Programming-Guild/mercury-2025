@@ -1,19 +1,36 @@
-import {HTML_GLOBALS} from "./Config.js";
+import {apiUrl} from "./Config.js";
 
 export class SubmissionHandler {
     constructor(questionManager) {
         this.submissionQueue = [];
         this.submitting = false;
+        this.loadingOverlay = null;
+        this.submitButton = null;
     }
 
     initialize() {
-        HTML_GLOBALS.submit_button.addEventListener('click', (e) => {
+        // Retry failed submissions periodically
+        setInterval(() => this.retryFailedSubmissions(), 1000 * 60 * 4);
+    }
+
+    createSubmitButton() {
+        const submitButton = document.createElement('button');
+        submitButton.id = 'submit_button';
+        submitButton.innerText = 'Submit';
+        submitButton.addEventListener('click', (e) => {
             e.preventDefault();
             this.handleSubmit();
         });
+        this.submitButton = submitButton;
+        return submitButton;
+    }
 
-        // Retry failed submissions periodically
-        setInterval(() => this.retryFailedSubmissions(), 1000 * 60);
+    createLoadingOverlay() {
+        const loadingOverlay = document.createElement("div");
+        loadingOverlay.id = "loading_overlay";
+        loadingOverlay.textContent = "Submitting...";
+        this.loadingOverlay = loadingOverlay;
+        return loadingOverlay;
     }
 
     handleSubmit() {

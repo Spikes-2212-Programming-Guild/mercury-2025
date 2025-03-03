@@ -43,6 +43,8 @@ export const HTML_GLOBALS = {
     submit_button: document.getElementById('submit_button'),
 };
 
+const appId = "qualification_practice_"
+
 export function setToLocalStorage(key, value) {
     localStorage.setItem(appId + key, value);
 }
@@ -54,6 +56,8 @@ export function getFromLocalStorage(key) {
 export function removeFromLocalStorage(key) {
     return localStorage.removeItem(appId + key);
 }
+
+export const titleOffset = 225;
 
 export const config = [
     {

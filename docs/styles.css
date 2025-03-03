@@ -51,7 +51,7 @@ html, body {
     display: flex;
 }
 
-#loadingOverlay {
+#loading_overlay {
     visibility: hidden;
     position: fixed;
     top: 0;

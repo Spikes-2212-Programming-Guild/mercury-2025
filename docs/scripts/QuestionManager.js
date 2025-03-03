@@ -1,3 +1,5 @@
+import {COLORS, getFromLocalStorage, removeFromLocalStorage, RESET_TYPES, setToLocalStorage} from "./Config.js";
+
 export class QuestionManager {
     constructor() {
         this.questions = [];
@@ -5,7 +7,8 @@ export class QuestionManager {
 
     createQuestion(question) {
         const QuestionClass = question.type;
-        const questionObject = new QuestionClass(question);
+        const questionObject = new QuestionClass();
+        Object.assign(questionObject, question);
         this.questions.push(questionObject);
         return questionObject;
     }

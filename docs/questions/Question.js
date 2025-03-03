@@ -1,3 +1,5 @@
+import {COLORS, setToLocalStorage} from "../scripts/Config.js";
+
 export class Question {
     constructor(id, title, defaultValue, resetType, pageName) {
         this.id = id;
