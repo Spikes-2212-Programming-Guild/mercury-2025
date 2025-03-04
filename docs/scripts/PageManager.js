@@ -1,4 +1,5 @@
-import {config, getFromLocalStorage, setToLocalStorage} from "./Config.js";
+import {config} from "./Config.js";
+import {getFromLocalStorage, setToLocalStorage} from "./DataManager.js";
 
 export class PageManager {
 
@@ -8,7 +9,7 @@ export class PageManager {
     }
 
     initialize() {
-        this.currentPageName = this.getCurrentPageName();
+        this.currentPageName = getFromLocalStorage('currentPageName') || config[0].name;
         this.currentPageIndex = 0;
         this.pages = new Map();
         this.title = this.createTitle();
@@ -28,10 +29,6 @@ export class PageManager {
         return title;
     }
 
-    getCurrentPageName() {
-        return getFromLocalStorage('currentPageName') || config[0].name;
-    }
-
     updateCurrentPage(pageName) {
         this.currentPageName = [...this.pages.keys()].find(p => p === pageName);
         this.currentPageIndex = [...this.pages.keys()].indexOf(this.currentPageName);
@@ -39,6 +36,14 @@ export class PageManager {
         this.navigationManager.updateRelativeNavigation(this);
         this.titleManager.updateTitleNavigationButtons(pageName);
         this.title.textContent = pageName;
+    }
+
+    navigateToFirstPage() {
+        this.navigateTo(this.pages[0]);
+    }
+
+    navigateToCurrentPage() {
+        this.navigateTo(this.currentPageName);
     }
 
     navigateTo(pageName, scrollToTop = true) {

@@ -1,4 +1,5 @@
-import {COLORS, config, getFromLocalStorage, removeFromLocalStorage, RESET_TYPES, setToLocalStorage} from "./Config.js";
+import {COLORS, RESET_TYPES} from "./Config.js";
+import {getFromLocalStorage, removeFromLocalStorage, setToLocalStorage} from "./DataManager.js";
 
 export class QuestionManager {
     constructor() {
@@ -29,9 +30,9 @@ export class QuestionManager {
         const userConfirmed = confirm("Are you sure you want to reset All?");
         if (userConfirmed) {
             this.clearAllAnswers(true);
-            pageManager.navigateTo(config[0].name);
+            pageManager.navigateToFirstPage();
         } else {
-            pageManager.navigateTo(pageManager.currentPageName);
+            pageManager.navigateToCurrentPage();
         }
     }
 

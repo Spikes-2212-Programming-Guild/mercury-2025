@@ -32,8 +32,20 @@ app.get("/scripts/Config.js", (req, res) => {
     res.sendFile(path.join(__dirname, "scripts", "Config.js"));
 });
 
+app.get("/scripts/NavigationManager.js", (questions, res) => {
+    res.sendFile(path.join(__dirname, "scripts", "NavigationManager.js"));
+});
+
 app.get("/scripts/TitleManager.js", (req, res) => {
     res.sendFile(path.join(__dirname, "scripts", "TitleManager.js"));
+});
+
+app.get("/scripts/EventListenerManager.js", (req, res) => {
+    res.sendFile(path.join(__dirname, "scripts", "EventListenerManager.js"));
+});
+
+app.get("/scripts/DataManager.js", (req, res) => {
+    res.sendFile(path.join(__dirname, "scripts", "DataManager.js"));
 });
 
 app.get("/questions/SingleNumberQuestion.js", (req, res) => {
@@ -62,10 +74,6 @@ app.get("/questions/TextLineQuestion.js", (questions, res) => {
 
 app.get("/questions/CounterQuestion.js", (questions, res) => {
     res.sendFile(path.join(__dirname, "questions", "CounterQuestion.js"));
-});
-
-app.get("/scripts/NavigationManager.js", (questions, res) => {
-    res.sendFile(path.join(__dirname, "scripts", "NavigationManager.js"));
 });
 
 app.listen(PORT, "0.0.0.0", () => {

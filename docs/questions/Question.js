@@ -1,4 +1,5 @@
-import {COLORS, setToLocalStorage} from "../scripts/Config.js";
+import {COLORS} from "../scripts/Config.js";
+import {setToLocalStorage} from "../scripts/DataManager.js";
 
 export class Question {
     constructor(id, title, defaultValue, resetType, pageName) {

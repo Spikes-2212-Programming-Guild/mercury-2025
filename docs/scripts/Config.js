@@ -27,19 +27,7 @@ export const RESET_TYPES = {
     INCREASE: 'increase',
 }
 
-const appId = "qualification_practice_"
-
-export function setToLocalStorage(key, value) {
-    localStorage.setItem(appId + key, value);
-}
-
-export function getFromLocalStorage(key) {
-    return localStorage.getItem(appId + key);
-}
-
-export function removeFromLocalStorage(key) {
-    return localStorage.removeItem(appId + key);
-}
+export const appId = "qualification_practice_"
 
 export const titleOffset = 225;
 

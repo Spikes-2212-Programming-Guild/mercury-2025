@@ -1,4 +1,5 @@
-import {apiUrl, COLORS, config, getFromLocalStorage, setToLocalStorage} from "./Config.js";
+import {apiUrl, COLORS} from "./Config.js";
+import {getFromLocalStorage, setToLocalStorage} from "./DataManager.js";
 
 export class SubmissionHandler {
     constructor(questionManager, pageManager) {
@@ -51,7 +52,7 @@ export class SubmissionHandler {
                 this.pageManager.navigateTo(question.pageName, false);
                 const rect = question.boundingRect;
                 const absoluteY = window.scrollY + rect.top - window.innerHeight / 2 + rect.height / 2;
-                window.scrollTo({ top: absoluteY, behavior: "smooth" });
+                window.scrollTo({top: absoluteY, behavior: "smooth"});
                 return false;
             }
         }
@@ -63,7 +64,7 @@ export class SubmissionHandler {
         const formData = this.prepareFormData();
         this.submissionQueue.push(formData);
 
-        this.pageManager.navigateTo(config[0].name);
+        this.pageManager.navigateToFirstPage();
         this.questionManager.clearAllAnswers();
         alert('Form Successfully Submitted!');
 
