@@ -50,8 +50,6 @@ export class TitleManager {
         let bestMatchIndex = -1;
         let bestMatchDistance = Infinity;
 
-        let allTitlesBelow = false;
-
         titles.forEach((title, index) => {
             const rect = title.getBoundingClientRect();
             const titleTop = window.scrollY + rect.top - titleOffset;
@@ -66,15 +64,10 @@ export class TitleManager {
             }
         });
 
-        if (viewportTop < titleOffset * 0.5) {
-            allTitlesBelow = true;
-        }
-
         if (direction === "down") {
-            if (allTitlesBelow) {
-                bestMatchIndex = -2; // Handles case where all titles are below
+            if (viewportTop < titleOffset * 0.5) { // all titles are below
+                bestMatchIndex = -2;
             }
-
             if (bestMatchIndex >= titles.length - 2) bestMatchIndex = titles.length - 3;
             this.scrollToTitle(titles[bestMatchIndex + 2]);
 
