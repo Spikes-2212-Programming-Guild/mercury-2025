@@ -5,31 +5,28 @@ export class TitleManager {
         this.titles = {};
         this.upButton = null;
         this.downButton = null;
-        this.previousTitleIndex = 0;
     }
 
     createTitle(title, pageName) {
         const titleElement = document.createElement('label');
         titleElement.textContent = title;
         titleElement.classList.add('question_title');
-        if (!this.titles[pageName]) {  // Ensure the array exists
-            this.titles[pageName] = [];
-        }
+
+        if (!this.titles[pageName]) this.titles[pageName] = [];
         this.titles[pageName].push(titleElement);
+
         return titleElement;
     }
 
     createTitleNavigation() {
-        const titleNavigationContainer = document.createElement('div');
-        titleNavigationContainer.id = 'title_navigation_container';
+        const container = document.createElement('div');
+        container.id = 'title_navigation_container';
 
         this.upButton = this.createNavButton('▲', 'title_navigation_up');
         this.downButton = this.createNavButton('▼', 'title_navigation_down');
 
-        titleNavigationContainer.appendChild(this.downButton);
-        titleNavigationContainer.appendChild(this.upButton);
-
-        return titleNavigationContainer;
+        container.append(this.downButton, this.upButton);
+        return container;
     }
 
     createNavButton(text, id) {
@@ -40,53 +37,40 @@ export class TitleManager {
     }
 
     updateTitleNavigationButtons(currentPageName) {
-        this.upButton.onclick = () => this.navigateTitles(currentPageName, -1);
-        this.downButton.onclick = () => this.navigateTitles(currentPageName, 1);
+        this.upButton.onclick = () => this.navigateToClosestTitle(currentPageName, "up");
+        this.downButton.onclick = () => this.navigateToClosestTitle(currentPageName, "down");
     }
 
-    navigateTitles(currentPageName, direction) {
+    navigateToClosestTitle(currentPageName, direction) {
         const titles = this.titles[currentPageName];
         if (!titles || titles.length === 0) return;
 
-        let closestIndex = this.getClosestTitleIndex(currentPageName);
-
-        // If not at an exact title, move to the closest title first
-        if (this.previousTitleIndex !== closestIndex || (closestIndex === 0 && direction < 0) ||
-            (closestIndex === this.titles.length - 1  && direction > 0)) {
-            this.scrollToTitle(titles[closestIndex]);
-            this.previousTitleIndex = closestIndex;
-            return;
-        }
-
-        let targetIndex = closestIndex + direction;
-        targetIndex = Math.max(0, Math.min(targetIndex, titles.length - 1));
-
-        if (targetIndex !== this.previousTitleIndex) {
-            this.scrollToTitle(titles[targetIndex]);
-            this.previousTitleIndex = targetIndex;
-        }
-    }
-
-    getClosestTitleIndex(currentPage) {
-        const titles = this.titles[currentPage];
-        if (!titles || titles.length === 0) return -1;
-
-        const currentScrollY = window.scrollY + titleOffset;
-        let closestIndex = -1;
-        let minDistance = Infinity;
+        const viewportTop = window.scrollY;
+        let bestMatchIndex = -1;
+        let bestMatchDistance = Infinity;
 
         titles.forEach((title, index) => {
             const rect = title.getBoundingClientRect();
-            const elementY = window.scrollY + rect.top - titleOffset;
-            const distance = Math.abs(elementY - currentScrollY);
+            const titleTop = window.scrollY + rect.top - titleOffset;
+            const titleBottom = titleTop + rect.height;
 
-            if (distance < minDistance) {
-                minDistance = distance;
-                closestIndex = index;
+            if (titleBottom < viewportTop) {
+                let distance = viewportTop - titleBottom;
+                if (distance < bestMatchDistance) {
+                    bestMatchDistance = distance;
+                    bestMatchIndex = index;
+                }
             }
         });
 
-        return closestIndex;
+        if (direction === "down") {
+            if (bestMatchIndex >= titles.length - 2) bestMatchIndex = titles.length - 3;
+            this.scrollToTitle(titles[bestMatchIndex + 2]);
+
+        } else {
+            if (bestMatchIndex < 0) bestMatchIndex = 0;
+            this.scrollToTitle(titles[bestMatchIndex]);
+        }
     }
 
     scrollToTitle(titleElement) {
