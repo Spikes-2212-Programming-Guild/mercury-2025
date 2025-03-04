@@ -5,13 +5,12 @@ export class TitleManager {
         this.titles = {};
         this.upButton = null;
         this.downButton = null;
-        this.previousTitle = null;
     }
 
     createTitle(title, pageName) {
-        const titleElement = document.createElement('label');
+        const titleElement = document.createElement("label");
         titleElement.textContent = title;
-        titleElement.classList.add('question_title');
+        titleElement.classList.add("question_title");
 
         if (!this.titles[pageName]) this.titles[pageName] = [];
         this.titles[pageName].push(titleElement);
@@ -20,18 +19,18 @@ export class TitleManager {
     }
 
     createTitleNavigation() {
-        const container = document.createElement('div');
-        container.id = 'title_navigation_container';
+        const container = document.createElement("div");
+        container.id = "title_navigation_container";
 
-        this.upButton = this.createNavButton('▲', 'title_navigation_up');
-        this.downButton = this.createNavButton('▼', 'title_navigation_down');
+        this.upButton = this.createNavButton("▲", "title_navigation_up");
+        this.downButton = this.createNavButton("▼", "title_navigation_down");
 
         container.append(this.downButton, this.upButton);
         return container;
     }
 
     createNavButton(text, id) {
-        const button = document.createElement('button');
+        const button = document.createElement("button");
         button.textContent = text;
         button.id = id;
         return button;
@@ -47,6 +46,7 @@ export class TitleManager {
         if (!titles || titles.length === 0) return;
 
         const viewportTop = window.scrollY;
+
         let bestMatchIndex = -1;
         let bestMatchDistance = Infinity;
 
@@ -65,22 +65,21 @@ export class TitleManager {
         });
 
         if (direction === "down") {
-            if (viewportTop < titleOffset * 0.5) { // all titles are below
+            if (viewportTop < titleOffset * 0.5) { // if all titles are below
                 bestMatchIndex = -2;
             }
-            if (bestMatchIndex >= titles.length - 2) bestMatchIndex = titles.length - 3;
-            this.scrollToTitle(titles[bestMatchIndex + 2]);
-
+            bestMatchIndex = Math.min(bestMatchIndex + 2, titles.length - 1); // Prevent index overflow
         } else {
-            if (bestMatchIndex < 0) bestMatchIndex = 0;
-            this.scrollToTitle(titles[bestMatchIndex]);
+            bestMatchIndex = Math.max(bestMatchIndex, 0);
         }
+
+        this.scrollToTitle(titles[bestMatchIndex]);
     }
 
     scrollToTitle(titleElement) {
+        if (!titleElement) return;
         const rect = titleElement.getBoundingClientRect();
         const absoluteY = window.scrollY + rect.top - titleOffset;
-        this.previousTitle = titleElement;
         window.scrollTo({top: absoluteY});
     }
 }
