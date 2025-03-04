@@ -30,12 +30,13 @@ class App {
         body.appendChild(this.pageManager.title);
         body.appendChild(this.questionManager.createResetAllButton(this.pageManager));
         body.appendChild(this.submissionHandler.createResendButton());
-        body.appendChild(this.titleManager.createTitleNavigation());
+        body.appendChild(this.titleManager.createTitleNavigation(this.pageManager));
 
         const pagesContainer = document.createElement('div');
         pagesContainer.id = 'pages_container';
         body.appendChild(pagesContainer);
 
+        let pageIndex = 0;
         config.forEach(page => {
             const pageContainer = this.pageManager.createPage(page.name);
 
@@ -46,7 +47,7 @@ class App {
                     pageContainer.appendChild(this.titleManager.createTitle(question, page.name));
                 } else {
                     // questions
-                    const questionObject = this.questionManager.createQuestion(question, page.name);
+                    const questionObject = this.questionManager.createQuestion(question, pageIndex);
                     pageContainer.appendChild(questionObject.createElement());
 
                     const savedValue = getFromLocalStorage(question.id);
@@ -55,6 +56,7 @@ class App {
                     questionObject.updateOutlineColor();
                 }
             });
+            pageIndex++;
         });
 
         body.appendChild(this.navigationManager.createAbsoluteNavigation(this.pageManager));

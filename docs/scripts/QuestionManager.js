@@ -6,10 +6,10 @@ export class QuestionManager {
         this.questions = [];
     }
 
-    createQuestion(question, pageName) {
+    createQuestion(question, pageIndex) {
         const QuestionClass = question.type;
         const questionObject = new QuestionClass();
-        question.pageName = pageName;
+        question.pageIndex = pageIndex;
         Object.assign(questionObject, question);
         this.questions.push(questionObject);
         return questionObject;

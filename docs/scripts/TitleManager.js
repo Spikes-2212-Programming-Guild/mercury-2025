@@ -18,12 +18,15 @@ export class TitleManager {
         return titleElement;
     }
 
-    createTitleNavigation() {
+    createTitleNavigation(pageManager) {
         const container = document.createElement("div");
         container.id = "title_navigation_container";
+        this.pageManager = pageManager;
 
         this.upButton = this.createNavButton("▲", "title_navigation_up");
         this.downButton = this.createNavButton("▼", "title_navigation_down");
+        this.upButton.onclick = () => this.navigateToClosestTitle("up");
+        this.downButton.onclick = () => this.navigateToClosestTitle("down");
 
         container.append(this.downButton, this.upButton);
         return container;
@@ -36,13 +39,8 @@ export class TitleManager {
         return button;
     }
 
-    updateTitleNavigationButtons(currentPageName) {
-        this.upButton.onclick = () => this.navigateToClosestTitle(currentPageName, "up");
-        this.downButton.onclick = () => this.navigateToClosestTitle(currentPageName, "down");
-    }
-
-    navigateToClosestTitle(currentPageName, direction) {
-        const titles = this.titles[currentPageName];
+    navigateToClosestTitle(direction) {
+        const titles = this.titles[this.pageManager.currentPageName];
         if (!titles || titles.length === 0) return;
 
         const viewportTop = window.scrollY;

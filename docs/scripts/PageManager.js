@@ -1,4 +1,3 @@
-import {config} from "./Config.js";
 import {getFromLocalStorage, setToLocalStorage} from "./DataManager.js";
 
 export class PageManager {
@@ -9,9 +8,9 @@ export class PageManager {
     }
 
     initialize() {
-        this.currentPageName = getFromLocalStorage('currentPageName') || config[0].name;
-        this.currentPageIndex = 0;
-        this.pages = new Map();
+        this.currentPageIndex = getFromLocalStorage('currentPageIndex') || 0;
+        this.currentPageName = '';
+        this.pages = [];
         this.title = this.createTitle();
     }
 
@@ -19,7 +18,7 @@ export class PageManager {
         const pageContainer = document.createElement('fieldset');
         pageContainer.classList.add('page');
         pageContainer.id = pageName;
-        this.pages.set(pageName, pageContainer);
+        this.pages.push(pageContainer);
         return pageContainer;
     }
 
@@ -29,29 +28,35 @@ export class PageManager {
         return title;
     }
 
-    updateCurrentPage(pageName) {
-        this.currentPageName = [...this.pages.keys()].find(p => p === pageName);
-        this.currentPageIndex = [...this.pages.keys()].indexOf(this.currentPageName);
-        setToLocalStorage('currentPageName', pageName);
+    updateCurrentPage(pageIndex) {
+        this.currentPageIndex = pageIndex
+        this.currentPageName = this.pages[pageIndex].id;
+        setToLocalStorage('currentPageIndex', pageIndex);
         this.navigationManager.updateRelativeNavigation(this);
-        this.titleManager.updateTitleNavigationButtons(pageName);
-        this.title.textContent = pageName;
+        this.title.textContent = this.currentPageName;
     }
 
     navigateToFirstPage() {
-        this.navigateTo(this.pages[0]);
+        this.navigateTo(0);
     }
 
     navigateToCurrentPage() {
-        this.navigateTo(this.currentPageName);
+        this.navigateTo(parseInt(this.currentPageIndex));
     }
 
-    navigateTo(pageName, scrollToTop = true) {
-        this.updateCurrentPage(pageName);
+    navigateByDirection(direction) {
+        let newIndex = parseInt(this.currentPageIndex) + direction;
+        if (newIndex > 0 && newIndex < this.pages.length) {
+            this.navigateTo(newIndex);
+        }
+    }
+
+    navigateTo(pageIndex, scrollToTop = true) {
+        this.updateCurrentPage(pageIndex);
         if (scrollToTop) window.scrollTo(0, 0);
 
-        for (const page of this.pages.values()) {
-            page.style.display = page.id === pageName ? 'block' : 'none';
-        }
+        this.pages.forEach((page, index) => {
+            page.style.display = index === pageIndex ? 'block' : 'none';
+        });
     }
 }

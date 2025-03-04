@@ -49,7 +49,7 @@ export class SubmissionHandler {
             question.updateOutlineColor();
             if (!question.isValid()) {
                 question.outlineColor = COLORS.WARNING;
-                this.pageManager.navigateTo(question.pageName, false);
+                this.pageManager.navigateTo(question.pageIndex, false);
                 const rect = question.boundingRect;
                 const absoluteY = window.scrollY + rect.top - window.innerHeight / 2 + rect.height / 2;
                 window.scrollTo({top: absoluteY, behavior: "smooth"});
