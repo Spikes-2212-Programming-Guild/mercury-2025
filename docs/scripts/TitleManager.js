@@ -5,6 +5,7 @@ export class TitleManager {
         this.titles = {};
         this.upButton = null;
         this.downButton = null;
+        this.previousTitleIndex = 0;
     }
 
     createTitle(title, pageName) {
@@ -22,56 +23,69 @@ export class TitleManager {
         const titleNavigationContainer = document.createElement('div');
         titleNavigationContainer.id = 'title_navigation_container';
 
-        const upButton = document.createElement('button');
-        upButton.textContent = '▲';
-        upButton.id = 'title_navigation_up';
-        this.upButton = upButton;
+        this.upButton = this.createNavButton('▲', 'title_navigation_up');
+        this.downButton = this.createNavButton('▼', 'title_navigation_down');
 
-        const downButton = document.createElement('button');
-        downButton.textContent = '▼';
-        downButton.id = 'title_navigation_down';
-        this.downButton = downButton;
+        titleNavigationContainer.appendChild(this.downButton);
+        titleNavigationContainer.appendChild(this.upButton);
 
-        titleNavigationContainer.appendChild(downButton);
-        titleNavigationContainer.appendChild(upButton);
         return titleNavigationContainer;
     }
 
-    updateTitleNavigationButtons(currentPageName) {
-        this.upButton.onclick = () => {
-            let closestIndex = this.getClosestTitleIndex(currentPageName);
-            if (closestIndex !== -1 && closestIndex > 0) {
-                this.scrollToTitle(this.titles[currentPageName][closestIndex - 1]);
-            }
-        };
+    createNavButton(text, id) {
+        const button = document.createElement('button');
+        button.textContent = text;
+        button.id = id;
+        return button;
+    }
 
-        this.downButton.onclick = () => {
-            let closestIndex = this.getClosestTitleIndex(currentPageName);
-            if (closestIndex !== -1 && closestIndex < this.titles[currentPageName].length - 1) {
-                this.scrollToTitle(this.titles[currentPageName][closestIndex + 1]);
-            }
-        };
+    updateTitleNavigationButtons(currentPageName) {
+        this.upButton.onclick = () => this.navigateTitles(currentPageName, -1);
+        this.downButton.onclick = () => this.navigateTitles(currentPageName, 1);
+    }
+
+    navigateTitles(currentPageName, direction) {
+        const titles = this.titles[currentPageName];
+        if (!titles || titles.length === 0) return;
+
+        let closestIndex = this.getClosestTitleIndex(currentPageName);
+
+        // If not at an exact title, move to the closest title first
+        if (this.previousTitleIndex !== closestIndex || (closestIndex === 0 && direction < 0) ||
+            (closestIndex === this.titles.length - 1  && direction > 0)) {
+            this.scrollToTitle(titles[closestIndex]);
+            this.previousTitleIndex = closestIndex;
+            return;
+        }
+
+        let targetIndex = closestIndex + direction;
+        targetIndex = Math.max(0, Math.min(targetIndex, titles.length - 1));
+
+        if (targetIndex !== this.previousTitleIndex) {
+            this.scrollToTitle(titles[targetIndex]);
+            this.previousTitleIndex = targetIndex;
+        }
     }
 
     getClosestTitleIndex(currentPage) {
-        if (!this.titles[currentPage] || this.titles[currentPage].length === 0) {
-            return -1; // Prevent errors
-        }
+        const titles = this.titles[currentPage];
+        if (!titles || titles.length === 0) return -1;
 
         const currentScrollY = window.scrollY + titleOffset;
         let closestIndex = -1;
         let minDistance = Infinity;
 
-        for (let i = 0; i < this.titles[currentPage].length; i++) {
-            const rect = this.titles[currentPage][i].getBoundingClientRect();
+        titles.forEach((title, index) => {
+            const rect = title.getBoundingClientRect();
             const elementY = window.scrollY + rect.top - titleOffset;
-
             const distance = Math.abs(elementY - currentScrollY);
+
             if (distance < minDistance) {
                 minDistance = distance;
-                closestIndex = i;
+                closestIndex = index;
             }
-        }
+        });
+
         return closestIndex;
     }
 
