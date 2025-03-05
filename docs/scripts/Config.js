@@ -31,7 +31,7 @@ export const appId = "qualification_practice_"
 
 export const titleOffset = 225;
 
-export const config = [
+export const pageConfig = [
     {
         "name": "Pre",
         "questions": [

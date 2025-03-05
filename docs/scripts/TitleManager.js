@@ -45,41 +45,42 @@ export class TitleManager {
         if (!titles || titles.length === 0) return;
 
         const viewportTop = window.scrollY;
+        let closestTitleIndex = this.getClosestTitleIndex(viewportTop);
 
-        let bestMatchIndex = -1;
-        let bestMatchDistance = Infinity;
+        closestTitleIndex = this.adjustIndexForDirection(closestTitleIndex, direction, viewportTop, titles);
+
+        this.scrollToTitle(titles[closestTitleIndex]);
+    }
+
+    getClosestTitleIndex(viewportTop) {
+        const titles = this.titles[this.pageManager.currentPageName];
+        let closestIndex = -1;
+        let closestDistance = Infinity;
 
         titles.forEach((title, index) => {
-            const rect = title.getBoundingClientRect();
-            const titleBottom = this.getTitleTop(title); + rect.height;
-
+            const titleBottom = this.getTitleTop(title) + title.offsetHeight;
             if (titleBottom < viewportTop) {
-                let distance = viewportTop - titleBottom;
-                if (distance < bestMatchDistance) {
-                    bestMatchDistance = distance;
-                    bestMatchIndex = index;
+                const distance = viewportTop - titleBottom;
+                if (distance < closestDistance) {
+                    closestDistance = distance;
+                    closestIndex = index;
                 }
             }
         });
 
+        return closestIndex;
+    }
+
+    adjustIndexForDirection(index, direction, viewportTop, titles) {
         if (direction === "down") {
-            if (viewportTop < titleOffset * 0.5) { // if all titles are below
-                bestMatchIndex = -1;
-            }
-
-            bestMatchIndex = Math.min(bestMatchIndex + 1, titles.length - 1);
-
-            const titleTop = titles[bestMatchIndex].getBoundingClientRect().top + window.scrollY - titleOffset;
-            const isClose = Math.abs(titleTop - viewportTop) < 5;
-
-            if (isClose) {
-                bestMatchIndex++;
-            }
+            index = Math.min(index + 1, titles.length - 1);
+            const titleTop = this.getTitleTop(titles[index]);
+            if (Math.abs(titleTop - viewportTop) < 5 && index < titles.length - 1) index++;
         } else {
-            bestMatchIndex = Math.max(bestMatchIndex, 0);
+            index = Math.max(index, 0);
         }
 
-        this.scrollToTitle(titles[bestMatchIndex]);
+        return index;
     }
 
     getTitleTop(titleElement) {

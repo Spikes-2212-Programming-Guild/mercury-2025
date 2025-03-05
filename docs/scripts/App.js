@@ -4,7 +4,7 @@ import {SubmissionHandler} from './SubmissionHandler.js';
 import {TitleManager} from './TitleManager.js';
 import {NavigationManager} from './NavigationManager.js';
 import {setUpEventListeners} from './EventListenerManager.js';
-import {config} from "./Config.js";
+import {pageConfig} from "./Config.js";
 import {getFromLocalStorage} from "./DataManager.js";
 
 class App {
@@ -36,23 +36,15 @@ class App {
         pagesContainer.id = 'pages_container';
         body.appendChild(pagesContainer);
 
-        config.forEach((page, index) => {
+        pageConfig.forEach((page, pageIndex) => {
             const pageContainer = this.pageManager.createPage(page.name);
 
             pagesContainer.appendChild(pageContainer);
             page.questions.forEach(question => {
-                if (typeof question === 'string') {
-                    // titles
+                if (typeof question === 'string') { // titles
                     pageContainer.appendChild(this.titleManager.createTitle(question, page.name));
-                } else {
-                    // questions
-                    const questionObject = this.questionManager.createQuestion(question, index);
-                    pageContainer.appendChild(questionObject.createElement());
-
-                    const savedValue = getFromLocalStorage(question.id);
-                    if (savedValue) questionObject.value = savedValue;
-                    else questionObject.clear();
-                    questionObject.updateOutlineColor();
+                } else { // questions
+                    pageContainer.appendChild(this.questionManager.createQuestion(question, pageIndex));
                 }
             });
         });

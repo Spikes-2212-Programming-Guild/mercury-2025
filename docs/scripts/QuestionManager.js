@@ -9,10 +9,22 @@ export class QuestionManager {
     createQuestion(question, pageIndex) {
         const QuestionClass = question.type;
         const questionObject = new QuestionClass();
+
         question.pageIndex = pageIndex;
         Object.assign(questionObject, question);
         this.questions.push(questionObject);
-        return questionObject;
+
+        const questionElement = questionObject.createElement();
+        this.loadSavedQuestionValue(questionObject)
+
+        return questionElement;
+    }
+
+    loadSavedQuestionValue(questionObject) {
+        const savedValue = getFromLocalStorage(questionObject.id);
+        if (savedValue) questionObject.value = savedValue;
+        else questionObject.clear();
+        questionObject.updateOutlineColor();
     }
 
     createResetAllButton(pageManager) {

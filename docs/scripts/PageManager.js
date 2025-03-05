@@ -1,4 +1,5 @@
 import {getFromLocalStorage, setToLocalStorage} from "./DataManager.js";
+import {COLORS} from "./Config.js";
 
 export class PageManager {
 

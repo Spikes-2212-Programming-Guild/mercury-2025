@@ -1,4 +1,4 @@
-import {COLORS, config} from "./Config.js";
+import {COLORS} from "./Config.js";
 
 export class NavigationManager {
 
@@ -6,9 +6,9 @@ export class NavigationManager {
         const absoluteNavigationContainer = document.createElement('div')
         absoluteNavigationContainer.id = 'absolute_navigation_container'
 
-        config.forEach((page, index) => {
+        pageManager.pages.forEach((page, index) => {
             const button = document.createElement('button');
-            button.textContent = page.name;
+            button.textContent = page.id;
             button.classList.add('absolute_navigation');
             button.addEventListener('click', () => pageManager.navigateTo(index));
             absoluteNavigationContainer.appendChild(button);
@@ -49,7 +49,7 @@ export class NavigationManager {
 
     updateRelativeNavigation(pageManager) {
         const pageIndex = pageManager.currentPageIndex;
-        const pageAmount = config.length;
+        const pageAmount = pageManager.pages.length;
 
         this.prevButton.style.disabeled = pageIndex > 1 ? 'true' : 'false';
         this.prevButton.style.color = pageIndex > 1 ? COLORS.ACTIVE : COLORS.INACTIVE;
