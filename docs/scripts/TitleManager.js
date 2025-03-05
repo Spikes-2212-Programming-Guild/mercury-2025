@@ -73,14 +73,13 @@ export class TitleManager {
 
     adjustIndexForDirection(index, direction, viewportTop, titles) {
         if (direction === "down") {
-            index = Math.min(index + 1, titles.length - 1);
-            const titleTop = this.getTitleTop(titles[index]);
-            if (Math.abs(titleTop - viewportTop) < 5 && index < titles.length - 1) index++;
-        } else {
-            index = Math.max(index, 0);
-        }
+            const nextIndex = Math.min(index + 1, titles.length - 1);
+            const titleTop = this.getTitleTop(titles[nextIndex]);
+            const isVeryClose = Math.abs(titleTop - viewportTop) < 5;
 
-        return index;
+            return isVeryClose && nextIndex < titles.length - 1 ? nextIndex + 1 : nextIndex;
+        }
+        return Math.max(index, 0);
     }
 
     getTitleTop(titleElement) {

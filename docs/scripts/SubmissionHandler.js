@@ -2,14 +2,12 @@ import {apiUrl, COLORS} from "./Config.js";
 import {getFromLocalStorage, setToLocalStorage} from "./DataManager.js";
 
 export class SubmissionHandler {
-    constructor(questionManager, pageManager) {
+
+    initialize(questionManager, pageManager) {
         this.questionManager = questionManager;
         this.pageManager = pageManager;
         this.submissionQueue = JSON.parse(getFromLocalStorage('submissionQueue')) || [];
         this.submitting = false;
-    }
-
-    initialize() {
         setInterval(() => this.processQueue(), 1000 * 60 * 4);
     }
 

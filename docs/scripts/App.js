@@ -12,13 +12,13 @@ class App {
         this.titleManager = new TitleManager();
         this.pageManager = new PageManager();
         this.questionManager = new QuestionManager();
-        this.submissionHandler = new SubmissionHandler(this.questionManager, this.pageManager);
+        this.submissionHandler = new SubmissionHandler();
         this.initialize();
     }
 
     initialize() {
-        this.pageManager.initialize();
-        this.submissionHandler.initialize();
+        this.pageManager.initialize(this.navigationManager);
+        this.submissionHandler.initialize(this.questionManager, this.pageManager);
         this.render();
         this.pageManager.navigateToCurrentPage();
         setUpEventListeners(this.pageManager);

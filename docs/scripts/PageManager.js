@@ -2,7 +2,8 @@ import {getFromLocalStorage, setToLocalStorage} from "./DataManager.js";
 
 export class PageManager {
 
-    initialize() {
+    initialize(navigationManager) {
+        this.navigationManager = navigationManager;
         this.currentPageIndex = getFromLocalStorage('currentPageIndex') || 0;
         this.currentPageName = '';
         this.pages = [];
@@ -25,9 +26,10 @@ export class PageManager {
 
     updateCurrentPage(pageIndex) {
         this.currentPageIndex = pageIndex
-        this.currentPageName = this.pages[pageIndex].id;
+        this.currentPageName = this.getPageName(this.pages[pageIndex]);
         setToLocalStorage('currentPageIndex', pageIndex);
         this.title.textContent = this.currentPageName;
+        this.navigationManager.updateRelativeNavigation(pageIndex, this.pages.length);
     }
 
     navigateToFirstPage() {
@@ -40,7 +42,7 @@ export class PageManager {
 
     navigateByDirection(direction) {
         let newIndex = parseInt(this.currentPageIndex) + direction;
-        if (newIndex > 0 && newIndex < this.pages.length) {
+        if (newIndex >= 0 && newIndex < this.pages.length) {
             this.navigateTo(newIndex);
         }
     }
@@ -51,6 +53,11 @@ export class PageManager {
 
         this.pages.forEach((page, index) => {
             page.style.display = index === pageIndex ? 'block' : 'none';
+            this.navigationManager.setAbsoluteNavigationButtonBold(index, index === pageIndex);
         });
+    }
+
+    getPageName(page) {
+        return page.id;
     }
 }
