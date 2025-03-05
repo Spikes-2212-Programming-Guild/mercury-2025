@@ -2,9 +2,9 @@ import {apiUrl, COLORS} from "./Config.js";
 import {getFromLocalStorage, setToLocalStorage} from "./DataManager.js";
 
 export class SubmissionHandler {
-
-    initialize(questionManager, pageManager) {
+    initialize(questionManager, pageManager, gameRemindManager) {
         this.questionManager = questionManager;
+        this.gameRemindManager = gameRemindManager;
         this.pageManager = pageManager;
         this.submissionQueue = JSON.parse(getFromLocalStorage('submissionQueue')) || [];
         this.submitting = false;
@@ -64,7 +64,9 @@ export class SubmissionHandler {
 
         this.pageManager.navigateToFirstPage();
         this.questionManager.clearAllAnswers();
+        this.gameRemindManager.resetGame();
         alert('Form Successfully Submitted!');
+        console.log('submission added to queue');
 
         setToLocalStorage('submissionQueue', JSON.stringify(this.submissionQueue));
         await this.processQueue();

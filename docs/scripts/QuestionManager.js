@@ -6,6 +6,10 @@ export class QuestionManager {
         this.questions = [];
     }
 
+    initialize(gameRemindManager) {
+        this.gameRemindManager = gameRemindManager;
+    }
+
     createQuestion(question, pageIndex) {
         const QuestionClass = question.type;
         const questionObject = new QuestionClass();
@@ -50,6 +54,7 @@ export class QuestionManager {
     }
 
     clearAllAnswers(ignoreResetTypes = false) {
+        this.gameRemindManager.resetGame();
         for (const question of this.questions) {
             if (!ignoreResetTypes) {
                 if (question.resetType === RESET_TYPES.KEEP) continue;

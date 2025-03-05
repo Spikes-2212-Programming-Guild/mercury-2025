@@ -44,6 +44,10 @@ app.get("/scripts/EventListenerManager.js", (req, res) => {
     res.sendFile(path.join(__dirname, "scripts", "EventListenerManager.js"));
 });
 
+app.get("/scripts/GameRemindManager.js", (req, res) => {
+    res.sendFile(path.join(__dirname, "scripts", "GameRemindManager.js"));
+});
+
 app.get("/scripts/DataManager.js", (req, res) => {
     res.sendFile(path.join(__dirname, "scripts", "DataManager.js"));
 });

@@ -5,6 +5,7 @@ import {TitleManager} from './TitleManager.js';
 import {NavigationManager} from './NavigationManager.js';
 import {setUpEventListeners} from './EventListenerManager.js';
 import {pageConfig} from "./Config.js";
+import {GameRemindManager} from "./GameRemindManager.js";
 
 class App {
     constructor() {
@@ -12,16 +13,19 @@ class App {
         this.titleManager = new TitleManager();
         this.pageManager = new PageManager();
         this.questionManager = new QuestionManager();
+        this.gameRemindManager = new GameRemindManager();
         this.submissionHandler = new SubmissionHandler();
         this.initialize();
     }
 
     initialize() {
         this.pageManager.initialize(this.navigationManager);
-        this.submissionHandler.initialize(this.questionManager, this.pageManager);
+        this.submissionHandler.initialize(this.questionManager, this.pageManager, this.gameRemindManager);
+        this.questionManager.initialize(this.gameRemindManager);
         this.render();
         this.pageManager.navigateToCurrentPage();
         setUpEventListeners(this.pageManager);
+        this.gameRemindManager.initialize(this.questionManager, this.pageManager);
     }
 
     render() {
