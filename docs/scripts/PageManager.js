@@ -2,11 +2,6 @@ import {getFromLocalStorage, setToLocalStorage} from "./DataManager.js";
 
 export class PageManager {
 
-    constructor(navigationManager, titleManager) {
-        this.navigationManager = navigationManager;
-        this.titleManager = titleManager;
-    }
-
     initialize() {
         this.currentPageIndex = getFromLocalStorage('currentPageIndex') || 0;
         this.currentPageName = '';
@@ -32,7 +27,6 @@ export class PageManager {
         this.currentPageIndex = pageIndex
         this.currentPageName = this.pages[pageIndex].id;
         setToLocalStorage('currentPageIndex', pageIndex);
-        this.navigationManager.updateRelativeNavigation(this);
         this.title.textContent = this.currentPageName;
     }
 

@@ -22,13 +22,19 @@ export class NavigationManager {
         relativeNavigationContainer.id = 'relative_navigation_container';
 
         this.prevButton = this.createRelativeNavigationButton('Previous', 'prev');
-        this.prevButton.onclick = () => pageManager.navigateByDirection(-1);
+        this.prevButton.onclick = () => {
+            pageManager.navigateByDirection(-1);
+            this.updateRelativeNavigation(pageManager);
+        };
 
         relativeNavigationContainer.appendChild(this.prevButton);
         relativeNavigationContainer.appendChild(submitButton);
 
         this.nextButton = this.createRelativeNavigationButton('Next', 'next');
-        this.nextButton.onclick = () => pageManager.navigateByDirection(1);
+        this.nextButton.onclick = () => {
+            pageManager.navigateByDirection(1);
+            this.updateRelativeNavigation(pageManager);
+        };
         relativeNavigationContainer.appendChild(this.nextButton);
         return relativeNavigationContainer;
     }

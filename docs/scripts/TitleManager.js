@@ -23,19 +23,20 @@ export class TitleManager {
         container.id = "title_navigation_container";
         this.pageManager = pageManager;
 
-        this.upButton = this.createNavButton("▲", "title_navigation_up");
-        this.downButton = this.createNavButton("▼", "title_navigation_down");
-        this.upButton.onclick = () => this.navigateToClosestTitle("up");
-        this.downButton.onclick = () => this.navigateToClosestTitle("down");
+        this.upButton = this.createNavButton("▲", "title_navigation_up",
+            () => this.navigateToClosestTitle("up"));
+        this.downButton = this.createNavButton("▼", "title_navigation_down",
+            () => this.navigateToClosestTitle("down"));
 
         container.append(this.downButton, this.upButton);
         return container;
     }
 
-    createNavButton(text, id) {
+    createNavButton(text, id, onClick) {
         const button = document.createElement("button");
         button.textContent = text;
         button.id = id;
+        button.onclick = onClick;
         return button;
     }
 
@@ -50,8 +51,7 @@ export class TitleManager {
 
         titles.forEach((title, index) => {
             const rect = title.getBoundingClientRect();
-            const titleTop = window.scrollY + rect.top - titleOffset;
-            const titleBottom = titleTop + rect.height;
+            const titleBottom = this.getTitleTop(title); + rect.height;
 
             if (titleBottom < viewportTop) {
                 let distance = viewportTop - titleBottom;
@@ -64,9 +64,17 @@ export class TitleManager {
 
         if (direction === "down") {
             if (viewportTop < titleOffset * 0.5) { // if all titles are below
-                bestMatchIndex = -2;
+                bestMatchIndex = -1;
             }
-            bestMatchIndex = Math.min(bestMatchIndex + 2, titles.length - 1); // Prevent index overflow
+
+            bestMatchIndex = Math.min(bestMatchIndex + 1, titles.length - 1);
+
+            const titleTop = titles[bestMatchIndex].getBoundingClientRect().top + window.scrollY - titleOffset;
+            const isClose = Math.abs(titleTop - viewportTop) < 5;
+
+            if (isClose) {
+                bestMatchIndex++;
+            }
         } else {
             bestMatchIndex = Math.max(bestMatchIndex, 0);
         }
@@ -74,10 +82,12 @@ export class TitleManager {
         this.scrollToTitle(titles[bestMatchIndex]);
     }
 
+    getTitleTop(titleElement) {
+        return titleElement.getBoundingClientRect().top + window.scrollY - titleOffset;
+    }
+
     scrollToTitle(titleElement) {
         if (!titleElement) return;
-        const rect = titleElement.getBoundingClientRect();
-        const absoluteY = window.scrollY + rect.top - titleOffset;
-        window.scrollTo({top: absoluteY});
+        window.scrollTo({top: this.getTitleTop(titleElement)});
     }
 }

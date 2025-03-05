@@ -11,7 +11,7 @@ class App {
     constructor() {
         this.navigationManager = new NavigationManager();
         this.titleManager = new TitleManager();
-        this.pageManager = new PageManager(this.navigationManager, this.titleManager);
+        this.pageManager = new PageManager();
         this.questionManager = new QuestionManager();
         this.submissionHandler = new SubmissionHandler(this.questionManager, this.pageManager);
         this.initialize();
@@ -22,7 +22,7 @@ class App {
         this.submissionHandler.initialize();
         this.render();
         this.pageManager.navigateToCurrentPage();
-        setUpEventListeners(this.navigationManager);
+        setUpEventListeners(this.pageManager);
     }
 
     render() {
@@ -36,8 +36,7 @@ class App {
         pagesContainer.id = 'pages_container';
         body.appendChild(pagesContainer);
 
-        let pageIndex = 0;
-        config.forEach(page => {
+        config.forEach((page, index) => {
             const pageContainer = this.pageManager.createPage(page.name);
 
             pagesContainer.appendChild(pageContainer);
@@ -47,7 +46,7 @@ class App {
                     pageContainer.appendChild(this.titleManager.createTitle(question, page.name));
                 } else {
                     // questions
-                    const questionObject = this.questionManager.createQuestion(question, pageIndex);
+                    const questionObject = this.questionManager.createQuestion(question, index);
                     pageContainer.appendChild(questionObject.createElement());
 
                     const savedValue = getFromLocalStorage(question.id);
@@ -56,11 +55,11 @@ class App {
                     questionObject.updateOutlineColor();
                 }
             });
-            pageIndex++;
         });
 
         body.appendChild(this.navigationManager.createAbsoluteNavigation(this.pageManager));
-        body.appendChild(this.navigationManager.createRelativeNavigation(this.submissionHandler.createSubmitButton()));
+        body.appendChild(this.navigationManager.createRelativeNavigation(
+            this.submissionHandler.createSubmitButton(), this.pageManager));
     }
 }
 

@@ -195,7 +195,7 @@ button, input, label, div {
 /* ========== HOVER EFFECTS ========== */
 .absolute_navigation:hover,
 #submit_button:hover {
-    background-color: #0056b3;
+    background-color: #0245a3;
 }
 
 .relative_navigation:hover {

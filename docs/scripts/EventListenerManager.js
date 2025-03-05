@@ -1,9 +1,9 @@
-export function setUpEventListeners(navigationManager) {
+export function setUpEventListeners(pageManager) {
     disableIOSZoom();
-    setUpSwipeListeners(navigationManager);
+    setUpSwipeListeners(pageManager);
 }
 
-export function setUpSwipeListeners(navigationManager) {
+export function setUpSwipeListeners(pageManager) {
     let startX = 0;
     let startY = 0;
     let endX = 0;
@@ -20,8 +20,8 @@ export function setUpSwipeListeners(navigationManager) {
         let distanceY = Math.abs(endY - startY);
         if (distanceY > 300) return;
 
-        if (diffX > 200) navigationManager.prevButton.click();
-        else if (diffX < -200) navigationManager.nextButton.click();
+        if (diffX > 200) pageManager.navigateByDirection(-1);
+        else if (diffX < -200) pageManager.navigateByDirection(1);
     });
 }
 
