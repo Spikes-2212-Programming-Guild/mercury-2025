@@ -5,7 +5,6 @@ import {TitleManager} from './TitleManager.js';
 import {NavigationManager} from './NavigationManager.js';
 import {setUpEventListeners} from './EventListenerManager.js';
 import {pageConfig} from "./Config.js";
-import {getFromLocalStorage} from "./DataManager.js";
 
 class App {
     constructor() {

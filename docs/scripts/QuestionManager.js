@@ -10,6 +10,7 @@ export class QuestionManager {
         const QuestionClass = question.type;
         const questionObject = new QuestionClass();
 
+        questionObject.defaultValue = questionObject.defaultValue || '';
         question.pageIndex = pageIndex;
         Object.assign(questionObject, question);
         this.questions.push(questionObject);

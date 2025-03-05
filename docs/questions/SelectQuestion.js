@@ -2,11 +2,10 @@ import {Question} from "./Question.js";
 import {getFromLocalStorage} from "../scripts/DataManager.js";
 
 export class SelectQuestion extends Question {
-    constructor(id, title, defaultValue, resetType, pageName, choices) {
-        super(id, title, defaultValue, resetType, pageName);
-        this.choices = choices;
+    constructor() {
+        super();
         this.buttonMap = new Map();
-        this._value = getFromLocalStorage(this.id) || defaultValue;
+        this._value = getFromLocalStorage(this.id) || this.defaultValue;
     }
 
     set value(newValue) {

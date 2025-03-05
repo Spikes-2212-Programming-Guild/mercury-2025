@@ -2,14 +2,6 @@ import {COLORS} from "../scripts/Config.js";
 import {setToLocalStorage} from "../scripts/DataManager.js";
 
 export class Question {
-    constructor(id, title, defaultValue, resetType, pageName) {
-        this.id = id;
-        this.title = title;
-        this.pageName = pageName;
-        this.element = null;
-        this.resetType = resetType;
-        this.defaultValue = defaultValue || '';
-    }
 
     set value(newValue) {
         this.element.value = newValue;

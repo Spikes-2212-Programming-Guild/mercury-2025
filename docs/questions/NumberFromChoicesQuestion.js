@@ -1,10 +1,6 @@
 import {Question} from "./Question.js";
 
 export class NumberFromChoicesQuestion extends Question {
-    constructor(id, title, defaultValue, resetType, pageName, choices) {
-        super(id, title, defaultValue, resetType, pageName);
-        this.choices = choices;
-    }
 
     isValid() {
         return super.isValid() && this.choices.includes(parseInt(this.value));
