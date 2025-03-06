@@ -1,4 +1,4 @@
-import {COLORS} from "./Config.js";
+import {COLORS} from "../config/constants";
 
 export class NavigationManager {
 

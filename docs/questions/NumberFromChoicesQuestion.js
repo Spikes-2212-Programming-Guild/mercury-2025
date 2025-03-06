@@ -1,4 +1,4 @@
-import {Question} from "./Question.js";
+import {Question} from "./Question";
 
 export class NumberFromChoicesQuestion extends Question {
 

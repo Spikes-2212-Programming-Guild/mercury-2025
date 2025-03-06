@@ -1,5 +1,5 @@
-import {COLORS, RESET_TYPES} from "./Config.js";
-import {getFromLocalStorage, removeFromLocalStorage, setToLocalStorage} from "./DataManager.js";
+import {getFromLocalStorage, removeFromLocalStorage, setToLocalStorage} from "./data-manager";
+import {COLORS, RESET_TYPES} from "../config/constants";
 
 export class QuestionManager {
     constructor() {

@@ -1,4 +1,4 @@
-import {titleOffset} from "./Config.js";
+import {TITLE_OFFSET} from "../config/constants";
 
 export class TitleManager {
     constructor() {
@@ -83,7 +83,7 @@ export class TitleManager {
     }
 
     getTitleTop(titleElement) {
-        return titleElement.getBoundingClientRect().top + window.scrollY - titleOffset;
+        return titleElement.getBoundingClientRect().top + window.scrollY - TITLE_OFFSET;
     }
 
     scrollToTitle(titleElement) {

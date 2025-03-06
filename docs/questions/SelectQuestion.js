@@ -1,5 +1,5 @@
-import {Question} from "./Question.js";
-import {getFromLocalStorage} from "../scripts/DataManager.js";
+import {Question} from "./Question";
+import {getFromLocalStorage} from "../scripts/data-manager";
 
 export class SelectQuestion extends Question {
     constructor() {

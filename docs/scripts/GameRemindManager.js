@@ -1,3 +1,5 @@
+import {TELEOP_START_TIME_MS} from "../config/constants";
+
 export class GameRemindManager {
     initialize(questionManager, pageManager) {
         this.questionManager = questionManager;
@@ -8,16 +10,13 @@ export class GameRemindManager {
     checkIfStarted() {
         if (this.gameStarted) return;
 
-        if (this.pageManager.currentPageName === "Teleop") {
-            clearInterval(this.checkInterval); // Stop checking
-            return;
-        }
-
         for (const questionObject of this.questionManager.questions) {
             if (questionObject.id === "left_starting_line" && questionObject.isValid()) {
                 this.gameStarted = true;
                 clearInterval(this.checkInterval); // Stop checking
-                this.notifyUserAfterDelay(); // Schedule notification
+                if (this.pageManager.currentPageName !== "Teleop") {
+                    this.notifyUserAfterDelay(); // Schedule notification
+                }
                 break;
             }
         }
@@ -31,23 +30,13 @@ export class GameRemindManager {
     notifyUserAfterDelay() {
         setTimeout(() => {
             this.showNotification("Teleop Started!");
-        }, 1000 * 15);
+        }, TELEOP_START_TIME_MS);
     }
 
     showNotification(message) {
         let notification = document.createElement("div");
+        notification.classList.add("notification");
         notification.textContent = message;
-        notification.style.position = "fixed";
-        notification.style.bottom = "82.5%";
-        notification.style.left = "50%";
-        notification.style.transform = "translateX(-50%)";
-        notification.style.background = "rgba(0, 0, 0, 0.5)";
-        notification.style.borderRadius = "20%";
-        notification.style.color = "white";
-        notification.style.padding = "4%";
-        notification.style.fontSize = "3em";
-        notification.style.zIndex = "1000";
-        notification.style.transition = "opacity 0.3s ease";
         document.body.appendChild(notification);
 
         setTimeout(() => {

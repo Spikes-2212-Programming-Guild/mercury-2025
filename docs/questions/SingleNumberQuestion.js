@@ -1,9 +1,9 @@
-import {Question} from "./Question.js";
+import {Question} from "./Question";
 
 export class SingleNumberQuestion extends Question {
 
     isValid() {
-        return super.isValid() && this.value >= 1 && this.value <= 100;
+        return super.isValid() && this.value >= 1 && this.value <= 100; // need to be fixed (add a min and max)
     }
 
     clear() {

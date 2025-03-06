@@ -1,5 +1,5 @@
-import {COLORS} from "../scripts/Config.js";
-import {setToLocalStorage} from "../scripts/DataManager.js";
+import {setToLocalStorage} from "../scripts/data-manager";
+import {COLORS} from "../config/constants";
 
 export class Question {
 

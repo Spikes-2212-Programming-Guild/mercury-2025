@@ -1,4 +1,4 @@
-import {getFromLocalStorage, setToLocalStorage} from "./DataManager.js";
+import {getFromLocalStorage, setToLocalStorage} from "./data-manager";
 
 export class PageManager {
 

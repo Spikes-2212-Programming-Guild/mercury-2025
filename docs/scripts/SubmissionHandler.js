@@ -1,5 +1,5 @@
-import {apiUrl, COLORS} from "./Config.js";
-import {getFromLocalStorage, setToLocalStorage} from "./DataManager.js";
+import {API_URL, COLORS, RETRY_SENDING_SUBMISSIONS_INTERVAL_MS} from "../config/constants";
+import {getFromLocalStorage, setToLocalStorage} from "./data-manager";
 
 export class SubmissionHandler {
     initialize(questionManager, pageManager, gameRemindManager) {
@@ -8,7 +8,7 @@ export class SubmissionHandler {
         this.pageManager = pageManager;
         this.submissionQueue = JSON.parse(getFromLocalStorage('submissionQueue')) || [];
         this.submitting = false;
-        setInterval(() => this.processQueue(), 1000 * 60 * 4);
+        setInterval(() => this.processQueue(), RETRY_SENDING_SUBMISSIONS_INTERVAL_MS);
     }
 
     createResendButton() {
@@ -84,7 +84,7 @@ export class SubmissionHandler {
             console.log("Submitting:", formData);
 
             try {
-                const response = await fetch(apiUrl, {
+                const response = await fetch(API_URL, {
                     method: 'POST',
                     headers: {'Content-Type': 'application/json'},
                     body: JSON.stringify(formData)

@@ -1,11 +1,11 @@
-import {PageManager} from './PageManager.js';
-import {QuestionManager} from './QuestionManager.js';
-import {SubmissionHandler} from './SubmissionHandler.js';
-import {TitleManager} from './TitleManager.js';
-import {NavigationManager} from './NavigationManager.js';
-import {setUpEventListeners} from './EventListenerManager.js';
-import {pageConfig} from "./Config.js";
-import {GameRemindManager} from "./GameRemindManager.js";
+import {PageManager} from './PageManager';
+import {QuestionManager} from './QuestionManager';
+import {SubmissionHandler} from './SubmissionHandler';
+import {TitleManager} from './TitleManager';
+import {NavigationManager} from './NavigationManager';
+import {setUpEventListeners} from './event-listener-manager';
+import {pageConfig} from "../config/questions";
+import {GameRemindManager} from "./GameRemindManager";
 
 class App {
     constructor() {
