@@ -1,10 +1,10 @@
-import {SingleNumberQuestion} from "../questions/SingleNumberQuestion";
-import {TextLineQuestion} from "../questions/TextLineQuestion";
-import {CounterQuestion} from "../questions/CounterQuestion";
-import {NumberFromChoicesQuestion} from "../questions/NumberFromChoicesQuestion";
-import {SelectQuestion} from "../questions/SelectQuestion";
-import {TextboxQuestion} from "../questions/TextboxQuestion";
-import {ALL_TEAMS, RESET_TYPES} from "./constants";
+import {SingleNumberQuestion} from "../questions/SingleNumberQuestion.js";
+import {TextLineQuestion} from "../questions/TextLineQuestion.js";
+import {CounterQuestion} from "../questions/CounterQuestion.js";
+import {NumberFromChoicesQuestion} from "../questions/NumberFromChoicesQuestion.js";
+import {SelectQuestion} from "../questions/SelectQuestion.js";
+import {TextboxQuestion} from "../questions/TextboxQuestion.js";
+import {ALL_TEAMS, RESET_TYPES} from "./constants.js";
 
 export const pageConfig = [
     {

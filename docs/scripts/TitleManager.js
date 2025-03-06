@@ -1,4 +1,4 @@
-import {TITLE_OFFSET} from "../config/constants";
+import {TITLE_OFFSET} from "../config/constants.js";
 
 export class TitleManager {
     constructor() {

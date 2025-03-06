@@ -1,5 +1,5 @@
-import {API_URL, COLORS, RETRY_SENDING_SUBMISSIONS_INTERVAL_MS} from "../config/constants";
-import {getFromLocalStorage, setToLocalStorage} from "./data-manager";
+import {API_URL, COLORS, RETRY_SENDING_SUBMISSIONS_INTERVAL_MS} from "../config/constants.js";
+import {getFromLocalStorage, setToLocalStorage} from "./data-manager.js";
 
 export class SubmissionHandler {
     initialize(questionManager, pageManager, gameRemindManager) {

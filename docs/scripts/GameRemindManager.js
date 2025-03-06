@@ -1,4 +1,4 @@
-import {TELEOP_START_TIME_MS} from "../config/constants";
+import {TELEOP_START_TIME_MS} from "../config/constants.js";
 
 export class GameRemindManager {
     initialize(questionManager, pageManager) {

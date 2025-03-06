@@ -1,4 +1,4 @@
-import {APP_ID} from "../config/constants";
+import {APP_ID} from "../config/constants.js";
 
 export function setToLocalStorage(key, value) {
     localStorage.setItem(APP_ID + key, value);
