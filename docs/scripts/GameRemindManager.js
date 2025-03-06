@@ -14,7 +14,7 @@ export class GameRemindManager {
             if (questionObject.id === "left_starting_line" && questionObject.isValid()) {
                 this.gameStarted = true;
                 clearInterval(this.checkInterval); // Stop checking
-                if (this.pageManager.currentPageName !== "Teleop") {
+                if (this.pageManager.currentPageName === "Auto") {
                     this.notifyUserAfterDelay(); // Schedule notification
                 }
                 break;
