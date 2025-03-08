@@ -42,6 +42,6 @@ export class GameRemindManager {
         setTimeout(() => {
             notification.style.opacity = "0";
             setTimeout(() => notification.remove(), 500); // Remove after fade-out
-        }, 750);
+        }, 1500);
     }
 }

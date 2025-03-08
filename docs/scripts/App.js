@@ -41,7 +41,6 @@ class App {
 
         pageConfig.forEach((page, pageIndex) => {
             const pageContainer = this.pageManager.createPage(page.name);
-
             pagesContainer.appendChild(pageContainer);
             page.questions.forEach(question => {
                 if (typeof question === 'string') { // titles
