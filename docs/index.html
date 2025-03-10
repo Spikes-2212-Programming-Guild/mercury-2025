@@ -634,6 +634,7 @@
     }
 
     function displayPage(pageName, scrollToTop = true) {
+        setToLocalStorage('currentPageName', pageName);
         for (const page of document.getElementsByClassName('page')) {
             page.style.display = page.id === pageName ? 'block' : 'none';
         }
@@ -641,7 +642,6 @@
 
         updateButtons(pageName);
         htmlGlobals.titleLabel.textContent = pageName;
-        localStorage.setItem(appId + 'currentPageName', pageName);
     }
 
     function updateButtons(pageName) {
@@ -848,11 +848,9 @@
             if (question.id === "left_starting_line" && question.isValid()) {
                 gameStarted = true;
                 clearInterval(checkInterval); // Stop checking
-                if (getFromLocalStorage('currentPageName') || pageMaps[0].name === "Auto") {
                     setTimeout(() => {
-                        displayPage('Teleop')
+                        if (getFromLocalStorage('currentPageName') || pageMaps[0].name === "Auto") displayPage('Teleop')
                     }, 1000 * 15);
-                }
                 break;
             }
         }
