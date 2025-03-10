@@ -81,22 +81,6 @@
         display: flex;
     }
 
-    #loadingOverlay {
-        visibility: hidden;
-        position: fixed;
-        top: 0;
-        left: 0;
-        width: 100vw;
-        height: 100vh;
-        background: rgba(0, 0, 0, 0.7);
-        color: white;
-        font-size: 2em;
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        z-index: 9999;
-    }
-
     /* ========== BUTTONS ========== */
 
     #reset_button {
@@ -860,7 +844,6 @@
         gameStarted = false;
         checkInterval = setInterval(() => this.checkIfStarted(), 100);
     }
-
 
     const ALL_TEAMS = [
         1690, 3339, 5951, 2231, 1574, 1577, 5614, 3075, 5990, 5715, 6740, 1937, 5987, 1657, 4590,
