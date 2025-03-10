@@ -14,12 +14,10 @@
 
 <div id="pages_container">
     <button id="reset_button" onclick="resetAllButton()">Reset All</button>
-    <button id="title_navigation_up" >▲</button>
-    <button id="title_navigation_down" >▼</button>
-    <button id="re_send_button" onclick="saveAllUnSavedAnswers(); alert('trying to resend unsaved answers')">Send Unsaved Data</button>
+    <button id="title_navigation_up" onclick="navigateToClosestTitle('up');">▲</button>
+    <button id="title_navigation_down" onclick="navigateToClosestTitle('down');">▼</button>
+    <button id="re_send_button" onclick="processQueue(); alert('trying to resend unsaved answers')">Send Unsaved Data</button>
 </div>
-
-<div id="loadingOverlay">Submitting...</div>
 
 <div id="relative_navigation_container">
     <button id="prev_button" class="relative_navigation">< Previous</button>
@@ -366,7 +364,7 @@
         static type = 'number';
 
         isValid() {
-            return super.isValid() && this.value >= 1 && this.value <= 100;
+            return super.isValid() && this.value >= this.defaultValue && this.value >= 0 && this.value <= 400;
         }
 
         clear() {
@@ -524,115 +522,89 @@
         }
     }
 
-    async function submit() {
+    function prepareFormData() {
         const formData = {};
+        for (const question of questionObjects) {
+            formData[question.id] = question.value;
+        }
+        return formData;
+    }
+
+    function validateFormData() {
         for (const question of questionObjects) {
             question.updateOutlineColor();
             if (!question.isValid()) {
                 question.outlineColor = COLORS.WARNING;
-                displayPage(question.pageName);
+                displayPage(question.pageName, false);
                 const rect = question.boundingRect;
                 const absoluteY = window.scrollY + rect.top - window.innerHeight / 2 + rect.height / 2;
-                window.scrollTo({ top: absoluteY, behavior: "smooth" });
-                return;
+                window.scrollTo({top: absoluteY, behavior: "smooth"});
+                return false;
             }
-            formData[question.id] = question.value;
         }
+        return true;
+    }
 
+    async function submit() {
+        if (!validateFormData()) return;
+        const formData = prepareFormData();
+        submissionQueue.push(formData);
+
+        displayPage(pageMaps[0].name);
+        clearAllAnswers(false);
+        alert('Form Successfully Submitted!');
+        console.log('submission added to queue');
+
+        setToLocalStorage('submissionQueue', JSON.stringify(submissionQueue));
+        await processQueue();
+    }
+
+    async function processQueue() {
         if (submitting) {
-            displayPage(pageMaps[0].name);
-
-            let pendingSubmissions = JSON.parse(getFromLocalStorage('pendingSubmissions')) || [];
-            pendingSubmissions.push(formData);
-            setToLocalStorage('pendingSubmissions', JSON.stringify(pendingSubmissions));
-
-            alert('Saved successfully')
-            clearAllAnswers(false);
+            console.log('Already submitting');
             return;
         }
-
         submitting = true;
-        document.body.style.pointerEvents = "none";
-        htmlGlobals.loadingOverlay.style.visibility = "visible";
 
-        const TIMEOUT = 7500; // Set the timeout duration in milliseconds (5 seconds)
-        const controller = new AbortController();
-        const timeoutId = setTimeout(() => controller.abort(), TIMEOUT);
+        while (submissionQueue.length > 0) {
+            const formData = submissionQueue.shift();
+            console.log("Submitting:", formData);
 
-        try {
-            const response = await fetch("https://mercury-2025-server.onrender.com/submit", {
-                method: "POST",
-                headers: {
-                    "Content-Type": "application/json",
-                },
-                body: JSON.stringify(formData),
-                signal: controller.signal,
-            });
-            clearTimeout(timeoutId);
-
-            if (response.ok) {
-                console.log("Submitted Successfully: ", formData);
-                saveAnswers(true, formData);
-            }
-
-        } catch (error) {
-            console.error("Submitting Failed: ", formData);
-            saveAnswers(false, formData);
-        }
-
-        clearAllAnswers(false);
-        document.body.style.pointerEvents = "auto";
-        htmlGlobals.loadingOverlay.style.visibility = "hidden";
-        submitting = false;
-    }
-
-    function saveAnswers(saved, formAnswers) {
-        displayPage(pageMaps[0].name);
-        // if didn't manage to save, upload to unsentSubmission to resend later
-        if (!saved) {
-            let unsentSubmissions = JSON.parse(getFromLocalStorage('unsentSubmissions')) || [];
-            console.log('Submission saved to UNSAVED Submissions:', formAnswers);
-            unsentSubmissions.push(formAnswers);
-            setToLocalStorage('unsentSubmissions', JSON.stringify(unsentSubmissions));
-        }
-        alert('Saved successfully')
-    }
-
-    async function saveAllUnSavedAnswers() {
-        if (submitting) return;
-        submitting = true;
-        let unsentSubmissions = JSON.parse(getFromLocalStorage('unsentSubmissions')) || [];
-        let newUnsentSubmissions = []; // Store only failed ones
-        console.log("Attempting to saved all unsaved answers", unsentSubmissions);
-
-        for (const submission of unsentSubmissions) {
             try {
                 const response = await fetch("https://mercury-2025-server.onrender.com/submit", {
-                    method: "POST",
-                    headers: {"Content-Type": "application/json"},
-                    body: JSON.stringify(submission),
+                    method: 'POST',
+                    headers: {'Content-Type': 'application/json'},
+                    body: JSON.stringify(formData)
                 });
                 if (response.ok) {
-                    console.log('Successfully re-submitted ', submission);
+                    handleSuccess(formData);
                 }
             } catch (error) {
-                console.error("Re-Submit Failed", error);
-                newUnsentSubmissions.push(submission);
+                submissionQueue.unshift(formData); // Re-add failed submission
+                handleFailure(error);
+                break; // Stop further submissions for now
             }
-        }
-        setToLocalStorage('unsentSubmissions', JSON.stringify(newUnsentSubmissions));
-        submitting = false;
 
-        let unsent = JSON.parse(getFromLocalStorage('unsentSubmissions')) || [];
-        const pendingSubmissions = JSON.parse(getFromLocalStorage('pendingSubmissions')) || [];
-        for (const submission of pendingSubmissions) {
-            console.log('adding to unsent', submission);
-            unsent.push(submission);
+            setToLocalStorage('submissionQueue', JSON.stringify(submissionQueue));
         }
-        setToLocalStorage('unsentSubmissions', JSON.stringify(unsent));
+
+        if (submissionQueue.length === 0) console.log('sent all submission queue');
+        submitting = false;
+    }
+
+    function handleSuccess(formData) {
+        console.log('Successfully submitted ', formData);
+        console.log('Submission queue length: ', submissionQueue.length);
+    }
+
+    function handleFailure(error) {
+        console.error("Submission failed:", error);
+        console.log('Will try again soon')
+        console.log('Submission queue length: ', submissionQueue.length);
     }
 
     function clearAllAnswers(ignoreResetTypes) {
+        resetGameReminder();
         for (const question of questionObjects) {
             if (!ignoreResetTypes) {
                 if (question.resetType === RESET_TYPES.KEEP) continue;
@@ -661,21 +633,21 @@
         });
     }
 
-    function displayPage(pageName) {
+    function displayPage(pageName, scrollToTop = true) {
         for (const page of document.getElementsByClassName('page')) {
             page.style.display = page.id === pageName ? 'block' : 'none';
         }
-        window.scrollTo({ top: 0 });
+        if (scrollToTop) window.scrollTo({ top: 0 });
+
         updateButtons(pageName);
         htmlGlobals.titleLabel.textContent = pageName;
-        localStorage.setItem(appId + 'currentPage', pageName);
+        localStorage.setItem(appId + 'currentPageName', pageName);
     }
 
     function updateButtons(pageName) {
         for (const pageButton of absoluteNavigationElements) {
             pageButton.style.fontWeight = pageButton.textContent === pageName ? 'bold' : 'normal';
         }
-        updateTitleNavigationButtons(pageName);
         updateRelativeNavigationButtons(pageName);
     }
 
@@ -695,53 +667,56 @@
 
     }
 
-    function updateTitleNavigationButtons(pageName) {
-        const titleElements = pagesTitleHTMLObjects.get(pageName) || [];
-        const upButton = htmlGlobals.titleNavigationButtons.up;
-        const downButton = htmlGlobals.titleNavigationButtons.down;
+    function navigateToClosestTitle(direction) {
+        const titles = pagesTitleHTMLObjects.get(getFromLocalStorage('currentPageName') || pageMaps[0].name);
 
-        upButton.onclick = () => {
-            let closestIndex = getClosestTitleIndex(titleElements);
-            if (closestIndex > 0) {
-                scrollToTitle(titleElements[closestIndex - 1]);
-            } else if (closestIndex !== -1) {
-                scrollToTitle(titleElements[0]);
-            }
-        };
+        if (!titles || titles.length === 0) return;
 
-        downButton.onclick = () => {
-            let closestIndex = getClosestTitleIndex(titleElements);
-            if (closestIndex < titleElements.length - 1) {
-                scrollToTitle(titleElements[closestIndex + 1]);
-            } else if (closestIndex !== -1) {
-                scrollToTitle(titleElements[titleElements.length - 1]);
-            }
-        };
+        const viewportTop = window.scrollY;
+        let closestTitleIndex = getClosestTitleIndex(viewportTop);
+
+        closestTitleIndex = adjustIndexForDirection(closestTitleIndex, direction, viewportTop, titles);
+
+        this.scrollToTitle(titles[closestTitleIndex]);
     }
 
-    function getClosestTitleIndex(titleElements) {
-        const currentScrollY = window.scrollY + titleOffset;
+    function getClosestTitleIndex(viewportTop) {
+        const titles = pagesTitleHTMLObjects.get(getFromLocalStorage('currentPageName') || pageMaps[0].name);
         let closestIndex = -1;
-        let minDistance = Infinity;
+        let closestDistance = Infinity;
 
-        for (let i = 0; i < titleElements.length; i++) {
-            const rect = titleElements[i].getBoundingClientRect();
-            const elementY = window.scrollY + rect.top - titleOffset;
-
-            const distance = Math.abs(elementY - currentScrollY);
-            if (distance < minDistance) {
-                minDistance = distance;
-                closestIndex = i;
+        titles.forEach((title, index) => {
+            const titleBottom = getTitleTop(title) + title.offsetHeight;
+            if (titleBottom < viewportTop) {
+                const distance = viewportTop - titleBottom;
+                if (distance < closestDistance) {
+                    closestDistance = distance;
+                    closestIndex = index;
+                }
             }
-        }
+        });
+
         return closestIndex;
     }
 
-    function scrollToTitle(titleElement) {
-        const rect = titleElement.getBoundingClientRect();
-        const absoluteY = window.scrollY + rect.top - titleOffset;
+    function adjustIndexForDirection(index, direction, viewportTop, titles) {
+        if (direction === "down") {
+            const nextIndex = Math.min(index + 1, titles.length - 1);
+            const titleTop = getTitleTop(titles[nextIndex]);
+            const isVeryClose = Math.abs(titleTop - viewportTop) < 5;
 
-        window.scrollTo({ top: absoluteY });
+            return isVeryClose && nextIndex < titles.length - 1 ? nextIndex + 1 : nextIndex;
+        }
+        return Math.max(index, 0);
+    }
+
+    function getTitleTop(titleElement) {
+        return titleElement.getBoundingClientRect().top + window.scrollY - 225;
+    }
+
+    function scrollToTitle(titleElement) {
+        if (!titleElement) return;
+        window.scrollTo({top: getTitleTop(titleElement)});
     }
 
     function createAllQuestions() {
@@ -820,7 +795,7 @@
             clearAllAnswers(true);
             displayPage(pageMaps[0].name);
         } else {
-            displayPage(getFromLocalStorage('currentPage') || pageMaps[0].name);
+            displayPage(getFromLocalStorage('currentPageName') || pageMaps[0].name);
         }
     }
 
@@ -839,16 +814,10 @@
     function initializeApp() {
         createAllQuestions();
         renderAbsoluteNavigationButtons(htmlGlobals.absoluteNavContainer);
-        displayPage(getFromLocalStorage('currentPage') || pageMaps[0].name);
+        displayPage(getFromLocalStorage('currentPageName') || pageMaps[0].name);
         setUpSwipeListeners();
         disableZoom();
-        setInterval(() => { // try to save all unsaved answers every 4 minutes
-            try {
-                saveAllUnSavedAnswers();
-            } catch (error) {
-                console.error("Error in sendAllUnSavedAnswers:", error);
-            }
-        }, 4 * 60 * 1000);
+        setInterval(() => this.processQueue(), 1000 *  60 * 4);
     }
 
     function setUpSwipeListeners() {
@@ -872,10 +841,36 @@
         else if (diffX < -200) htmlGlobals.relativeNavigationButtons.next.click();
     }
 
-    const ALL_TEAMS = [1690, 3339, 5951, 2231, 1574, 1577, 5614, 3075, 5990, 5715, 6740, 1937, 5987, 1657, 4590,
-        5654, 7039, 2630, 9739, 2096, 3065, 1942, 6104, 7845, 3316, 5554, 6738, 4320, 9738, 7067, 5928, 3835, 4338,
-        3211, 5635, 1576, 9740, 6168, 4416, 3083, 10139, 10695, 2679, 7112, 8223, 5135, 7177, 4744, 5291, 4586, 2230, 6230, 2212,
-        3388, 9304, 8175, 1580, 9303, 1943, 6741, 4319, 1954, 4661].sort();
+    function checkIfStarted() {
+        if (gameStarted) return;
+
+        for (const question of questionObjects) {
+            if (question.id === "left_starting_line" && question.isValid()) {
+                gameStarted = true;
+                clearInterval(checkInterval); // Stop checking
+                if (getFromLocalStorage('currentPageName') || pageMaps[0].name === "Auto") {
+                    setTimeout(() => {
+                        displayPage('Teleop')
+                    }, 1000 * 2);
+                }
+                break;
+            }
+        }
+    }
+
+    function resetGameReminder() {
+        gameStarted = false;
+        checkInterval = setInterval(() => this.checkIfStarted(), 100);
+    }
+
+
+    const ALL_TEAMS = [
+        1690, 3339, 5951, 2231, 1574, 1577, 5614, 3075, 5990, 5715, 6740, 1937, 5987, 1657, 4590,
+        5654, 7039, 2630, 9739, 2096, 3065, 1942, 6104, 7845, 3316, 5554, 6738, 4320, 9738, 7067,
+        5928, 3835, 4338, 3211, 5635, 1576, 9740, 6168, 4416, 3083, 10139, 10695, 2679, 7112, 8223,
+        5135, 7177, 4744, 5291, 4586, 2230, 6230, 2212, 3388, 9304, 8175, 1580, 9303, 1943, 6741,
+        4319, 1954, 4661
+    ].sort((a, b) => a - b);
 
     const RESET_TYPES = {
         CLEAR: 'clear',
@@ -891,7 +886,7 @@
                     "General Info",
                     {"id": "scouter_name", "title": "Scouter name", "resetType": RESET_TYPES.KEEP, "type": LineQuestion.type},
                     {"id": "game_type", "title": "Game Type", "resetType": RESET_TYPES.KEEP, "choices": ["Practice", "Qualifications"], "type": SelectQuestion.type},
-                    {"id": "game_number", "title": "Game Number", "resetType": RESET_TYPES.INCREASE, "type": NumberQuestion.type}, "Team Info",
+                    {"id": "game_number", "title": "Game Number", "defaultValue": -1, "resetType": RESET_TYPES.INCREASE, "type": NumberQuestion.type}, "Team Info",
                     {"id": "team_number", "title": "Team Number", "choices": ALL_TEAMS, "type": NumberFromChoicesQuestion.type},
                     {"id": "alliance_color", "title": "Alliance", "resetType": RESET_TYPES.KEEP, "choices": ["Red", "Blue"], "type": SelectQuestion.type}
                 ]
@@ -947,10 +942,9 @@
                 "questions": [
                     "Defense:",
                     {"id": "played_defense", "title": "Played Defense", "choices": ["Yes", "No"], "type": SelectQuestion.type},
-                    {"id": "was_defended", "title": "Was Defended Against", "choices": ["Yes", "No"], "type": SelectQuestion.type},
                     "Robot:",
                     {"id": "robot_status", "title": "Robot Status", "choices": ["Operating Properly", "Operating Poorly" ,"Non-Functional"], "type": SelectQuestion.type},
-                    {"id": "penalty_amount", "title": "Penalty Amount", "type": CounterQuestion.type},
+                    {"id": "penalty_score_lost", "title": "Penalty Score Lost", "type": NumberQuestion.type},
                     {"id": "penalty_description", "title": "Penalty Description", "type": TextBoxQuestion.type},
                     "Notes:",
                     {"id": "notes", "title": "Notes:", "type": TextBoxQuestion.type},
@@ -983,15 +977,18 @@
         }
     };
 
+    const appId = "qualification_practice_"
+    let submissionQueue = JSON.parse(getFromLocalStorage('submissionQueue')) || [];
     let submitting = false;
     let startX, startY, endX, endY;
-    const titleOffset = 225;
     const pageMaps = json.Pages;
     const pageAmount = pageMaps.length;
     const questionObjects = [];
     const absoluteNavigationElements = []
     const pagesTitleHTMLObjects = new Map();
-    const appId = "qualification_practice_"
+    let gameStarted = false;
+    let checkInterval = null;
+    resetGameReminder();
 
     initializeApp();
 
