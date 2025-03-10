@@ -886,7 +886,7 @@
                     "General Info",
                     {"id": "scouter_name", "title": "Scouter name", "resetType": RESET_TYPES.KEEP, "type": LineQuestion.type},
                     {"id": "game_type", "title": "Game Type", "resetType": RESET_TYPES.KEEP, "choices": ["Practice", "Qualifications"], "type": SelectQuestion.type},
-                    {"id": "game_number", "title": "Game Number", "defaultValue": -1, "resetType": RESET_TYPES.INCREASE, "type": NumberQuestion.type}, "Team Info",
+                    {"id": "game_number", "title": "Game Number", "resetType": RESET_TYPES.INCREASE, "type": NumberQuestion.type}, "Team Info",
                     {"id": "team_number", "title": "Team Number", "choices": ALL_TEAMS, "type": NumberFromChoicesQuestion.type},
                     {"id": "alliance_color", "title": "Alliance", "resetType": RESET_TYPES.KEEP, "choices": ["Red", "Blue"], "type": SelectQuestion.type}
                 ]
@@ -944,7 +944,7 @@
                     {"id": "played_defense", "title": "Played Defense", "choices": ["Yes", "No"], "type": SelectQuestion.type},
                     "Robot:",
                     {"id": "robot_status", "title": "Robot Status", "choices": ["Operating Properly", "Operating Poorly" ,"Non-Functional"], "type": SelectQuestion.type},
-                    {"id": "penalty_score_lost", "title": "Penalty Score Lost", "defaultValue": -1, "type": NumberQuestion.type},
+                    {"id": "penalty_score_lost", "title": "Penalty Score Lost", "type": NumberQuestion.type},
                     {"id": "penalty_description", "title": "Penalty Description", "type": TextBoxQuestion.type},
                     "Notes:",
                     {"id": "notes", "title": "Notes:", "type": TextBoxQuestion.type},
