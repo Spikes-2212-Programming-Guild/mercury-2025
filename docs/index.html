@@ -21,7 +21,7 @@
 
 <div id="relative_navigation_container">
     <button id="prev_button" class="relative_navigation">< Previous</button>
-    <button id="submit_button" onclick="submit()">Submit</button>
+    <button id="submit_button" onclick="submitButton()">Submit</button>
     <button id="next_button" class="relative_navigation">Next></button>
 </div>
 
@@ -184,7 +184,7 @@
         outline: white 3px solid;
         margin: 0.3em;
         width: 10em;
-        height: 7em;
+        height: 10em;
         border-radius: 10px;
     }
 
@@ -352,7 +352,7 @@
         }
 
         clear() {
-            this.value = this.defaultValue || 0;
+            this.value = this.defaultValue || '';
         }
 
         createElement() {
@@ -527,6 +527,11 @@
             }
         }
         return true;
+    }
+
+    async function submitButton() {
+        const userConfirmed = confirm("Are you sure you want to Submit?");
+        if (userConfirmed) await submit();
     }
 
     async function submit() {
@@ -867,9 +872,9 @@
                     "General Info",
                     {"id": "scouter_name", "title": "Scouter name", "resetType": RESET_TYPES.KEEP, "type": LineQuestion.type},
                     {"id": "game_type", "title": "Game Type", "resetType": RESET_TYPES.KEEP, "choices": ["Practice", "Qualifications"], "type": SelectQuestion.type},
-                    {"id": "game_number", "title": "Game Number", "resetType": RESET_TYPES.INCREASE, "type": NumberQuestion.type}, "Team Info",
+                    {"id": "game_number", "title": "Game Number", "type": NumberQuestion.type}, "Team Info",
                     {"id": "team_number", "title": "Team Number", "choices": ALL_TEAMS, "type": NumberFromChoicesQuestion.type},
-                    {"id": "alliance_color", "title": "Alliance", "resetType": RESET_TYPES.KEEP, "choices": ["Red", "Blue"], "type": SelectQuestion.type}
+                    {"id": "alliance_color", "title": "Alliance", "choices": ["Red", "Blue"], "type": SelectQuestion.type}
                 ]
             },
             {
@@ -925,8 +930,8 @@
                     {"id": "played_defense", "title": "Played Defense", "choices": ["Yes", "No"], "type": SelectQuestion.type},
                     "Robot:",
                     {"id": "robot_status", "title": "Robot Status", "choices": ["Operating Properly", "Operating Poorly" ,"Non-Functional"], "type": SelectQuestion.type},
-                    {"id": "penalty_score_lost", "title": "Penalty Score Lost", "type": NumberQuestion.type},
                     {"id": "penalty_description", "title": "Penalty Description", "type": TextBoxQuestion.type},
+                    {"id": "penalty_score_lost", "title": "Alliance Penalty Score Lost", "type": NumberQuestion.type},
                     "Notes:",
                     {"id": "notes", "title": "Notes:", "type": TextBoxQuestion.type},
                 ]
