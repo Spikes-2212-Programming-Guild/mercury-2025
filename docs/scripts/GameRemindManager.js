@@ -7,41 +7,18 @@ export class GameRemindManager {
         this.resetGame();
     }
 
-    checkIfStarted() {
-        if (this.gameStarted) return;
+    resetGame() {
+        this.gameStarted = false;
 
         for (const questionObject of this.questionManager.questions) {
-            if (questionObject.id === "left_starting_line" && questionObject.isValid()) {
-                this.gameStarted = true;
-                clearInterval(this.checkInterval); // Stop checking
-                if (this.pageManager.currentPageName === "Auto") {
-                    this.notifyUserAfterDelay(); // Schedule notification
-                }
+            if (questionObject.id === "left_starting_line") {
+                questionObject.element.addEventListener("click", () => {
+                    if (!this.gameStarted && questionObject.isValid() && this.pageManager.currentPageName === "Auto") {
+                        setTimeout(() => this.pageManager.navigateTo(2), TELEOP_START_TIME_MS);
+                    }
+                })
                 break;
             }
         }
-    }
-
-    resetGame() {
-        this.gameStarted = false;
-        this.checkInterval = setInterval(() => this.checkIfStarted(), 100);
-    }
-
-    notifyUserAfterDelay() {
-        setTimeout(() => {
-            this.showNotification("Teleop Started!");
-        }, TELEOP_START_TIME_MS);
-    }
-
-    showNotification(message) {
-        let notification = document.createElement("div");
-        notification.classList.add("notification");
-        notification.textContent = message;
-        document.body.appendChild(notification);
-
-        setTimeout(() => {
-            notification.style.opacity = "0";
-            setTimeout(() => notification.remove(), 500); // Remove after fade-out
-        }, 1500);
     }
 }
