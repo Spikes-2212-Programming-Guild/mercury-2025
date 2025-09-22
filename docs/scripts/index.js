@@ -6,6 +6,7 @@ class App {
 
     initialize() {
         this.render();
+        this.setUpSwipeListeners();
         // this.displayPage(getFromLocalStorage('currentPageIndex') || 0);
         this.displayPage(2);
     }
@@ -156,6 +157,41 @@ class App {
         bottomNavContainer.appendChild(submitButton);
         bottomNavContainer.appendChild(nextButton);
         document.body.appendChild(bottomNavContainer);
+    }
+
+    setUpSwipeListeners() {
+        let startX = 0, startY = 0;
+
+        const horizontalThreshold = 0.25; // 25% of screen width
+        const verticalLimit       = 0.20; // 20% of screen height
+
+        document.addEventListener("touchstart", e => {
+            const t = e.touches[0];
+            startX = t.clientX;
+            startY = t.clientY;
+        });
+
+        document.addEventListener("touchend", e => {
+            const t = e.changedTouches[0];
+            const endX = t.clientX;
+            const endY = t.clientY;
+
+            const diffX = endX - startX;
+            const diffY = endY - startY;
+
+            const screenW = window.innerWidth;
+            const screenH = window.innerHeight;
+
+            // abort if vertical movement too large relative to the screen
+            if (Math.abs(diffY) > screenH * verticalLimit) return;
+
+            // horizontal swipe detection relative to screen width
+            if (diffX > screenW * horizontalThreshold) {
+                console.log("next");
+            } else if (diffX < -screenW * horizontalThreshold) {
+                console.log("prev");
+            }
+        });
     }
 }
 

@@ -126,6 +126,7 @@ input {
     font-size: 2em;
     height: 1.35em;
     width: 8em;
+    text-align: center;
 }
 
 .ScoreBox input {
