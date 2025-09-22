@@ -1,0 +1,44 @@
+/* Top navigation bar */
+#absolute_navigation_container {
+    position: fixed;
+    top: 0;
+    left: 50%;
+    transform: translateX(-50%);
+    display: flex;
+    justify-content: center;
+    align-items: flex-start;
+}
+
+/* Bottom navigation bar */
+#relative_navigation_container {
+    position: fixed;
+    bottom: 0;
+    left: 50%;
+    transform: translateX(-50%);
+    display: flex;
+}
+
+/* Title navigation on the right */
+#title_navigation_container {
+    position: fixed;
+    top: 50%;
+    right: 2vw;
+    transform: translateY(-50%);
+    display: flex;
+    flex-direction: column;
+    gap: 5rem;
+    z-index: 2000;
+    pointer-events: auto;
+}
+
+.title_navigation {
+    background-color: #0056b3;
+    border-radius: 20px;
+    padding: 1em 0.8em;
+    width: auto;
+    height: auto;
+    min-width: unset;
+    cursor: pointer;
+    text-align: center;
+    display: inline-block;
+}

@@ -1,4 +1,4 @@
-import {TELEOP_START_TIME_MS} from "../config/constants.js";
+import {TELEOP_START_TIME_MS} from "../../config/constants.js";
 
 export class GameRemindManager {
     initialize(questionManager, pageManager) {
@@ -9,7 +9,6 @@ export class GameRemindManager {
 
     checkIfStarted() {
         if (this.gameStarted) return;
-
         for (const questionObject of this.questionManager.questions) {
             if (questionObject.id === "left_starting_line" && questionObject.isValid()) {
                 this.gameStarted = true;
@@ -42,6 +41,6 @@ export class GameRemindManager {
         setTimeout(() => {
             notification.style.opacity = "0";
             setTimeout(() => notification.remove(), 500); // Remove after fade-out
-        }, 1500);
+        }, 2500);
     }
 }

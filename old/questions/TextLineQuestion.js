@@ -7,8 +7,8 @@ export class TextLineQuestion extends Question {
         return super.isValid() && value.length > 0 && value.length < 20;
     }
 
-    createElement() {
-        const container = super.createElement();
+    createContainer() {
+        const container = super.createBaseContainer();
         container.classList.add('line_question');
         const input = document.createElement('input');
         input.type = 'text';

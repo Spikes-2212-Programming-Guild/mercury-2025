@@ -1,9 +1,10 @@
-import {getFromLocalStorage, setToLocalStorage} from "./data-manager.js";
+import {getFromLocalStorage, setToLocalStorage} from "../utils/data-manager.js";
 
 export class PageManager {
 
-    initialize(navigationManager) {
+    initialize(navigationManager, titleManager) {
         this.navigationManager = navigationManager;
+        this.titleManager = titleManager;
         this.currentPageIndex = getFromLocalStorage('currentPageIndex') || 0;
         this.currentPageName = '';
         this.pages = [];
@@ -30,6 +31,8 @@ export class PageManager {
         setToLocalStorage('currentPageIndex', pageIndex);
         this.title.textContent = this.currentPageName;
         this.navigationManager.updateRelativeNavigation(pageIndex, this.pages.length);
+
+        this.titleManager.updateTileNavigation(this.currentPageName);
     }
 
     navigateToFirstPage() {

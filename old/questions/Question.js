@@ -1,32 +1,42 @@
-import {setToLocalStorage} from "../scripts/data-manager.js";
-import {COLORS} from "../config/constants.js";
+import {setToLocalStorage} from "../scripts/utils/data-manager.js";
+import {COLORS, RESET_TYPES} from "../config/constants.js";
 
 export class Question {
 
+    constructor(id, title, defaultValue, resetType = RESET_TYPES.CLEAR) {
+        this.id = id;
+        this.title = title;
+        this.defaultValue = defaultValue;
+        this.resetType = resetType;
+        this._value = defaultValue;
+        this.element = null;
+    }
+
     set value(newValue) {
-        this.element.value = newValue;
+        this._value = newValue;
+        if (this.element) this.element.value = newValue;
         this.saveValueAndUpdateUI(newValue);
     }
 
-    get value() {
-        return this.element.value;
+    set outlineColor(color) {
+        if (this.element) this.element.style.outlineColor = color;
     }
 
-    set outlineColor(color) {
-        this.element.style.outlineColor = color;
+    get value() {
+        return this._value;
     }
 
     get boundingRect() {
-        return this.element.getBoundingClientRect();
+        return this.element?.getBoundingClientRect();
     }
 
-    createElement() {
+    createBaseContainer() {
         const container = document.createElement('fieldset');
         container.id = this.id;
         container.classList.add('question');
+
         const label = document.createElement('label');
         label.textContent = this.title;
-        label.style.marginRight = '4%';
         container.appendChild(label);
         container.appendChild(document.createElement('br'));
         return container;
@@ -42,7 +52,8 @@ export class Question {
     }
 
     addListener() {
-        this.element.addEventListener('input', () => this.saveValueAndUpdateUI(this.value));
+        this.element.addEventListener('input',
+            () => this.saveValueAndUpdateUI(this.element.value));
     }
 
     saveValueAndUpdateUI(newValue) {

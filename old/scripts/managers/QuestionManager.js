@@ -1,5 +1,5 @@
-import {getFromLocalStorage, removeFromLocalStorage, setToLocalStorage} from "./data-manager.js";
-import {COLORS, RESET_TYPES} from "../config/constants.js";
+import {getFromLocalStorage, removeFromLocalStorage, setToLocalStorage} from "../utils/data-manager.js";
+import {COLORS, RESET_TYPES} from "../../config/constants.js";
 
 export class QuestionManager {
     constructor() {
@@ -19,7 +19,7 @@ export class QuestionManager {
         Object.assign(questionObject, question);
         this.questions.push(questionObject);
 
-        const questionElement = questionObject.createElement();
+        const questionElement = questionObject.createContainer();
         this.loadSavedQuestionValue(questionObject)
 
         return questionElement;

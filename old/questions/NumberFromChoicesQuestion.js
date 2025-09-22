@@ -6,11 +6,11 @@ export class NumberFromChoicesQuestion extends Question {
         return super.isValid() && this.choices.includes(parseInt(this.value));
     }
 
-    createElement() {
-        const container = super.createElement();
+    createContainer() {
+        const container = super.createBaseContainer();
         container.classList.add('number_from_choices_question');
 
-        // Create input field
+        // Create an input field
         const input = document.createElement('input');
         input.type = 'number';
         input.setAttribute('list', this.id + '_input');

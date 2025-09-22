@@ -1,5 +1,5 @@
-import {API_URL, COLORS, RETRY_SENDING_SUBMISSIONS_INTERVAL_MS} from "../config/constants.js";
-import {getFromLocalStorage, setToLocalStorage} from "./data-manager.js";
+import {API_URL, COLORS, RETRY_SENDING_SUBMISSIONS_INTERVAL_MS} from "../../config/constants.js";
+import {getFromLocalStorage, setToLocalStorage} from "../utils/data-manager.js";
 
 export class SubmissionHandler {
     initialize(questionManager, pageManager, gameRemindManager) {
@@ -49,7 +49,8 @@ export class SubmissionHandler {
                 question.outlineColor = COLORS.WARNING;
                 this.pageManager.navigateTo(question.pageIndex, false);
                 const rect = question.boundingRect;
-                const absoluteY = window.scrollY + rect.top - window.innerHeight / 2 + rect.height / 2;
+                const absoluteY = window.scrollY +
+                    rect.top - window.innerHeight / 2 + rect.height / 2;
                 window.scrollTo({top: absoluteY, behavior: "smooth"});
                 return false;
             }

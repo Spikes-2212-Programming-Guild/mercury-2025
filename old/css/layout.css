@@ -1,0 +1,26 @@
+/* Title */
+#title {
+    margin-top: 26vw;
+    font-size: 2.55em;
+}
+
+#pages_container {
+    margin-bottom: 40vh;
+}
+
+.page {
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start; /* questions start at top */
+    gap: 1em;
+    min-height: 100vh; /* ensure full viewport height */
+    position: relative;
+}
+
+/* Push footer buttons to bottom */
+.page_footer {
+    margin-top: auto; /* pushes footer down */
+    display: flex;
+    justify-content: center;
+    padding: 2em 0;
+}

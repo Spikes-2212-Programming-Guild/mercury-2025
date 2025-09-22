@@ -1,5 +1,5 @@
 import {Question} from "./Question.js";
-import {getFromLocalStorage} from "../scripts/data-manager.js";
+import {getFromLocalStorage} from "../scripts/utils/data-manager.js";
 
 export class SelectQuestion extends Question {
     constructor() {
@@ -19,8 +19,8 @@ export class SelectQuestion extends Question {
         return this._value;
     }
 
-    createElement() {
-        const container = super.createElement();
+    createContainer() {
+        const container = super.createBaseContainer();
         container.classList.add('select_question');
         const buttonContainer = document.createElement('div');
 

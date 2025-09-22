@@ -1,4 +1,4 @@
-const COLORS = {
+export const COLORS = {
     VALID: 'green',
     INVALID: 'red',
     NEUTRAL: 'white',
@@ -7,23 +7,23 @@ const COLORS = {
     INACTIVE: 'gray',
 };
 
-const RETRY_SENDING_SUBMISSIONS_INTERVAL_MS = 1000 * 60 * 4; // 4 minutes
+export const RETRY_SENDING_SUBMISSIONS_INTERVAL_MS = 1000 * 60 * 4; // 4 minutes
 
-export const APP_ID = "qp"
+export const APP_ID = "qualification_practice_"
 
-const TELEOP_START_TIME_MS = 1000 * 15; // 15 seconds
+export const TELEOP_START_TIME_MS = 1000 * 15; // 15 seconds
 
-const API_URL = "https://mercury-2025-server.onrender.com/submit";
+export const API_URL = "https://mercury-2025-server.onrender.com/submit";
 
-const TITLE_OFFSET = 255;
+export const TITLE_OFFSET = 255;
 
-const RESET_TYPES = {
+export const RESET_TYPES = {
     CLEAR: 'clear',
     KEEP: 'keep',
     INCREASE: 'increase',
 };
 
-const ALL_TEAMS = [
+export const ALL_TEAMS = [
     1690, 3339, 5951, 2231, 1574, 1577, 5614, 3075, 5990, 5715, 6740, 1937, 5987, 1657, 4590,
     5654, 7039, 2630, 9739, 2096, 3065, 1942, 6104, 7845, 3316, 5554, 6738, 4320, 9738, 7067,
     5928, 3835, 4338, 3211, 5635, 1576, 9740, 6168, 4416, 3083, 10139, 10695, 2679, 7112, 8223,
