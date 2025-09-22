@@ -6,7 +6,8 @@ class App {
 
     initialize() {
         this.render();
-        this.displayPage(getFromLocalStorage('currentPageIndex') || 0);
+        // this.displayPage(getFromLocalStorage('currentPageIndex') || 0);
+        this.displayPage(2);
     }
 
     render() {
@@ -19,18 +20,13 @@ class App {
     }
 
     displayPage(pageIndex) {
-        form.pages.forEach((p, i) => {
-            let page = document.getElementById(p.title);
-            let nav = document.getElementById('top-navigation-' + p.title);
+        const buttons = document.getElementById('top-navigation').children;
+        const pages = document.getElementById('pages-container').children;
 
-            if (pageIndex === i) {
-                page.hidden = false;
-                nav.style.fontWeight = 'bold';
-            } else {
-                page.hidden = true;
-                nav.style.fontWeight = 'normal';
-            }
-        });
+        for (let i = 0; i < form.pages.length; i++) {
+            pages[i].hidden = pageIndex !== i;
+            buttons[i].classList.toggle('active', pageIndex === i);
+        }
 
         window.scrollTo(0, 0);
         setToLocalStorage('currentPageIndex', pageIndex);
@@ -50,9 +46,6 @@ class App {
 
     renderPage(pageData) {
         const page = document.createElement('div');
-        page.classList.add('pages');
-        page.id = pageData.title;
-
         const pageTitle = document.createElement('h1');
         pageTitle.textContent = pageData.title;
         pageTitle.classList.add('page-titles');
@@ -123,8 +116,6 @@ class App {
         form.pages.forEach((p, i) => {
             const button = document.createElement('button');
             button.textContent = p.title;
-            button.id = 'top-navigation-' + p.title;
-
             button.addEventListener('click', () => this.displayPage(i));
             topNavContainer.appendChild(button);
         });
