@@ -14,6 +14,7 @@ body {
 
 * {
     color: var(--color-text);
+    font-weight: normal;
     text-align: center;
     background: none;
     border: none;
@@ -38,7 +39,6 @@ body {
     flex-direction: row;
     justify-content: center;
     background-color: var(--color-bg);
-    align-items: stretch;
 }
 
 #previous-button,
@@ -65,24 +65,19 @@ body {
     font-weight: bold;
 }
 
-#pages-container {
+.page-titles {
+    font-size: 2em;
+    font-weight: bold;
+    margin-top: 1.5em;
+    margin-bottom: 0.5em;
+}
+
+/* question containers */
+#pages-container > div > div {
+    margin-bottom: 2em;
     display: flex;
     flex-direction: column;
     align-items: center;
-    text-align: center;
-    background-color: var(--color-bg);
-}
-
-.page-titles {
-    font-size: 2.5em;
-    font-weight: bold;
-    margin-top: 1.5em;
-    margin-bottom: 2em;
-}
-
-#pages-container > div {
-    margin-bottom: 5em;
-    background-color: var(--color-bg);
 }
 
 input {
@@ -92,32 +87,45 @@ input {
 }
 
 .CommentBox textarea {
+    text-align: start;
     border: white 0.1em solid;
     border-radius: 0.4em;
     resize: vertical;
-
     color: var(--color-text);
     font-size: 2em;
-
     min-height: 7.5em;
     width: 80%;
-    overflow-y: auto;
 }
 
 .Radio input + label {
-    font-size: 1.5em;
-    padding: 0.5em;
+    align-items: center;
+    justify-content: center;
+    padding: 0.5em 0.5em;
+    font-size: 1.25em;
     color: var(--color-text-secondary);
+    white-space: nowrap;
+    border-radius: 0.3em;
+    background-color: rgba(255, 255, 255, 0.05);
+}
+
+.Radio h1 {
+    font-size: 1.75em;
+    margin-bottom: 0.6em;
 }
 
 .Radio form {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5em;
+    justify-content: center;
+    max-width: 80%;
     padding: 0.5em;
     border: white 0.1em solid;
     border-radius: 0.6em;
 }
 
 .TextBox input {
-    font-size: 2em;
+    font-size: 1.75em;
     height: 1.35em;
     width: 8em;
 }
@@ -129,6 +137,11 @@ input {
     text-align: center;
 }
 
+.ScoreBox h1 {
+    margin-bottom: 0.2em;
+    font-size: 1.75em;
+}
+
 .ScoreBox input {
     width: 2.35em;
     height: 1.5em;
@@ -138,16 +151,20 @@ input {
 
 .ScoreBox button {
     font-size: 3.5em;
-    font-weight: bold;
+    width: 0.5em;
+    height: 1em;
+    display: inline-flex;
+    justify-content: center;
+    align-items: center;
 }
 
 #reset-all-button {
-    font-size: 2em;
-    margin-bottom: 2em;
+    margin: 4em 2em;
+    font-size: 1.75em;
 }
 
 #resend-button {
-    font-size: 2em;
+    font-size: 1.75em;
     margin-bottom: 10em;
 }
 

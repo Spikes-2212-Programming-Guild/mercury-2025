@@ -7,8 +7,7 @@ class App {
     initialize() {
         this.render();
         this.setUpSwipeListeners();
-        // this.displayPage(getFromLocalStorage('currentPageIndex') || 0);
-        this.displayPage(2);
+        this.displayPage(Number(getFromLocalStorage('currentPageIndex') || 0));
     }
 
     render() {
@@ -131,12 +130,7 @@ class App {
         const nextButton = document.createElement('button');
         nextButton.textContent = 'Next';
         nextButton.id = 'next-button';
-        nextButton.addEventListener("click", () => {
-            let cur = getFromLocalStorage('currentPageIndex');
-            cur++;
-            if (form.pages.length === cur) cur = 0;
-            this.displayPage(cur);
-        });
+        nextButton.addEventListener("click", () => this.nextPage());
 
         const submitButton = document.createElement('button');
         submitButton.textContent = 'Submit';
@@ -146,12 +140,7 @@ class App {
         const prevButton = document.createElement('button');
         prevButton.textContent = 'Previous';
         prevButton.id = 'previous-button';
-        prevButton.addEventListener("click", () => {
-            let cur = getFromLocalStorage('currentPageIndex');
-            cur--;
-            if (cur < 0) cur = form.pages.length - 1;
-            this.displayPage(cur);
-        });
+        prevButton.addEventListener("click", () => this.previousPage());
 
         bottomNavContainer.appendChild(prevButton);
         bottomNavContainer.appendChild(submitButton);
@@ -159,11 +148,25 @@ class App {
         document.body.appendChild(bottomNavContainer);
     }
 
+    nextPage() {
+        let cur = getFromLocalStorage('currentPageIndex');
+        cur++;
+        if (form.pages.length === cur) cur = 0;
+        this.displayPage(cur);
+    }
+
+    previousPage() {
+        let cur = getFromLocalStorage('currentPageIndex');
+        cur--;
+        if (cur < 0) cur = form.pages.length - 1;
+        this.displayPage(cur);
+    }
+
     setUpSwipeListeners() {
         let startX = 0, startY = 0;
 
         const horizontalThreshold = 0.25; // 25% of screen width
-        const verticalLimit       = 0.20; // 20% of screen height
+        const verticalLimit = 0.20; // 20% of screen height
 
         document.addEventListener("touchstart", e => {
             const t = e.touches[0];
@@ -182,14 +185,12 @@ class App {
             const screenW = window.innerWidth;
             const screenH = window.innerHeight;
 
-            // abort if vertical movement too large relative to the screen
             if (Math.abs(diffY) > screenH * verticalLimit) return;
 
-            // horizontal swipe detection relative to screen width
             if (diffX > screenW * horizontalThreshold) {
-                console.log("next");
+                this.previousPage();
             } else if (diffX < -screenW * horizontalThreshold) {
-                console.log("prev");
+                this.nextPage();
             }
         });
     }
