@@ -1,6 +1,6 @@
 import form from '../config/form.json' with {type: 'json'};
 import {questionRenderers} from './questionRenderer.js';
-import {getFromLocalStorage, setToLocalStorage} from "./utils.js";
+import {getFromLocalStorage, removeFromLocalStorage, setToLocalStorage} from "./utils.js";
 
 class App {
 
@@ -17,6 +17,17 @@ class App {
         this.renderResetAllButton();
         this.renderResendButton();
         this.renderBottomNavigationBar()
+    }
+
+    clearAnswers() {
+        for (const p of form.pages) {
+            for (const q of p.questions) {
+                removeFromLocalStorage(q.id);
+                const renderer = questionRenderers[q.type];
+                if (!renderer) throw new Error(`Unknown question type: ${q.type}`);
+                renderer(q); // rerender the question (to reset the value)
+            }
+        }
     }
 
     displayPage(pageIndex) {
@@ -97,7 +108,10 @@ class App {
         const resetButton = document.createElement('button');
         resetButton.textContent = 'Reset All';
         resetButton.id = 'reset-all-button';
-        resetButton.addEventListener("click", () => console.log('reset all'));
+        resetButton.addEventListener("click", () => {
+            this.clearAnswers()
+            this.displayPage(0);
+        });
         document.body.appendChild(resetButton);
     }
 
@@ -135,7 +149,7 @@ class App {
         const submitButton = document.createElement('button');
         submitButton.textContent = 'Submit';
         submitButton.id = 'submit-button';
-        submitButton.addEventListener("click", () => console.log('submit'));
+        submitButton.addEventListener("click", () => this.printAnswers());
 
         const prevButton = document.createElement('button');
         prevButton.textContent = 'Previous';
@@ -160,6 +174,25 @@ class App {
         cur--;
         if (cur < 0) cur = form.pages.length - 1;
         this.displayPage(cur);
+    }
+
+    printAnswers() {
+        form.pages.forEach((p, i) => {
+            for (const q of p.questions) {
+                let value = getFromLocalStorage(q.id)
+                console.log(value);
+
+                if (value === null || value === undefined || value === '') {
+                    console.log(value);
+
+                    this.displayPage(i);
+                    const rect = document.getElementById(q.id).boundingRect;
+                    const absoluteY = window.scrollY +
+                        rect.top - window.innerHeight / 2 + rect.height / 2;
+                    window.scrollTo({top: absoluteY, behavior: "smooth"});
+                }
+            }
+        });
     }
 
     setUpSwipeListeners() {

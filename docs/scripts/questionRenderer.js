@@ -9,25 +9,38 @@ export const questionRenderers = {
 };
 
 function renderCommentBox(jsonQuestionData) {
-    const textarea = document.createElement('textarea');
-    textarea.id = jsonQuestionData.id;
+    let textarea = document.getElementById(jsonQuestionData.id);
+    if (textarea) {
+        textarea.value = getFromLocalStorage(jsonQuestionData.id);
+        return null;
+    }
+
+    if (!textarea) {
+        textarea = document.createElement('textarea');
+        textarea.id = jsonQuestionData.id;
+
+        textarea.addEventListener("input", e => {
+            setToLocalStorage(jsonQuestionData.id, textarea.value);
+        });
+    }
 
     textarea.value = getFromLocalStorage(jsonQuestionData.id);
-    textarea.addEventListener("input",
-        () => setToLocalStorage(jsonQuestionData.id, textarea.value));
-
     return textarea;
 }
 
 function renderScoreBox(jsonQuestionData) {
+    let input = document.getElementById(jsonQuestionData.id);
+    if (input) {
+        input.value = getFromLocalStorage(jsonQuestionData.id);
+        return null;
+    }
+
     const container = document.createElement('div');
-    const input = document.createElement('input');
+    input = document.createElement('input');
     input.type = 'number';
     input.id = jsonQuestionData.id;
     input.min = jsonQuestionData.minValue || 0;
     input.max = jsonQuestionData.maxValue || 100; // TODO - replace with const
-
-    input.value = getFromLocalStorage(jsonQuestionData.id);
     const saveValue = () => setToLocalStorage(jsonQuestionData.id, input.value);
     input.addEventListener("input", saveValue);
 
@@ -44,11 +57,19 @@ function renderScoreBox(jsonQuestionData) {
     container.appendChild(decButton);
     container.appendChild(input);
     container.appendChild(incButton);
+
+    input.value = getFromLocalStorage(jsonQuestionData.id);
     return container;
 }
 
 function renderAutoCompleteRadio(jsonQuestionData) {
-    const input = document.createElement('input');
+    let input = document.getElementById(jsonQuestionData.id);
+    if (input) {
+        input.value = getFromLocalStorage(jsonQuestionData.id);
+        return null;
+    }
+
+    input = document.createElement('input');
     input.type = 'number';
     input.id = jsonQuestionData.id;
     input.value = getFromLocalStorage(jsonQuestionData.id);
@@ -73,7 +94,16 @@ function renderAutoCompleteRadio(jsonQuestionData) {
 }
 
 function renderRadio(jsonQuestionData) {
-    const radio = document.createElement('form');
+    let radio = document.getElementById(jsonQuestionData.id);
+    if (radio) {
+        const inputs = radio.querySelectorAll('input[type="radio"]');
+        inputs.forEach(input => {
+            input.checked = input.value === getFromLocalStorage(jsonQuestionData.id);
+        });
+        return null;
+    }
+
+    radio = document.createElement('form');
     radio.id = jsonQuestionData.id;
     const savedValue = getFromLocalStorage(jsonQuestionData.id);
 
@@ -101,7 +131,13 @@ function renderRadio(jsonQuestionData) {
 }
 
 function renderTextBox(jsonQuestionData) {
-    const textBox = document.createElement('input');
+    let textBox = document.getElementById(jsonQuestionData.id);
+    if (textBox) {
+        textBox.value = getFromLocalStorage(jsonQuestionData.id);
+        return null;
+    }
+
+    textBox = document.createElement('input');
     textBox.type = 'text';
     textBox.id = jsonQuestionData.id;
 
