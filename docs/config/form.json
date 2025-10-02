@@ -21,7 +21,8 @@
                     "id": "game_number",
                     "title": "Game Number",
                     "resetType": "INCREASE",
-                    "type": "ScoreBox"
+                    "type": "ScoreBox",
+                    "defaultValue": ""
                 },
                 {
                     "id": "team_number",

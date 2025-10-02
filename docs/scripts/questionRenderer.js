@@ -1,4 +1,5 @@
-import {getFromLocalStorage, setToLocalStorage} from "./utils.js";
+import {getFromLocalStorage, removeFromLocalStorage, setToLocalStorage} from "./utils.js";
+import {SCOREBOX_DEFAULT_VALUE, SCOREBOX_MAX_VALUE, SCOREBOX_MIN_VALUE} from "../config/constants.js";
 
 export const questionRenderers = {
     'TextBox': renderTextBox,
@@ -8,80 +9,93 @@ export const questionRenderers = {
     'CommentBox': renderCommentBox
 };
 
-function renderCommentBox(jsonQuestionData) {
+function renderCommentBox(jsonQuestionData, questionContainer) {
     let textarea = document.getElementById(jsonQuestionData.id);
     if (textarea) {
-        textarea.value = getFromLocalStorage(jsonQuestionData.id);
-        return null;
+        // reset to default if already exists
+        textarea.value = '';
+        return;
     }
 
-    if (!textarea) {
-        textarea = document.createElement('textarea');
-        textarea.id = jsonQuestionData.id;
-
-        textarea.addEventListener("input", e => {
-            setToLocalStorage(jsonQuestionData.id, textarea.value);
-        });
-    }
-
-    textarea.value = getFromLocalStorage(jsonQuestionData.id);
-    return textarea;
+    textarea = document.createElement('textarea');
+    textarea.id = jsonQuestionData.id;
+    textarea.value = getFromLocalStorage(jsonQuestionData.id) ?? '';
+    textarea.oninput = () => {
+        setToLocalStorage(jsonQuestionData.id, textarea.value);
+    };
+    questionContainer.appendChild(textarea);
 }
 
-function renderScoreBox(jsonQuestionData) {
+function renderScoreBox(jsonQuestionData, questionContainer) {
     let input = document.getElementById(jsonQuestionData.id);
     if (input) {
-        input.value = getFromLocalStorage(jsonQuestionData.id);
-        return null;
+        // reset to default if already exists
+        input.value = input.defaultValue;
+        setToLocalStorage(jsonQuestionData.id, input.defaultValue);
+        return;
     }
 
     const container = document.createElement('div');
     input = document.createElement('input');
     input.type = 'number';
     input.id = jsonQuestionData.id;
-    input.min = jsonQuestionData.minValue || 0;
-    input.max = jsonQuestionData.maxValue || 100; // TODO - replace with const
-    const saveValue = () => setToLocalStorage(jsonQuestionData.id, input.value);
-    input.addEventListener("input", saveValue);
+    input.min = jsonQuestionData.minValue ?? SCOREBOX_MIN_VALUE;
+    input.max = jsonQuestionData.maxValue ?? SCOREBOX_MAX_VALUE;
+    input.defaultValue = jsonQuestionData.defaultValue ?? SCOREBOX_DEFAULT_VALUE;
+
+    input.value = getFromLocalStorage(jsonQuestionData.id) ?? input.defaultValue;
+    setToLocalStorage(jsonQuestionData.id, input.value);
+
+    const saveValue = () => {
+        // invalid
+        if (input.value < Number(input.min) || input.value > Number(input.max) ||
+            input.value === "") {
+            input.classList.add('invalid');
+            removeFromLocalStorage(jsonQuestionData.id);
+        } else { // valid
+            input.classList.remove('invalid');
+            setToLocalStorage(jsonQuestionData.id, input.value);
+        }
+    };
+    input.oninput = saveValue;
 
     const decButton = document.createElement('button');
     decButton.textContent = '-';
-    decButton.addEventListener("click", () => input.stepDown(1));
-    decButton.addEventListener("click", saveValue);
+    decButton.onclick = () => {
+        input.stepDown();
+        saveValue();
+    };
 
     const incButton = document.createElement('button');
-    incButton.textContent = "+";
-    incButton.addEventListener("click", () => input.stepUp(1));
-    incButton.addEventListener("click", saveValue);
+    incButton.textContent = '+';
+    incButton.onclick = () => {
+        input.stepUp();
+        saveValue();
+    }
 
     container.appendChild(decButton);
     container.appendChild(input);
     container.appendChild(incButton);
-
-    input.value = getFromLocalStorage(jsonQuestionData.id);
-    return container;
+    questionContainer.appendChild(container);
 }
 
-function renderAutoCompleteRadio(jsonQuestionData) {
+function renderAutoCompleteRadio(jsonQuestionData, questionContainer) {
     let input = document.getElementById(jsonQuestionData.id);
     if (input) {
-        input.value = getFromLocalStorage(jsonQuestionData.id);
-        return null;
+        // reset to default if already exists
+        input.value = '';
+        return;
     }
 
     input = document.createElement('input');
-    input.type = 'number';
     input.id = jsonQuestionData.id;
     input.value = getFromLocalStorage(jsonQuestionData.id);
-    input.addEventListener("input",
-        () => setToLocalStorage(jsonQuestionData.id, input.value));
 
     const name = jsonQuestionData.id + '-input';
     input.setAttribute('list', name);
 
     const datalist = document.createElement('datalist');
     datalist.id = name;
-
     for (const c of jsonQuestionData.choices) {
         const option = document.createElement('option');
         option.value = c;
@@ -89,61 +103,79 @@ function renderAutoCompleteRadio(jsonQuestionData) {
         datalist.appendChild(option);
     }
 
+    // format to String to fix type issues
+    const allowedValues = jsonQuestionData.choices.map(c => String(c));
+    input.oninput = () => {
+        if (!allowedValues.includes(input.value)) {
+            input.classList.add('invalid');
+            removeFromLocalStorage(jsonQuestionData.id);
+        } else {
+            input.classList.remove('invalid');
+            setToLocalStorage(jsonQuestionData.id, input.value);
+        }
+    };
+
     input.appendChild(datalist);
-    return input;
+    questionContainer.appendChild(input);
 }
 
-function renderRadio(jsonQuestionData) {
-    let radio = document.getElementById(jsonQuestionData.id);
-    if (radio) {
-        const inputs = radio.querySelectorAll('input[type="radio"]');
-        inputs.forEach(input => {
-            input.checked = input.value === getFromLocalStorage(jsonQuestionData.id);
-        });
-        return null;
+function renderRadio(jsonQuestionData, questionContainer) {
+    let radioContainer = document.getElementById(jsonQuestionData.id);
+    if (radioContainer) {
+        // reset to default if already exists
+        const choices = document.getElementsByName(radioContainer.id);
+        choices.forEach(choice => {
+            choice.checked = false;
+        })
+        radioContainer.classList.remove('invalid');
+        return;
     }
 
-    radio = document.createElement('form');
-    radio.id = jsonQuestionData.id;
-    const savedValue = getFromLocalStorage(jsonQuestionData.id);
+    radioContainer = document.createElement('form');
+    radioContainer.id = jsonQuestionData.id;
 
+    const savedValue = getFromLocalStorage(jsonQuestionData.id);
     for (const c of jsonQuestionData.choices) {
         const choice = document.createElement('input');
         choice.type = 'radio';
-        choice.id = radio.id + c;
-        choice.name = radio.id;
+        choice.id = radioContainer.id + c;
+        choice.name = radioContainer.id;
         choice.value = c;
+        choice.onclick = () => {
+            setToLocalStorage(jsonQuestionData.id, c);
+            radioContainer.classList.remove('invalid');
+        };
         if (savedValue === c) choice.checked = true;
-        radio.appendChild(choice);
 
+        radioContainer.appendChild(choice);
         const label = document.createElement('label');
         label.textContent = c;
         label.htmlFor = choice.id;
-        radio.appendChild(label);
+        radioContainer.appendChild(label);
     }
-
-    radio.addEventListener("change",
-        () => setToLocalStorage(jsonQuestionData.id,
-            radio.querySelector("input:checked")?.value)
-    );
-
-    return radio;
+    questionContainer.appendChild(radioContainer);
 }
 
-function renderTextBox(jsonQuestionData) {
+function renderTextBox(jsonQuestionData, questionContainer) {
     let textBox = document.getElementById(jsonQuestionData.id);
     if (textBox) {
+        // reset to default if already exists
         textBox.value = getFromLocalStorage(jsonQuestionData.id);
-        return null;
+        return;
     }
 
     textBox = document.createElement('input');
     textBox.type = 'text';
     textBox.id = jsonQuestionData.id;
-
     textBox.value = getFromLocalStorage(jsonQuestionData.id);
-    textBox.addEventListener("input",
-        () => setToLocalStorage(jsonQuestionData.id, textBox.value));
-
-    return textBox;
+    textBox.oninput = () => {
+        let value = textBox.value;
+        if (value === '') {
+            textBox.classList.add('invalid');
+        } else {
+            textBox.classList.remove('invalid');
+        }
+        setToLocalStorage(jsonQuestionData.id, value)
+    };
+    questionContainer.appendChild(textBox);
 }

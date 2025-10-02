@@ -1,7 +1,7 @@
 :root {
     --color-primary: #0056b3;
     --color-bg: #282c34;
-    --color-text-secondary: #5a6268;
+    --color-text-secondary: #848c91;
     --color-text: white;
 }
 
@@ -166,6 +166,10 @@ input {
 #resend-button {
     font-size: 1.75em;
     margin-bottom: 10em;
+}
+
+.invalid {
+    border: red 0.1em solid !important;
 }
 
 input::-webkit-outer-spin-button,

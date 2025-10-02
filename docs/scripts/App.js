@@ -80,8 +80,7 @@ class App {
         const renderer = questionRenderers[questionData.type];
         if (!renderer) throw new Error(`Unknown question type: ${questionData.type}`);
 
-        const question = renderer(questionData);
-        questionContainer.appendChild(question);
+        renderer(questionData, questionContainer);
         return questionContainer;
     }
 
@@ -92,12 +91,12 @@ class App {
         const up = document.createElement("label");
         up.textContent = '↑';
         up.id = "sidebar-scroll-up";
-        up.addEventListener("click", () => console.log('up'));
+        up.onclick = () => console.log('up');
 
         const down = document.createElement("label");
         down.textContent = '↓';
         down.id = "sidebar-scroll-down";
-        down.addEventListener("click", () => console.log('down'));
+        down.onclick = () => console.log('down');
 
         container.appendChild(up);
         container.appendChild(down);
@@ -108,10 +107,10 @@ class App {
         const resetButton = document.createElement('button');
         resetButton.textContent = 'Reset All';
         resetButton.id = 'reset-all-button';
-        resetButton.addEventListener("click", () => {
+        resetButton.onclick = () => {
             this.clearAnswers()
             this.displayPage(0);
-        });
+        }
         document.body.appendChild(resetButton);
     }
 
@@ -119,7 +118,7 @@ class App {
         const resendButton = document.createElement('button');
         resendButton.textContent = 'Resend Form';
         resendButton.id = 'resend-button';
-        resendButton.addEventListener("click", () => console.log('resend'));
+        resendButton.onclick = () => console.log('resend');
         document.body.appendChild(resendButton);
     }
 
@@ -130,7 +129,7 @@ class App {
         form.pages.forEach((p, i) => {
             const button = document.createElement('button');
             button.textContent = p.title;
-            button.addEventListener('click', () => this.displayPage(i));
+            button.onclick = () => this.displayPage(i);
             topNavContainer.appendChild(button);
         });
 
@@ -144,17 +143,17 @@ class App {
         const nextButton = document.createElement('button');
         nextButton.textContent = 'Next';
         nextButton.id = 'next-button';
-        nextButton.addEventListener("click", () => this.nextPage());
+        nextButton.onclick = () => this.nextPage();
 
         const submitButton = document.createElement('button');
         submitButton.textContent = 'Submit';
         submitButton.id = 'submit-button';
-        submitButton.addEventListener("click", () => this.printAnswers());
+        submitButton.onclick = () => this.printAnswers();
 
         const prevButton = document.createElement('button');
         prevButton.textContent = 'Previous';
         prevButton.id = 'previous-button';
-        prevButton.addEventListener("click", () => this.previousPage());
+        prevButton.onclick = () => this.previousPage();
 
         bottomNavContainer.appendChild(prevButton);
         bottomNavContainer.appendChild(submitButton);
@@ -177,27 +176,28 @@ class App {
     }
 
     printAnswers() {
-        form.pages.forEach((p, i) => {
+        for (let i = 0; i < form.pages.length; i++) {
+            const p = form.pages[i];
             for (const q of p.questions) {
                 let value = getFromLocalStorage(q.id)
-                console.log(value);
+                const question = document.getElementById(q.id);
 
-                if (value === null || value === undefined || value === '') {
-                    console.log(value);
+                console.log(q.id + " " + value);
+                question.classList.remove("invalid")
 
+                if (value === null || value === "" || value === undefined) {
                     this.displayPage(i);
-                    const rect = document.getElementById(q.id).boundingRect;
-                    const absoluteY = window.scrollY +
-                        rect.top - window.innerHeight / 2 + rect.height / 2;
-                    window.scrollTo({top: absoluteY, behavior: "smooth"});
+                    question.classList.toggle("invalid")
+
+                    question.scrollIntoView({block: 'center', inline: 'nearest'});
+                    return;
                 }
             }
-        });
+        }
     }
 
     setUpSwipeListeners() {
         let startX = 0, startY = 0;
-
         const horizontalThreshold = 0.25; // 25% of screen width
         const verticalLimit = 0.20; // 20% of screen height
 
