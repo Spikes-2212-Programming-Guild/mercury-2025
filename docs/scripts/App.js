@@ -25,7 +25,7 @@ class App {
                 removeFromLocalStorage(q.id);
                 const renderer = questionRenderers[q.type];
                 if (!renderer) throw new Error(`Unknown question type: ${q.type}`);
-                renderer(q); // rerender the question (to reset the value)
+                renderer(q); // rerender the question (reset-ing the value)
             }
         }
     }
@@ -215,14 +215,14 @@ class App {
             const diffX = endX - startX;
             const diffY = endY - startY;
 
-            const screenW = window.innerWidth;
-            const screenH = window.innerHeight;
+            const screenWidth = window.innerWidth;
+            const screenHeight = window.innerHeight;
 
-            if (Math.abs(diffY) > screenH * verticalLimit) return;
+            if (Math.abs(diffY) > screenHeight * verticalLimit) return;
 
-            if (diffX > screenW * horizontalThreshold) {
+            if (diffX > screenWidth * horizontalThreshold) {
                 this.previousPage();
-            } else if (diffX < -screenW * horizontalThreshold) {
+            } else if (diffX < -screenWidth * horizontalThreshold) {
                 this.nextPage();
             }
         });

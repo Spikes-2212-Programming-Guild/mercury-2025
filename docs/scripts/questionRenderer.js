@@ -1,6 +1,7 @@
 import {getFromLocalStorage, removeFromLocalStorage, setToLocalStorage} from "./utils.js";
 import {SCOREBOX_DEFAULT_VALUE, SCOREBOX_MAX_VALUE, SCOREBOX_MIN_VALUE} from "../config/constants.js";
 
+// a map of question types to their respective renderers
 export const questionRenderers = {
     'TextBox': renderTextBox,
     'Radio': renderRadio,
@@ -8,6 +9,20 @@ export const questionRenderers = {
     'ScoreBox': renderScoreBox,
     'CommentBox': renderCommentBox
 };
+
+/*
+    Each method is responsible for rendering a specific question type.
+
+    Responsibilities:
+    - Create and append the question’s DOM element(s) into the given container.
+    - Load any previously saved response from localStorage.
+    - Add listeners to save changes back to localStorage.
+
+    Behavior:
+    - On the first call: renders the element with saved or default values.
+    - On later calls: resets the element to its default state.
+*/
+
 
 function renderCommentBox(jsonQuestionData, questionContainer) {
     let textarea = document.getElementById(jsonQuestionData.id);
@@ -20,9 +35,7 @@ function renderCommentBox(jsonQuestionData, questionContainer) {
     textarea = document.createElement('textarea');
     textarea.id = jsonQuestionData.id;
     textarea.value = getFromLocalStorage(jsonQuestionData.id) ?? '';
-    textarea.oninput = () => {
-        setToLocalStorage(jsonQuestionData.id, textarea.value);
-    };
+    textarea.oninput = () => setToLocalStorage(jsonQuestionData.id, textarea.value);
     questionContainer.appendChild(textarea);
 }
 
@@ -47,12 +60,10 @@ function renderScoreBox(jsonQuestionData, questionContainer) {
     setToLocalStorage(jsonQuestionData.id, input.value);
 
     const saveValue = () => {
-        // invalid
-        if (input.value < Number(input.min) || input.value > Number(input.max) ||
-            input.value === "") {
+        if (input.value < Number(input.min) || input.value > Number(input.max) || input.value === "") {
             input.classList.add('invalid');
             removeFromLocalStorage(jsonQuestionData.id);
-        } else { // valid
+        } else {
             input.classList.remove('invalid');
             setToLocalStorage(jsonQuestionData.id, input.value);
         }
@@ -80,7 +91,8 @@ function renderScoreBox(jsonQuestionData, questionContainer) {
 }
 
 function renderAutoCompleteRadio(jsonQuestionData, questionContainer) {
-    let input = document.getElementById(jsonQuestionData.id);
+    const id = jsonQuestionData.id;
+    let input = document.getElementById(id);
     if (input) {
         // reset to default if already exists
         input.value = '';
@@ -88,69 +100,72 @@ function renderAutoCompleteRadio(jsonQuestionData, questionContainer) {
     }
 
     input = document.createElement('input');
-    input.id = jsonQuestionData.id;
-    input.value = getFromLocalStorage(jsonQuestionData.id);
-
-    const name = jsonQuestionData.id + '-input';
-    input.setAttribute('list', name);
+    input.id = id;
+    input.value = getFromLocalStorage(id);
 
     const datalist = document.createElement('datalist');
-    datalist.id = name;
+    datalist.id = id + '-list';
+
     for (const c of jsonQuestionData.choices) {
         const option = document.createElement('option');
         option.value = c;
-        option.textContent = c;
         datalist.appendChild(option);
     }
+    // connect the datalist to the input
+    input.setAttribute('list', datalist.id);
 
-    // format to String to fix type issues
-    const allowedValues = jsonQuestionData.choices.map(c => String(c));
+    // format to String to fix type and formating issues
+    const allowedValues = new Set(jsonQuestionData.choices.map(c => String(c).trim()));
     input.oninput = () => {
-        if (!allowedValues.includes(input.value)) {
-            input.classList.add('invalid');
-            removeFromLocalStorage(jsonQuestionData.id);
+        const value = input.value.trim();
+        if (!allowedValues.has(value)) {
+            input.classList.add("invalid");
+            removeFromLocalStorage(id);
         } else {
-            input.classList.remove('invalid');
-            setToLocalStorage(jsonQuestionData.id, input.value);
+            input.classList.remove("invalid");
+            setToLocalStorage(id, value);
         }
     };
 
-    input.appendChild(datalist);
     questionContainer.appendChild(input);
+    questionContainer.appendChild(datalist);
 }
 
 function renderRadio(jsonQuestionData, questionContainer) {
-    let radioContainer = document.getElementById(jsonQuestionData.id);
+    const id = jsonQuestionData.id;
+    let radioContainer = document.getElementById(id);
+
     if (radioContainer) {
         // reset to default if already exists
-        const choices = document.getElementsByName(radioContainer.id);
-        choices.forEach(choice => {
-            choice.checked = false;
-        })
+        radioContainer.querySelectorAll("input[type=radio]")
+            .forEach(choice => choice.checked = false);
         radioContainer.classList.remove('invalid');
         return;
     }
 
     radioContainer = document.createElement('form');
-    radioContainer.id = jsonQuestionData.id;
+    radioContainer.id = id;
 
-    const savedValue = getFromLocalStorage(jsonQuestionData.id);
+    const savedValue = getFromLocalStorage(id);
+
     for (const c of jsonQuestionData.choices) {
         const choice = document.createElement('input');
         choice.type = 'radio';
-        choice.id = radioContainer.id + c;
-        choice.name = radioContainer.id;
+        choice.id = id + '-' + c;
+        choice.name = id;
         choice.value = c;
-        choice.onclick = () => {
-            setToLocalStorage(jsonQuestionData.id, c);
-            radioContainer.classList.remove('invalid');
-        };
         if (savedValue === c) choice.checked = true;
 
-        radioContainer.appendChild(choice);
+        choice.onclick = () => {
+            setToLocalStorage(id, c);
+            radioContainer.classList.remove('invalid');
+        };
+
         const label = document.createElement('label');
         label.textContent = c;
         label.htmlFor = choice.id;
+
+        radioContainer.appendChild(choice);
         radioContainer.appendChild(label);
     }
     questionContainer.appendChild(radioContainer);
@@ -167,15 +182,14 @@ function renderTextBox(jsonQuestionData, questionContainer) {
     textBox = document.createElement('input');
     textBox.type = 'text';
     textBox.id = jsonQuestionData.id;
-    textBox.value = getFromLocalStorage(jsonQuestionData.id);
+    textBox.value = getFromLocalStorage(jsonQuestionData.id) ?? '';
     textBox.oninput = () => {
-        let value = textBox.value;
-        if (value === '') {
+        if (textBox.value === '') {
             textBox.classList.add('invalid');
         } else {
             textBox.classList.remove('invalid');
         }
-        setToLocalStorage(jsonQuestionData.id, value)
+        setToLocalStorage(jsonQuestionData.id, textBox.value)
     };
     questionContainer.appendChild(textBox);
 }
