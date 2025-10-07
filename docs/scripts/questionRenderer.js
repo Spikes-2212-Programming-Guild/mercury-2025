@@ -5,9 +5,10 @@ import {SCOREBOX_DEFAULT_VALUE, SCOREBOX_MAX_VALUE, SCOREBOX_MIN_VALUE} from "..
 export const questionRenderers = {
     'TextBox': renderTextBox,
     'Radio': renderRadio,
+    'List': renderList,
     'AutoCompleteRadio': renderAutoCompleteRadio,
     'ScoreBox': renderScoreBox,
-    'CommentBox': renderCommentBox
+    'CommentBox': renderCommentBox,
 };
 
 /*
@@ -22,7 +23,6 @@ export const questionRenderers = {
     - On the first call: renders the element with saved or default values.
     - On later calls: resets the element to its default state.
 */
-
 
 function renderCommentBox(jsonQuestionData, questionContainer) {
     let textarea = document.getElementById(jsonQuestionData.id);
@@ -147,7 +147,6 @@ function renderRadio(jsonQuestionData, questionContainer) {
     radioContainer.id = id;
 
     const savedValue = getFromLocalStorage(id);
-
     for (const c of jsonQuestionData.choices) {
         const choice = document.createElement('input');
         choice.type = 'radio';
@@ -171,11 +170,58 @@ function renderRadio(jsonQuestionData, questionContainer) {
     questionContainer.appendChild(radioContainer);
 }
 
+function renderList(jsonQuestionData, questionContainer) {
+    const id = jsonQuestionData.id;
+    let select = document.getElementById(id);
+    if (select) {
+        // reset to default if already exists
+        select.value = '';
+        select.classList.remove('invalid');
+        return;
+    }
+
+    select = document.createElement('select');
+    select.id = id;
+    select.multiple = Boolean(jsonQuestionData.multiple);
+
+    for (const c of jsonQuestionData.choices) {
+        const option = document.createElement('option');
+        option.id = id + '-' + c;
+        option.textContent = c;
+        option.value = c;
+        select.appendChild(option);
+    }
+
+    const saved = getFromLocalStorage(id);
+    if (select.multiple) {
+        // select the previously saved options
+        const savedOptions = new Set(saved ? saved.split(',') : []);
+        for (const option of select.options) {
+            option.selected = savedOptions.has(option.value);
+        }
+
+        select.onchange = () => {
+            const selected =
+                Array.from(select.selectedOptions, o => o.value);
+            setToLocalStorage(id, selected.join(','));
+            select.classList.remove('invalid');
+        }
+    } else {
+        select.value = saved;
+        select.onchange = () => {
+            setToLocalStorage(id, select.value)
+            select.classList.remove('invalid');
+        };
+    }
+
+    questionContainer.appendChild(select);
+}
+
 function renderTextBox(jsonQuestionData, questionContainer) {
     let textBox = document.getElementById(jsonQuestionData.id);
     if (textBox) {
         // reset to default if already exists
-        textBox.value = getFromLocalStorage(jsonQuestionData.id);
+        textBox.value = '';
         return;
     }
 

@@ -12,27 +12,27 @@ class App {
 
     render() {
         this.renderTopNavigationBar()
-        this.renderSidebar();
         this.renderAllPages();
-        this.renderResetAllButton();
-        this.renderResendButton();
+        this.renderClearAllButton();
         this.renderBottomNavigationBar()
     }
 
     clearAnswers() {
         for (const p of form.pages) {
-            for (const q of p.questions) {
-                removeFromLocalStorage(q.id);
-                const renderer = questionRenderers[q.type];
-                if (!renderer) throw new Error(`Unknown question type: ${q.type}`);
-                renderer(q); // rerender the question (reset-ing the value)
+            for (const c of p.containers) {
+                for (const q of c.questions) {
+                    removeFromLocalStorage(q.id);
+                    const renderer = questionRenderers[q.type];
+                    if (!renderer) throw new Error(`Unknown question type: ${q.type}`);
+                    renderer(q); // rerender the question (reset-ing the value)
+                }
             }
         }
     }
 
     displayPage(pageIndex) {
         const buttons = document.getElementById('top-navigation').children;
-        const pages = document.getElementById('pages-container').children;
+        const pages = document.getElementById('page-container').children;
 
         for (let i = 0; i < form.pages.length; i++) {
             pages[i].hidden = pageIndex !== i;
@@ -45,7 +45,7 @@ class App {
 
     renderAllPages() {
         const pagesContainer = document.createElement('div');
-        pagesContainer.id = 'pages-container';
+        pagesContainer.id = 'page-container';
 
         for (const p of form.pages) {
             const page = this.renderPage(p);
@@ -62,16 +62,36 @@ class App {
         pageTitle.classList.add('page-titles');
         page.appendChild(pageTitle);
 
-        for (const q of pageData.questions) {
-            page.appendChild(this.createQuestion(q));
+        for (const container of pageData.containers) {
+            page.appendChild(this.renderContainer(container));
         }
 
         return page;
     }
 
+    renderContainer(containerData) {
+        const container = document.createElement('fieldset');
+        container.classList.add('question-container');
+
+        const title = document.createElement('legend');
+        title.textContent = containerData.title;
+        title.classList.add('container-title');
+        container.appendChild(title);
+
+        if (title.textContent === "") {
+            title.hidden = true;
+            container.style.border = "none";
+        }
+
+        for (const q of containerData.questions) {
+            container.appendChild(this.createQuestion(q));
+        }
+        return container;
+    }
+
     createQuestion(questionData) {
         const questionContainer = document.createElement('div');
-        questionContainer.classList.add(questionData.type);
+        questionContainer.classList.add(questionData.type, "question");
 
         const title = document.createElement('h1');
         title.textContent = questionData.title;
@@ -84,42 +104,16 @@ class App {
         return questionContainer;
     }
 
-    renderSidebar() {
-        const container = document.createElement("div");
-        container.id = "sidebar";
-
-        const up = document.createElement("label");
-        up.textContent = '↑';
-        up.id = "sidebar-scroll-up";
-        up.onclick = () => console.log('up');
-
-        const down = document.createElement("label");
-        down.textContent = '↓';
-        down.id = "sidebar-scroll-down";
-        down.onclick = () => console.log('down');
-
-        container.appendChild(up);
-        container.appendChild(down);
-        document.body.appendChild(container);
-    }
-
-    renderResetAllButton() {
+    renderClearAllButton() {
         const resetButton = document.createElement('button');
-        resetButton.textContent = 'Reset All';
-        resetButton.id = 'reset-all-button';
+        resetButton.textContent = 'Clear All';
+        resetButton.id = 'clear-all-button';
         resetButton.onclick = () => {
+            if (!confirm("Confirm Clear")) return;
             this.clearAnswers()
             this.displayPage(0);
         }
         document.body.appendChild(resetButton);
-    }
-
-    renderResendButton() {
-        const resendButton = document.createElement('button');
-        resendButton.textContent = 'Resend Form';
-        resendButton.id = 'resend-button';
-        resendButton.onclick = () => console.log('resend');
-        document.body.appendChild(resendButton);
     }
 
     renderTopNavigationBar() {
@@ -164,33 +158,35 @@ class App {
     nextPage() {
         let cur = getFromLocalStorage('currentPageIndex');
         cur++;
-        if (form.pages.length === cur) cur = 0;
+        if (form.pages.length === cur) return;
         this.displayPage(cur);
     }
 
     previousPage() {
         let cur = getFromLocalStorage('currentPageIndex');
         cur--;
-        if (cur < 0) cur = form.pages.length - 1;
+        if (cur < 0) return;
         this.displayPage(cur);
     }
 
     printAnswers() {
         for (let i = 0; i < form.pages.length; i++) {
             const p = form.pages[i];
-            for (const q of p.questions) {
-                let value = getFromLocalStorage(q.id)
-                const question = document.getElementById(q.id);
+            for (const c of p.containers) {
+                for (const q of c.questions) {
+                    let value = getFromLocalStorage(q.id)
+                    const question = document.getElementById(q.id);
 
-                console.log(q.id + " " + value);
-                question.classList.remove("invalid")
+                    console.log(q.id + " " + value);
+                    question.classList.remove("invalid")
 
-                if (value === null || value === "" || value === undefined) {
-                    this.displayPage(i);
-                    question.classList.toggle("invalid")
+                    if (value === null || value === "" || value === undefined) {
+                        this.displayPage(i);
+                        question.classList.toggle("invalid")
 
-                    question.scrollIntoView({block: 'center', inline: 'nearest'});
-                    return;
+                        question.scrollIntoView({block: 'center', inline: 'nearest'});
+                        return;
+                    }
                 }
             }
         }

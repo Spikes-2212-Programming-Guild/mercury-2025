@@ -2,16 +2,26 @@
     /* Colors */
     --color-primary: #0056b3;
     --color-bg: #282c34;
+    --color-bg-secondary: #414e5c;
+
     --color-text: #ffffff;
     --color-text-secondary: #848c91;
+    --color-text-tertiary: #b8c2cc;
+
+    --color-underline: #676f73;
+
     --color-text-error: red;
     --color-border: #ffffff;
+    --color-border-secondary: #a6a6a6;
 
     /* Borders & radius */
     --border-width: 0.1em;
-    --radius-small: 0.3em;
     --radius-medium: 0.4em;
-    --radius-large: 2em;
+
+    /* Font sizes */
+    --font-size-small: 1.25em;
+    --font-size-medium: 1.5em;
+    --font-size-large: 1.75em;
 }
 
 * {
@@ -22,6 +32,11 @@
     border: none;
 }
 
+h1 {
+    margin-bottom: 0.35em;
+    font-size: var(--font-size-medium);
+}
+
 body {
     background-color: var(--color-bg);
     font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
@@ -30,20 +45,19 @@ body {
 }
 
 /* ===== Navigation ===== */
-
 #top-navigation {
     display: flex;
     position: fixed;
     top: 0;
     left: 50%;
-    transform: translateX(-50%); /* centered */
-    width: 100%; /* take full row */
+    transform: translateX(-50%);
+    width: 100%;
 }
 
 #top-navigation > button {
-    flex: 1; /* each button takes equal space */
+    flex: 1;
     height: 3em;
-    font-size: 1.25em;
+    font-size: var(--font-size-small);
     background-color: var(--color-primary);
 }
 
@@ -56,45 +70,49 @@ body {
     position: fixed;
     bottom: 0;
     left: 50%;
-    transform: translateX(-50%); /* centered */
-    width: 100%; /* take full row */
+    transform: translateX(-50%);
+    width: 100%;
     background-color: var(--color-bg);
 }
 
 #bottom-navigation > button {
     flex: 1;
     height: 3em;
-    font-size: 1.25em;
+    font-size: var(--font-size-small);
 }
 
 #submit-button {
     background-color: var(--color-primary);
-    border-radius: var(--radius-large);
+    border-radius: 2em;
 }
 
 /* ===== Buttons ===== */
-
-#reset-all-button {
-    margin: 4em 2em;
-    font-size: 1.75em;
-}
-
-#resend-button {
-    font-size: 1.75em;
-    margin-bottom: 10em;
+#clear-all-button {
+    margin: 3em;
+    font-size: var(--font-size-large);
 }
 
 /* ===== Page Titles ===== */
-
 .page-titles {
-    font-size: 2em;
+    font-size: var(--font-size-large);
     font-weight: bold;
-    margin: 1.5em 0 0.5em;
+    margin-top: 2.25em;
+    margin-bottom: 0.75em;
 }
 
-/* ===== Question containers ===== */
-#pages-container > div > div {
-    margin-bottom: 2em;
+/* ===== Question Container ===== */
+.question-container {
+    border: var(--color-border-secondary) var(--border-width) solid;
+    margin-bottom: 0.5em;
+}
+
+.container-title {
+    font-size: var(--font-size-medium);
+    margin: 0 auto;
+}
+
+.question {
+    margin-bottom: 1.75em;
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -130,7 +148,6 @@ input[type="radio"]:checked + label {
     color: var(--color-text);
 }
 
-
 /* ===== CommentBox ===== */
 .CommentBox textarea {
     text-align: start;
@@ -138,9 +155,18 @@ input[type="radio"]:checked + label {
     border-radius: var(--radius-medium);
     resize: vertical;
     color: var(--color-text);
-    font-size: 2em;
+    font-size: var(--font-size-large);
     min-height: 7.5em;
-    width: 80%;
+    width: 90%;
+}
+
+/* ==== List ==== */
+.List select {
+    font-size: var(--font-size-medium);
+    background-color: var(--color-bg-secondary);
+    border: var(--color-bg-secondary) 0.5em solid;
+    border-radius: 0.3em;
+    width: 85%;
 }
 
 /* ===== Radio ===== */
@@ -148,54 +174,75 @@ input[type="radio"]:checked + label {
     display: flex;
     flex-wrap: wrap;
     gap: 0.5em;
-    justify-content: center;
-    max-width: 80%;
+
+    justify-content: stretch;
+    width: 85%;
+
     padding: 0.5em;
     border: var(--color-border) var(--border-width) solid;
     border-radius: 0.6em;
 }
 
-.Radio input + label {
-    align-items: center;
-    justify-content: center;
-    padding: 0.5em 0.5em;
-    font-size: 1.25em;
+.Radio label {
+    flex: 1 1 auto; /* allow to grow and shrink */
+    min-width: 1em;
+
+    padding: 0.5em;
+    font-size: var(--font-size-small);
     color: var(--color-text-secondary);
     white-space: nowrap;
+
     border-radius: 0.3em;
     background-color: rgba(255, 255, 255, 0.05);
 }
 
 .Radio h1 {
-    font-size: 1.75em;
     margin-bottom: 0.6em;
 }
 
 /* ===== TextBox ===== */
 .TextBox input {
-    font-size: 1.75em;
+    font-size: var(--font-size-large);
     height: 1.35em;
     width: 8em;
 }
 
 /* ===== AutoCompleteRadio ===== */
 .AutoCompleteRadio input {
-    font-size: 2em;
+    font-size: var(--font-size-large);
     height: 1.35em;
     width: 8em;
     text-align: center;
 }
 
 /*===== ScoreBox ===== */
+.ScoreBox {
+    width: 90%;
+    margin: 0 auto;
+    margin-bottom: 0.25em !important;
+    flex-direction: row !important;
+    display: flex;
+    justify-content: space-between;
+}
+
+.ScoreBox div {
+    display: flex;
+    gap: 1em;
+}
+
+.ScoreBox h1 {
+    text-align: start;
+    margin-bottom: 0.75em;
+}
+
 .ScoreBox input {
     width: 2.35em;
     height: 1.5em;
-    font-size: 2em;
-    margin: 0 0.75em;
+    font-size: var(--font-size-large);
 }
 
 .ScoreBox button {
-    font-size: 3.5em;
+    font-size: 3em;
     width: 0.5em;
     height: 1em;
     display: inline-flex;
@@ -203,9 +250,9 @@ input[type="radio"]:checked + label {
     align-items: center;
 }
 
-.ScoreBox h1 {
-    margin-bottom: 0.2em;
-    font-size: 1.75em;
+/* ===== Removing Focus outline ===== */
+:focus {
+    outline: none;
 }
 
 /* ===== Question invalid border ===== */
