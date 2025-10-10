@@ -16,7 +16,11 @@
 
     /* Borders & radius */
     --border-width: 0.1em;
+
+    --radius-small: 0.2em;
     --radius-medium: 0.4em;
+    --radius-large: 0.6em;
+    --radius-x-large: 1.6em;
 
     /* Font sizes */
     --font-size-small: 1.25em;
@@ -32,31 +36,28 @@
     border: none;
 }
 
-h1 {
-    margin-bottom: 0.35em;
-    font-size: var(--font-size-medium);
-}
-
 body {
     background-color: var(--color-bg);
     font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
     display: flex;
     flex-direction: column;
+    margin: 0;
+    padding: 0;
+    height: 100%;
+    width: 100%;
 }
 
-/* ===== Navigation ===== */
+/* ===== Top Navigation ===== */
 #top-navigation {
     display: flex;
-    position: fixed;
+    position: sticky;
     top: 0;
-    left: 50%;
-    transform: translateX(-50%);
     width: 100%;
+    height: 8vh;
 }
 
 #top-navigation > button {
     flex: 1;
-    height: 3em;
     font-size: var(--font-size-small);
     background-color: var(--color-primary);
 }
@@ -65,44 +66,43 @@ body {
     font-weight: bold;
 }
 
+/* ===== Bottom Navigation ===== */
 #bottom-navigation {
+    background-color: var(--color-bg);
     display: flex;
     position: fixed;
     bottom: 0;
-    left: 50%;
-    transform: translateX(-50%);
     width: 100%;
-    background-color: var(--color-bg);
+    height: 8vh;
 }
 
 #bottom-navigation > button {
     flex: 1;
-    height: 3em;
     font-size: var(--font-size-small);
 }
 
+/* ===== Submit Button ===== */
 #submit-button {
     background-color: var(--color-primary);
-    border-radius: 2em;
+    border-radius: var(--radius-x-large);
 }
 
-/* ===== Buttons ===== */
+/* ===== Clear All Button ===== */
 #clear-all-button {
-    margin: 3em;
-    font-size: var(--font-size-large);
+    margin: 5em;
+    font-size: var(--font-size-medium);
 }
 
-/* ===== Page Titles ===== */
-.page-titles {
+/* ===== Page Title ===== */
+.page-title {
     font-size: var(--font-size-large);
     font-weight: bold;
-    margin-top: 2.25em;
-    margin-bottom: 0.75em;
 }
 
-/* ===== Question Container ===== */
+/* ===== Container of Questions ===== */
 .question-container {
     border: var(--color-border-secondary) var(--border-width) solid;
+    border-radius: var(--radius-medium);
     margin-bottom: 0.5em;
 }
 
@@ -111,11 +111,118 @@ body {
     margin: 0 auto;
 }
 
+/* ===== Question ===== */
 .question {
-    margin-bottom: 1.75em;
+    margin-bottom: 1.5em;
     display: flex;
     flex-direction: column;
     align-items: center;
+}
+
+/* ==== Question Input ==== */
+.question input {
+    height: 1.35em;
+    font-size: var(--font-size-large);
+    width: 100%;
+}
+
+/* ===== Question Title ===== */
+.question h1 {
+    font-size: var(--font-size-medium);
+    margin-bottom: 0.35em;
+}
+
+/* ===== CommentBox ===== */
+.CommentBox textarea {
+    text-align: start;
+    font-size: var(--font-size-large);
+    color: var(--color-text);
+
+    border: var(--color-border) var(--border-width) solid;
+    border-radius: var(--radius-medium);
+
+    min-height: 7.5em;
+    width: 100%;
+}
+
+/* ==== List ==== */
+.List select {
+    font-size: var(--font-size-medium);
+
+    background-color: var(--color-bg-secondary);
+    border: var(--color-bg-secondary) var(--border-width) solid;
+    border-radius: var(--radius-medium);
+
+    padding: 0.4em; /* increase selector size */
+    width: 100%;
+}
+
+/* ===== Radio ===== */
+.Radio form {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    width: 100%;
+
+    align-items: center;
+    border: var(--color-border) var(--border-width) solid;
+    border-radius: var(--radius-large);
+}
+
+.Radio label {
+    font-size: var(--font-size-small);
+    color: var(--color-text-secondary);
+    white-space: nowrap;
+
+    flex: 1 1 auto; /* allow to grow and shrink */
+    padding: 0.6em;
+}
+
+/*===== ScoreBox ===== */
+.ScoreBox {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    margin: 0 auto 0.25em auto;
+}
+
+.ScoreBox div {
+    display: flex;
+    gap: 1em;
+}
+
+.ScoreBox h1 {
+    text-align: start;
+}
+
+.ScoreBox input {
+    width: 2.35em;
+    height: 1.5em;
+    font-size: var(--font-size-large);
+}
+
+.ScoreBox button {
+    font-size: 3em;
+    width: 0.5em;
+    height: 1em;
+    display: inline-flex;
+    justify-content: center;
+    align-items: center;
+}
+
+/* ===== Removing Focus outline ===== */
+:focus {
+    outline: none;
+}
+
+/* ==== add nice feel ==== */
+button, input, select, label {
+    transition: background-color 0.1s ease, color 0.1s ease, border-color 0.1s ease;
+}
+
+/* ===== Question invalid border ===== */
+.invalid {
+    border-color: var(--color-text-error) !important;
 }
 
 /* ===== Inputs ===== */
@@ -148,114 +255,7 @@ input[type="radio"]:checked + label {
     color: var(--color-text);
 }
 
-/* ===== CommentBox ===== */
-.CommentBox textarea {
-    text-align: start;
-    border: var(--color-border) var(--border-width) solid;
-    border-radius: var(--radius-medium);
-    resize: vertical;
-    color: var(--color-text);
-    font-size: var(--font-size-large);
-    min-height: 7.5em;
-    width: 90%;
-}
-
-/* ==== List ==== */
-.List select {
-    font-size: var(--font-size-medium);
-    background-color: var(--color-bg-secondary);
-    border: var(--color-bg-secondary) 0.5em solid;
-    border-radius: 0.3em;
-    width: 85%;
-}
-
-/* ===== Radio ===== */
-.Radio form {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 0.5em;
-
-    justify-content: stretch;
-    width: 85%;
-
-    padding: 0.5em;
-    border: var(--color-border) var(--border-width) solid;
-    border-radius: 0.6em;
-}
-
-.Radio label {
-    flex: 1 1 auto; /* allow to grow and shrink */
-    min-width: 1em;
-
-    padding: 0.5em;
-    font-size: var(--font-size-small);
-    color: var(--color-text-secondary);
-    white-space: nowrap;
-
-    border-radius: 0.3em;
-    background-color: rgba(255, 255, 255, 0.05);
-}
-
-.Radio h1 {
-    margin-bottom: 0.6em;
-}
-
-/* ===== TextBox ===== */
-.TextBox input {
-    font-size: var(--font-size-large);
-    height: 1.35em;
-    width: 8em;
-}
-
-/* ===== AutoCompleteRadio ===== */
-.AutoCompleteRadio input {
-    font-size: var(--font-size-large);
-    height: 1.35em;
-    width: 8em;
-    text-align: center;
-}
-
-/*===== ScoreBox ===== */
-.ScoreBox {
-    width: 90%;
-    margin: 0 auto;
-    margin-bottom: 0.25em !important;
-    flex-direction: row !important;
-    display: flex;
-    justify-content: space-between;
-}
-
-.ScoreBox div {
-    display: flex;
-    gap: 1em;
-}
-
-.ScoreBox h1 {
-    text-align: start;
-    margin-bottom: 0.75em;
-}
-
-.ScoreBox input {
-    width: 2.35em;
-    height: 1.5em;
-    font-size: var(--font-size-large);
-}
-
-.ScoreBox button {
-    font-size: 3em;
-    width: 0.5em;
-    height: 1em;
-    display: inline-flex;
-    justify-content: center;
-    align-items: center;
-}
-
-/* ===== Removing Focus outline ===== */
-:focus {
-    outline: none;
-}
-
-/* ===== Question invalid border ===== */
-.invalid {
-    border: var(--color-text-error) var(--border-width) solid !important;
+/* Remove datalist dropdown arrow */
+input::-webkit-calendar-picker-indicator {
+    opacity: 0;
 }

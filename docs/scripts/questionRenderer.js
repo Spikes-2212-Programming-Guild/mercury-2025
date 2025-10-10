@@ -100,6 +100,7 @@ function renderAutoCompleteRadio(jsonQuestionData, questionContainer) {
     }
 
     input = document.createElement('input');
+    input.type = 'number';
     input.id = id;
     input.value = getFromLocalStorage(id);
 

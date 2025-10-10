@@ -87,7 +87,8 @@
                                 6741,
                                 4319,
                                 1954,
-                                4661
+                                4661,
+                                11070
                             ],
                             "type": "AutoCompleteRadio"
                         },
@@ -151,7 +152,7 @@
                         },
                         {
                             "id": "auto_coral_fails",
-                            "title": "Coral Fails",
+                            "title": "Fails",
                             "type": "ScoreBox"
                         }
                     ]
@@ -216,7 +217,7 @@
                         },
                         {
                             "id": "teleop_coral_fails",
-                            "title": "Coral Fails",
+                            "title": "Fails",
                             "type": "ScoreBox"
                         }
                     ]
@@ -269,7 +270,7 @@
                                 "15-20",
                                 "20+"
                             ],
-                            "type": "List"
+                            "type": "Radio"
                         },
                         {
                             "id": "end_state",
@@ -277,7 +278,8 @@
                             "choices": [
                                 "High Cage",
                                 "Low Cage",
-                                "Failed",
+                                "Failed High",
+                                "Failed Low",
                                 "Parked",
                                 "On Field"
                             ],

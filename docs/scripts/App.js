@@ -10,6 +10,24 @@ class App {
         this.displayPage(Number(getFromLocalStorage('currentPageIndex') || 0));
     }
 
+    /*
+        HTML structure:
+        body:
+            - top-navigation (div):
+                - button for each page
+
+            - page-container (div):
+                - container for each page (div):
+                    - page title (label)
+                    - question containers (fieldset):
+                        - questions (div)
+
+            - clear-all-button
+            - bottom-navigation (div):
+                - previous button
+                - submit button
+                - next button
+    */
     render() {
         this.renderTopNavigationBar()
         this.renderAllPages();
@@ -59,7 +77,7 @@ class App {
         const page = document.createElement('div');
         const pageTitle = document.createElement('h1');
         pageTitle.textContent = pageData.title;
-        pageTitle.classList.add('page-titles');
+        pageTitle.classList.add('page-title');
         page.appendChild(pageTitle);
 
         for (const container of pageData.containers) {
