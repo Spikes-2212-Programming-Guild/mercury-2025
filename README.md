@@ -12,6 +12,10 @@ Mercury 2025 is a scouting application designed to help FRC teams collect and an
 - **Cross-Platform**: Web-based application that can be packaged for Android using Capacitor
 - **Optimized**: Built in raw JavaScript, HTML, and CSS for max performance
 
+## Development
+
+To run the application locally, run the file newSever.js by running `node newServer.js` in the root directory.
+
 ## Configuration
 
 The form structure is defined in `docs/config/form.json`

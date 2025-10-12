@@ -1,6 +1,14 @@
 import form from '../config/form.json' with {type: 'json'};
 import {questionRenderers} from './questionRenderer.js';
 import {getFromLocalStorage, removeFromLocalStorage, setToLocalStorage} from "./utils.js";
+import {
+    AUTO_DURATION_MS,
+    AUTO_PAGE_INDEX,
+    SWIPE_HORIZONTAL_THRESHOLD,
+    SWIPE_VERTICAL_THRESHOLD,
+    TELEOP_PAGE_INDEX,
+    TRIGGER_ID
+} from "../config/constants.js";
 
 class App {
 
@@ -8,6 +16,7 @@ class App {
         this.render();
         this.setUpSwipeListeners();
         this.displayPage(Number(getFromLocalStorage('currentPageIndex') || 0));
+        this.autoStartTeleop();
     }
 
     /*
@@ -210,10 +219,31 @@ class App {
         }
     }
 
+    /*
+        Automatically transitions to the teleop page once the autonomous phase ends.
+        When the user answers the first autonomous question (TRIGGER_ID),
+        a timer begins, and after AUTO_DURATION_MS, the page switches to teleop
+        ensuring the scouter doesn't forget to move page after auto.
+    */
+    autoStartTeleop() {
+        const triggerQuestion = document.getElementById(TRIGGER_ID);
+        if (!triggerQuestion) return console.warn(`Element #${TRIGGER_ID} not found`);
+
+        const handleClick = () => {
+            if (getFromLocalStorage(triggerQuestion.id)) return;
+
+            setTimeout(() => {
+                if (Number(getFromLocalStorage('currentPageIndex')) === AUTO_PAGE_INDEX) {
+                    this.displayPage(TELEOP_PAGE_INDEX);
+                }
+            }, AUTO_DURATION_MS)
+        }
+        // capture to make it the first event to be handled
+        triggerQuestion.addEventListener('click', handleClick, {capture: true});
+    }
+
     setUpSwipeListeners() {
         let startX = 0, startY = 0;
-        const horizontalThreshold = 0.25; // 25% of screen width
-        const verticalLimit = 0.20; // 20% of screen height
 
         document.addEventListener("touchstart", e => {
             const t = e.touches[0];
@@ -232,11 +262,11 @@ class App {
             const screenWidth = window.innerWidth;
             const screenHeight = window.innerHeight;
 
-            if (Math.abs(diffY) > screenHeight * verticalLimit) return;
+            if (Math.abs(diffY) > screenHeight * SWIPE_VERTICAL_THRESHOLD) return;
 
-            if (diffX > screenWidth * horizontalThreshold) {
+            if (diffX > screenWidth * SWIPE_HORIZONTAL_THRESHOLD) {
                 this.previousPage();
-            } else if (diffX < -screenWidth * horizontalThreshold) {
+            } else if (diffX < -screenWidth * SWIPE_HORIZONTAL_THRESHOLD) {
                 this.nextPage();
             }
         });

@@ -93,12 +93,12 @@
                             "type": "AutoCompleteRadio"
                         },
                         {
-                            "id": "scouter_name",
+                            "id": "scouter-name",
                             "title": "Scouter name",
                             "type": "TextBox"
                         },
                         {
-                            "id": "game_type",
+                            "id": "game-type",
                             "title": "Game Type",
                             "choices": [
                                 "Practice",
@@ -117,7 +117,7 @@
                     "title": "",
                     "questions": [
                         {
-                            "id": "left_starting_line",
+                            "id": "left-starting-line",
                             "title": "Left Starting Line",
                             "choices": [
                                 "Yes",
@@ -131,27 +131,31 @@
                     "title": "Coral",
                     "questions": [
                         {
-                            "id": "auto_coral_l4",
+                            "id": "auto-coral-l4",
                             "title": "L4",
-                            "type": "ScoreBox"
+                            "type": "ScoreBox",
+                            "maxValue": 12
                         },
                         {
-                            "id": "auto_coral_l3",
+                            "id": "auto-coral-l3",
                             "title": "L3",
-                            "type": "ScoreBox"
+                            "type": "ScoreBox",
+                            "maxValue": 12
                         },
                         {
-                            "id": "auto_coral_l2",
+                            "id": "auto-coral-l2",
                             "title": "L2",
-                            "type": "ScoreBox"
+                            "type": "ScoreBox",
+                            "maxValue": 12
                         },
                         {
-                            "id": "auto_coral_l1",
+                            "id": "auto-coral-l1",
                             "title": "L1",
-                            "type": "ScoreBox"
+                            "type": "ScoreBox",
+                            "maxValue": 12
                         },
                         {
-                            "id": "auto_coral_fails",
+                            "id": "auto-coral-fails",
                             "title": "Fails",
                             "type": "ScoreBox"
                         }
@@ -161,12 +165,12 @@
                     "title": "Algae",
                     "questions": [
                         {
-                            "id": "auto_net_throws",
+                            "id": "auto-net-throws",
                             "title": "Net Throws",
                             "type": "ScoreBox"
                         },
                         {
-                            "id": "auto_processor_inserts",
+                            "id": "auto-processor-inserts",
                             "title": "Processor Inserts",
                             "type": "ScoreBox"
                         }
@@ -176,12 +180,12 @@
                     "title": "Human Player",
                     "questions": [
                         {
-                            "id": "auto_human_successful_throws",
+                            "id": "auto-human-successful-throws",
                             "title": "Successful Throws",
                             "type": "ScoreBox"
                         },
                         {
-                            "id": "auto_human_failed_throws",
+                            "id": "auto-human-failed-throws",
                             "title": "Failed Throws",
                             "type": "ScoreBox"
                         }
@@ -196,27 +200,31 @@
                     "title": "Coral",
                     "questions": [
                         {
-                            "id": "teleop_coral_l4",
+                            "id": "teleop-coral-l4",
                             "title": "L4",
-                            "type": "ScoreBox"
+                            "type": "ScoreBox",
+                            "maxValue": 12
                         },
                         {
-                            "id": "teleop_coral_l3",
+                            "id": "teleop-coral-l3",
                             "title": "L3",
-                            "type": "ScoreBox"
+                            "type": "ScoreBox",
+                            "maxValue": 12
                         },
                         {
-                            "id": "teleop_coral_l2",
+                            "id": "teleop-coral-l2",
                             "title": "L2",
-                            "type": "ScoreBox"
+                            "type": "ScoreBox",
+                            "maxValue": 12
                         },
                         {
-                            "id": "teleop_coral_l1",
+                            "id": "teleop-coral-l1",
                             "title": "L1",
-                            "type": "ScoreBox"
+                            "type": "ScoreBox",
+                            "maxValue": 12
                         },
                         {
-                            "id": "teleop_coral_fails",
+                            "id": "teleop-coral-fails",
                             "title": "Fails",
                             "type": "ScoreBox"
                         }
@@ -226,12 +234,12 @@
                     "title": "Algae",
                     "questions": [
                         {
-                            "id": "teleop_net_throws",
+                            "id": "teleop-net-throws",
                             "title": "Net Throws",
                             "type": "ScoreBox"
                         },
                         {
-                            "id": "teleop_processor_inserts",
+                            "id": "teleop-processor-inserts",
                             "title": "Processor Inserts",
                             "type": "ScoreBox"
                         }
@@ -241,12 +249,12 @@
                     "title": "Human Player",
                     "questions": [
                         {
-                            "id": "teleop_human_successful_throws",
+                            "id": "teleop-human-successful-throws",
                             "title": "Successful Throws",
                             "type": "ScoreBox"
                         },
                         {
-                            "id": "teleop_human_failed_throws",
+                            "id": "teleop-human-failed-throws",
                             "title": "Failed Throws",
                             "type": "ScoreBox"
                         }
@@ -261,7 +269,7 @@
                     "title": "",
                     "questions": [
                         {
-                            "id": "climb_time",
+                            "id": "climb-time",
                             "title": "Climb Start Time",
                             "choices": [
                                 "Didn't Climb",
@@ -270,10 +278,10 @@
                                 "15-20",
                                 "20+"
                             ],
-                            "type": "Radio"
+                            "type": "List"
                         },
                         {
-                            "id": "end_state",
+                            "id": "end-state",
                             "title": "End State",
                             "choices": [
                                 "High Cage",
@@ -296,7 +304,7 @@
                     "title": "Robot",
                     "questions": [
                         {
-                            "id": "played_defense",
+                            "id": "played-defense",
                             "title": "Played Defense",
                             "choices": [
                                 "Yes",
@@ -305,7 +313,7 @@
                             "type": "Radio"
                         },
                         {
-                            "id": "was_defended",
+                            "id": "was-defended",
                             "title": "Was Defended Against",
                             "choices": [
                                 "Yes",
@@ -314,19 +322,22 @@
                             "type": "Radio"
                         },
                         {
-                            "id": "robot_status",
+                            "id": "robot-status",
                             "title": "Robot Status",
                             "choices": [
-                                1,
-                                2,
-                                3,
-                                4,
-                                5
+                                "Fully Functional",
+                                "Hash Issues",
+                                "Non-Functional"
                             ],
-                            "type": "Radio"
+                            "type": "List"
                         },
                         {
-                            "id": "robot_abilities",
+                            "id": "robot-problem-description",
+                            "title": "Robot Problem Description",
+                            "type": "CommentBox"
+                        },
+                        {
+                            "id": "robot-abilities",
                             "title": "Robot Abilities",
                             "choices": [
                                 "L1",
@@ -349,13 +360,13 @@
                     "title": "Penalty",
                     "questions": [
                         {
-                            "id": "penalty_score",
+                            "id": "penalty-score",
                             "title": "Penalty Score",
                             "type": "ScoreBox",
                             "defaultValue": ""
                         },
                         {
-                            "id": "penalty_description",
+                            "id": "penalty-description",
                             "title": "Penalty Description",
                             "type": "CommentBox"
                         }

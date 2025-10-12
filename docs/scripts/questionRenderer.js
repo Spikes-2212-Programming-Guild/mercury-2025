@@ -71,7 +71,7 @@ function renderScoreBox(jsonQuestionData, questionContainer) {
     input.oninput = saveValue;
 
     const decButton = document.createElement('button');
-    decButton.textContent = '-';
+    decButton.textContent = '−';
     decButton.onclick = () => {
         input.stepDown();
         saveValue();
