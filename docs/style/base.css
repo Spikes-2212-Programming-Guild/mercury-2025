@@ -2,13 +2,12 @@
     /* Colors */
     --color-primary: #0056b3;
     --color-bg: #282c34;
-    --color-bg-secondary: #414e5c;
+    --color-bg-secondary: #3f5a78;
+    --color-bg-third: #283542;
 
     --color-text: #ffffff;
-    --color-text-secondary: #848c91;
-    --color-text-tertiary: #b8c2cc;
-
-    --color-underline: #676f73;
+    --color-text-secondary: #a3aaaf;
+    --color-text-selected: #b3e0ff;
 
     --color-text-error: red;
     --color-border: #ffffff;
@@ -137,7 +136,7 @@ body {
 .CommentBox textarea {
     text-align: start;
     font-size: var(--font-size-large);
-    color: var(--color-text);
+    color: var(--color-text-selected);
 
     border: var(--color-border) var(--border-width) solid;
     border-radius: var(--radius-medium);
@@ -149,12 +148,13 @@ body {
 /* ==== List ==== */
 .List select {
     font-size: var(--font-size-medium);
+    color: var(--color-text-selected);
 
     background-color: var(--color-bg-secondary);
     border: var(--color-bg-secondary) var(--border-width) solid;
     border-radius: var(--radius-medium);
 
-    padding: 0.4em; /* increase selector size */
+    padding: 0.4em;
     width: 100%;
 }
 
@@ -218,11 +218,6 @@ body {
     outline: none;
 }
 
-/* ==== Add nice feel ==== */
-button, input, select, label {
-    transition: background-color 0.1s ease, color 0.1s ease, border-color 0.1s ease;
-}
-
 /* ===== Question invalid border ===== */
 .invalid {
     border-color: var(--color-text-error) !important;
@@ -232,7 +227,7 @@ button, input, select, label {
 input {
     border: var(--color-border) var(--border-width) solid;
     border-radius: var(--radius-medium);
-    color: var(--color-text);
+    color: var(--color-text-selected);
 }
 
 /* Remove default input arrow buttons (spins) */
@@ -255,7 +250,9 @@ input[type="radio"] {
 }
 
 input[type="radio"]:checked + label {
-    color: var(--color-text);
+    color: var(--color-text-selected);
+    background-color: var(--color-bg-third);
+    border-radius: 0.5em;
 }
 
 /* Remove datalist dropdown arrow */
