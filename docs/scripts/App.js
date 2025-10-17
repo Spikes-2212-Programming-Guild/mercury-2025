@@ -61,6 +61,9 @@ class App {
         const buttons = document.getElementById('top-navigation').children;
         const pages = document.getElementById('page-container').children;
 
+        document.documentElement.setAttribute(
+            'data-theme', form.pages[pageIndex].theme);
+
         for (let i = 0; i < form.pages.length; i++) {
             pages[i].hidden = pageIndex !== i;
             buttons[i].classList.toggle('active', pageIndex === i);

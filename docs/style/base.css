@@ -4,11 +4,9 @@
     --color-bg: #282c34;
     --color-bg-secondary: #3f5a78;
     --color-bg-third: #283542;
-
-    --color-text: #ffffff;
-    --color-text-secondary: #a3aaaf;
     --color-text-selected: #b3e0ff;
 
+    --color-text: white;
     --color-text-error: red;
     --color-border: #ffffff;
     --color-border-secondary: #a6a6a6;
@@ -21,10 +19,38 @@
     --radius-large: 0.6em;
     --radius-x-large: 1.6em;
 
-    /* Font sizes */
-    --font-size-small: 1.25em;
-    --font-size-medium: 1.5em;
-    --font-size-large: 1.75em;
+    /* Responsive font sizes (scales with both width and height) */
+    --font-size-small: clamp(1.25em, 1.2vw + 0.8vh + 0.3em, 1.75em);
+    --font-size-medium: clamp(1.5em, 1.5vw + 1vh + 0.4em, 2.1em);
+    --font-size-large: clamp(1.75em, 1.8vw + 1.2vh + 0.5em, 2.5em);
+}
+
+:root[data-theme="red"] {
+    --color-primary: #e61f1f;
+    --color-bg-secondary: #422222;
+    --color-bg-third: #471e1e;
+    --color-text-selected: #ffb3b3;
+}
+
+:root[data-theme="purple"] {
+    --color-primary: #a147bc;
+    --color-bg-secondary: #472953;
+    --color-bg-third: #44274c;
+    --color-text-selected: #e0b3ff;
+}
+
+:root[data-theme="orange"] {
+    --color-primary: #ff7a00;
+    --color-bg-secondary: #403022;
+    --color-bg-third: #35281d;
+    --color-text-selected: #ffd8b3;
+}
+
+:root[data-theme="green"] {
+    --color-primary: #30a637;
+    --color-bg-secondary: #304c39;
+    --color-bg-third: #233027;
+    --color-text-selected: #c8ffd4;
 }
 
 * {
@@ -172,11 +198,17 @@ body {
 
 .Radio label {
     font-size: var(--font-size-small);
-    color: var(--color-text-secondary);
+    color: var(--color-text);
     white-space: nowrap;
 
     flex: 1 1 auto; /* allow to grow and shrink */
     padding: 0.6em;
+}
+
+input[type="radio"]:checked + label {
+    color: var(--color-text-selected);
+    background-color: var(--color-bg-third);
+    border-radius: 0.5em;
 }
 
 /*===== ScoreBox ===== */
@@ -247,12 +279,6 @@ input[type="radio"] {
     -moz-appearance: none;
     appearance: none;
     display: none;
-}
-
-input[type="radio"]:checked + label {
-    color: var(--color-text-selected);
-    background-color: var(--color-bg-third);
-    border-radius: 0.5em;
 }
 
 /* Remove datalist dropdown arrow */
