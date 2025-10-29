@@ -12,7 +12,7 @@
     --color-border-secondary: #a6a6a6;
 
     /* Borders & radius */
-    --border-width: 0.1em;
+    --border-width-small: 0.1em;
 
     --radius-small: 0.2em;
     --radius-medium: 0.4em;
@@ -21,7 +21,6 @@
 
     /* Responsive font sizes (scales with both width and height) */
     --font-size-small: clamp(1.25em, 1.2vw + 0.8vh + 0.3em, 1.75em);
-    --font-size-medium: clamp(1.5em, 1.5vw + 1vh + 0.4em, 2.1em);
     --font-size-large: clamp(1.75em, 1.8vw + 1.2vh + 0.5em, 2.5em);
 }
 
@@ -69,8 +68,6 @@ body {
     flex-direction: column;
     margin: 0;
     padding: 0;
-    height: 100%;
-    width: 100%;
 }
 
 /* ===== Top Navigation ===== */
@@ -115,8 +112,8 @@ body {
 
 /* ===== Clear All Button ===== */
 #clear-all-button {
-    margin: 5em;
-    font-size: var(--font-size-medium);
+    margin: 5em 0;
+    font-size: var(--font-size-large);
 }
 
 /* ===== Page Title ===== */
@@ -127,13 +124,13 @@ body {
 
 /* ===== Container of Questions ===== */
 .question-container {
-    border: var(--color-border-secondary) var(--border-width) solid;
+    border: var(--color-border-secondary) var(--border-width-small) solid;
     border-radius: var(--radius-medium);
     margin-bottom: 0.5em;
 }
 
 .container-title {
-    font-size: var(--font-size-medium);
+    font-size: var(--font-size-large);
     margin: 0 auto;
 }
 
@@ -154,7 +151,7 @@ body {
 
 /* ===== Question Title ===== */
 .question h1 {
-    font-size: var(--font-size-medium);
+    font-size: var(--font-size-large);
     margin-bottom: 0.35em;
 }
 
@@ -164,7 +161,7 @@ body {
     font-size: var(--font-size-large);
     color: var(--color-text-selected);
 
-    border: var(--color-border) var(--border-width) solid;
+    border: var(--color-border) var(--border-width-small) solid;
     border-radius: var(--radius-medium);
 
     min-height: 7.5em;
@@ -173,11 +170,11 @@ body {
 
 /* ==== List ==== */
 .List select {
-    font-size: var(--font-size-medium);
+    font-size: var(--font-size-large);
     color: var(--color-text-selected);
 
     background-color: var(--color-bg-secondary);
-    border: var(--color-bg-secondary) var(--border-width) solid;
+    border: var(--color-bg-secondary) var(--border-width-small) solid;
     border-radius: var(--radius-medium);
 
     padding: 0.4em;
@@ -192,7 +189,7 @@ body {
     width: 100%;
 
     align-items: center;
-    border: var(--color-border) var(--border-width) solid;
+    border: var(--color-border) var(--border-width-small) solid;
     border-radius: var(--radius-large);
 }
 
@@ -257,7 +254,7 @@ input[type="radio"]:checked + label {
 
 /* ===== Inputs ===== */
 input {
-    border: var(--color-border) var(--border-width) solid;
+    border: var(--color-border) var(--border-width-small) solid;
     border-radius: var(--radius-medium);
     color: var(--color-text-selected);
 }
